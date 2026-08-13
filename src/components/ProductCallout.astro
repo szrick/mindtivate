@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { withBase } from '../lib/url';
 
 interface Props {
   product: CollectionEntry<'products'>;
@@ -32,7 +33,7 @@ const isLive = ['approved', 'active'].includes(affiliateStatus) && Boolean(affil
     {disclosureRequired && isLive && (
       <p class="disclosure-note">
         This is an affiliate link — we may earn a commission at no extra cost
-        to you. See our <a href="/affiliate-disclosure">disclosure</a>.
+        to you. See our <a href={withBase('/affiliate-disclosure')}>disclosure</a>.
       </p>
     )}
   </div>

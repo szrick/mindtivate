@@ -6,6 +6,7 @@ import ProductCallout from '../components/ProductCallout.astro';
 import NewsletterSignup from '../components/NewsletterSignup.astro';
 import { getEntries, getEntry } from 'astro:content';
 import { toCategorySlug } from '../lib/categories';
+import { withBase } from '../lib/url';
 
 interface Props {
   article: CollectionEntry<'articles'>;
@@ -25,7 +26,7 @@ const categorySlug = toCategorySlug(category);
 <BaseLayout title={title} description={description} image={heroImage?.src} article>
   <article class="section container article">
     <header class="article-header">
-      <a href={`/category/${categorySlug}`} class="tag">{category}</a>
+      <a href={withBase(`/category/${categorySlug}`)} class="tag">{category}</a>
       <h1>{title}</h1>
       <p class="article-meta">
         {authorEntry && <span>By {authorEntry.data.name}</span>}

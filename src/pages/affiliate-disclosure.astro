@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../lib/url';
 ---
 
 <BaseLayout
@@ -42,7 +43,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     <h2>Questions</h2>
     <p>
-      If you have questions about a specific link or recommendation, <a href="/contact">contact us</a>.
+      If you have questions about a specific link or recommendation, <a href={withBase('/contact')}>contact us</a>.
     </p>
   </section>
 </BaseLayout>
