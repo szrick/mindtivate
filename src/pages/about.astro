@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../lib/url';
 ---
 
 <BaseLayout
@@ -23,7 +24,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <li><strong>Listen.</strong> We track recurring questions and pain points across relevant subreddits.</li>
       <li><strong>Research.</strong> We look for a product, program, or approach that actually solves the specific problem — not a generic best-seller.</li>
       <li><strong>Write.</strong> A draft is produced and then reviewed by a person before anything is published.</li>
-      <li><strong>Disclose.</strong> Any affiliate relationship is disclosed on every page that uses one — see our <a href="/affiliate-disclosure">affiliate disclosure</a>.</li>
+      <li><strong>Disclose.</strong> Any affiliate relationship is disclosed on every page that uses one — see our <a href={withBase('/affiliate-disclosure')}>affiliate disclosure</a>.</li>
     </ol>
 
     <h2>What we're not</h2>

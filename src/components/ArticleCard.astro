@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 import { toCategorySlug } from '../lib/categories';
+import { withBase } from '../lib/url';
 
 interface Props {
   article: CollectionEntry<'articles'>;
@@ -21,8 +22,8 @@ const formattedDate = pubDate.toLocaleDateString('en-US', {
     <img src={heroImage.src} alt={heroImageAlt ?? title} width="480" height="320" loading="lazy" />
   )}
   <div class="article-card-body">
-    <a href={`/category/${categorySlug}`} class="tag category-link">{category}</a>
-    <h3><a href={`/articles/${article.slug}`} class="card-link">{title}</a></h3>
+    <a href={withBase(`/category/${categorySlug}`)} class="tag category-link">{category}</a>
+    <h3><a href={withBase(`/articles/${article.slug}`)} class="card-link">{title}</a></h3>
     <p>{description}</p>
     <time datetime={pubDate.toISOString()}>{formattedDate}</time>
   </div>

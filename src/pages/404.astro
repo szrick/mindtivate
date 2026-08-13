@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../lib/url';
 ---
 
 <BaseLayout title="Page Not Found" description="This page doesn't exist.">
@@ -7,7 +8,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <p class="eyebrow">404</p>
     <h1>We couldn't find that page</h1>
     <p>It may have moved, or the link might be outdated.</p>
-    <a href="/" class="btn btn-primary">Back to home</a>
+    <a href={withBase('/')} class="btn btn-primary">Back to home</a>
   </section>
 </BaseLayout>
 

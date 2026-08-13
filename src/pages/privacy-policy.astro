@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../lib/url';
 ---
 
 <BaseLayout title="Privacy Policy" description="How Mindtivate handles your data.">
@@ -31,13 +32,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <h2>Your choices</h2>
     <p>
       You can unsubscribe from the newsletter at any time using the link in
-      any email we send. To request deletion of your data, <a href="/contact">contact us</a>.
+      any email we send. To request deletion of your data, <a href={withBase('/contact')}>contact us</a>.
     </p>
 
     <h2>Affiliate links</h2>
     <p>
       Some outbound links on this site are affiliate links. See our
-      <a href="/affiliate-disclosure">affiliate disclosure</a> for details.
+      <a href={withBase('/affiliate-disclosure')}>affiliate disclosure</a> for details.
       We do not control the privacy practices of third-party sites you
       navigate to.
     </p>

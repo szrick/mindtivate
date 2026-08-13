@@ -1,24 +1,25 @@
 ---
 import { CATEGORIES, toCategorySlug } from '../lib/categories';
+import { withBase } from '../lib/url';
 
 const navCategories = CATEGORIES.filter((c) => c.label !== 'Recovery' && c.label !== 'Motivation');
 ---
 
 <header class="site-header">
   <div class="container header-inner">
-    <a href="/" class="logo" aria-label="Mindtivate home">
+    <a href={withBase('/')} class="logo" aria-label="Mindtivate home">
       Mindtivate<span class="logo-dot">.</span>
     </a>
 
     <nav class="primary-nav" aria-label="Primary">
       <ul>
         {navCategories.map((c) => (
-          <li><a href={`/category/${toCategorySlug(c.label)}`}>{c.label}</a></li>
+          <li><a href={withBase(`/category/${toCategorySlug(c.label)}`)}>{c.label}</a></li>
         ))}
       </ul>
     </nav>
 
-    <a href="/#newsletter" class="btn btn-primary header-cta">Join the newsletter</a>
+    <a href={withBase('/#newsletter')} class="btn btn-primary header-cta">Join the newsletter</a>
   </div>
 </header>
 

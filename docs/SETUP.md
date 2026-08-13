@@ -10,6 +10,15 @@
    GitHub's DNS instructions (a `CNAME` record to
    `<your-github-username>.github.io`, or the apex `A`/`ALIAS` records
    GitHub documents). Enable "Enforce HTTPS" once the certificate issues.
+4. **Until the custom domain's DNS is live**, the site is only reachable at
+   the default project URL `https://szrick.github.io/mindtivate/`, which
+   serves from a `/mindtivate/` subpath — that's what `astro.config.mjs`
+   (`site`/`base`) and `public/robots.txt` are currently configured for.
+   Once `mindtivate.com` actually resolves to the site, cut over:
+   - `astro.config.mjs`: `site: 'https://mindtivate.com'`, `base: '/'`
+   - `public/robots.txt`: update the `Sitemap:` line to match
+   - add `public/CNAME` containing `mindtivate.com`
+   - commit, push, and confirm the deploy workflow succeeds
 
 ## 2. Pages CMS
 

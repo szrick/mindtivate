@@ -1,5 +1,6 @@
 import rss from '@astrojs/rss';
 import { getCollection } from 'astro:content';
+import { withBase } from '../lib/url';
 
 // Sender.net's RSS-to-email automation can watch this feed and send
 // subscribers a "new post" email automatically, with no manual campaign
@@ -16,7 +17,7 @@ export async function GET(context) {
       title: article.data.title,
       description: article.data.description,
       pubDate: article.data.pubDate,
-      link: `/articles/${article.slug}/`,
+      link: withBase(`/articles/${article.slug}/`),
       categories: [article.data.category, ...article.data.tags],
     })),
   });

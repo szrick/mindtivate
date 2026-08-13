@@ -4,6 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import ArticleCard from '../components/ArticleCard.astro';
 import NewsletterSignup from '../components/NewsletterSignup.astro';
 import { CATEGORIES, toCategorySlug } from '../lib/categories';
+import { withBase } from '../lib/url';
 
 const allArticles = await getCollection('articles', ({ data }) => data.status === 'published' && !data.draft);
 const articles = allArticles.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()).slice(0, 6);
@@ -23,7 +24,7 @@ const articles = allArticles.sort((a, b) => b.data.pubDate.valueOf() - a.data.pu
         no generic listicles.
       </p>
       <div class="hero-actions">
-        <a href="/articles" class="btn btn-primary">Browse articles</a>
+        <a href={withBase('/articles')} class="btn btn-primary">Browse articles</a>
         <a href="#newsletter" class="btn btn-secondary">Join the newsletter</a>
       </div>
     </div>
@@ -49,7 +50,7 @@ const articles = allArticles.sort((a, b) => b.data.pubDate.valueOf() - a.data.pu
     <h2>Find what you're working on</h2>
     <div class="category-grid">
       {CATEGORIES.map((c) => (
-        <a href={`/category/${toCategorySlug(c.label)}`} class="category-card card">
+        <a href={withBase(`/category/${toCategorySlug(c.label)}`)} class="category-card card">
           <h3>{c.label}</h3>
           <p>{c.blurb}</p>
         </a>
