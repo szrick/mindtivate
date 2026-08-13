@@ -1,47 +1,29 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ArticleCard from '../components/ArticleCard.astro';
+import HeroSlider from '../components/HeroSlider.astro';
 import NewsletterSignup from '../components/NewsletterSignup.astro';
 import { CATEGORIES, toCategorySlug } from '../lib/categories';
 import { withBase } from '../lib/url';
 
-const allArticles = await getCollection('articles', ({ data }) => data.status === 'published' && !data.draft);
-const articles = allArticles.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()).slice(0, 6);
+const allArticles = await getCollection(
+  'articles',
+  ({ data }) => data.status === 'published' && !data.draft && Boolean(data.heroImage),
+);
+const sliderArticles = allArticles
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 5);
 ---
 
 <BaseLayout
   title="Mindtivate — Fitness, Nutrition & Mental Health for Women"
   description="Evidence-checked fitness, nutrition, and mental-health guidance for women, sourced from the questions real communities are actually asking."
 >
-  <section class="hero section">
-    <div class="container hero-inner">
-      <p class="eyebrow">For women who lift, run, and everything in between</p>
-      <h1>Real questions. Researched answers.</h1>
-      <p class="hero-sub">
-        We read what women are actually asking in fitness and wellness
-        communities, then research the answer properly — no fad-chasing,
-        no generic listicles.
-      </p>
-      <div class="hero-actions">
-        <a href={withBase('/articles')} class="btn btn-primary">Browse articles</a>
-        <a href="#newsletter" class="btn btn-secondary">Join the newsletter</a>
-      </div>
-    </div>
-  </section>
-
-  <section class="section container">
-    <p class="eyebrow">Latest</p>
-    <h2>Recently published</h2>
-    {articles.length > 0 ? (
-      <div class="article-grid">
-        {articles.map((article) => <ArticleCard article={article} />)}
-      </div>
+  <section class="section container slider-section">
+    {sliderArticles.length > 0 ? (
+      <HeroSlider articles={sliderArticles} />
     ) : (
-      <p class="empty-state">
-        New articles are in research right now — check back soon, or
-        <a href="#newsletter">join the newsletter</a> to get the first one.
-      </p>
+      <p class="empty-state">New articles are in research right now — check back soon.</p>
     )}
   </section>
 
@@ -64,35 +46,12 @@ const articles = allArticles.sort((a, b) => b.data.pubDate.valueOf() - a.data.pu
 </BaseLayout>
 
 <style>
-  .hero {
-    background: linear-gradient(180deg, var(--color-cream-deep), var(--color-cream));
-  }
-
-  .hero-inner {
-    max-width: 720px;
-  }
-
-  .hero-sub {
-    font-size: 1.1rem;
-    max-width: 56ch;
-  }
-
-  .hero-actions {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-    margin-top: 1.5rem;
-  }
-
-  .article-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.75rem;
-    margin-top: 1.5rem;
+  .slider-section {
+    padding-top: clamp(1.5rem, 3vw, 3rem);
   }
 
   .empty-state {
-    margin-top: 1rem;
+    margin: 0;
     color: var(--color-plum-soft);
   }
 
