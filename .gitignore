@@ -1,0 +1,22 @@
+# build
+dist/
+.astro/
+
+# deps
+node_modules/
+
+# env
+.env
+.env.local
+*.local
+
+# pipeline working data (research pulls, drafts, logs)
+scripts/pipeline/.cache/
+scripts/pipeline/output/
+
+# editor / os
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+*.log
+npm-debug.log*

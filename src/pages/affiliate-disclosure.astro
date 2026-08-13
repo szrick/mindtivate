@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Affiliate Disclosure"
+  description="How Mindtivate uses affiliate links and how we choose what to recommend."
+>
+  <section class="section container prose-page">
+    <p class="eyebrow">Disclosure</p>
+    <h1>Affiliate disclosure</h1>
+    <p>
+      In accordance with the FTC's Guides Concerning the Use of Endorsements
+      and Testimonials, this page explains how Mindtivate uses affiliate
+      relationships.
+    </p>
+
+    <h2>What that means</h2>
+    <p>
+      Some links on Mindtivate — for example, links to products mentioned in
+      articles — are affiliate links. If you click one and make a purchase,
+      we may earn a commission. This comes at no additional cost to you; the
+      price you pay is the same either way.
+    </p>
+
+    <h2>How we choose what to recommend</h2>
+    <p>
+      We start from a problem raised in a real community discussion, then
+      research products that address it. We only apply for affiliate
+      programs for products we would already recommend, and a product is
+      not published with a live affiliate link until it has been through
+      that review and the affiliate application has been approved
+      (tracked internally as <code>affiliateStatus</code>).
+    </p>
+
+    <h2>Where you'll see a disclosure</h2>
+    <p>
+      Every article that includes an affiliate link carries an in-article
+      disclosure near the top of the page and again next to each
+      recommendation, in addition to this page.
+    </p>
+
+    <h2>Questions</h2>
+    <p>
+      If you have questions about a specific link or recommendation, <a href="/contact">contact us</a>.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .prose-page {
+    max-width: 720px;
+  }
+
+  code {
+    background: var(--color-cream-deep);
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+</style>

@@ -1,0 +1,47 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { CATEGORIES, toCategorySlug, type CategoryLabel } from '../../lib/categories';
+
+export async function getStaticPaths() {
+  return CATEGORIES.map(({ label }) => ({
+    params: { category: toCategorySlug(label) },
+    props: { category: label },
+  }));
+}
+
+interface Props {
+  category: CategoryLabel;
+}
+
+const { category } = Astro.props;
+const allArticles = await getCollection(
+  'articles',
+  ({ data }) => data.status === 'published' && !data.draft && data.category === category,
+);
+const articles = allArticles.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout title={category} description={`Mindtivate articles about ${category.toLowerCase()}.`}>
+  <section class="section container">
+    <p class="eyebrow">Category</p>
+    <h1>{category}</h1>
+    {articles.length > 0 ? (
+      <div class="article-grid">
+        {articles.map((article) => <ArticleCard article={article} />)}
+      </div>
+    ) : (
+      <p>No articles in this category yet — check back soon.</p>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .article-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.75rem;
+    margin-top: 1.5rem;
+  }
+</style>

@@ -1,0 +1,31 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+
+const allArticles = await getCollection('articles', ({ data }) => data.status === 'published' && !data.draft);
+const articles = allArticles.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout title="All Articles" description="Every Mindtivate article on fitness, nutrition, and mental health for women.">
+  <section class="section container">
+    <p class="eyebrow">All articles</p>
+    <h1>Everything we've published</h1>
+    {articles.length > 0 ? (
+      <div class="article-grid">
+        {articles.map((article) => <ArticleCard article={article} />)}
+      </div>
+    ) : (
+      <p>Nothing published yet — check back soon.</p>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .article-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.75rem;
+    margin-top: 1.5rem;
+  }
+</style>

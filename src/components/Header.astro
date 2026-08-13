@@ -1,0 +1,88 @@
+---
+import { CATEGORIES, toCategorySlug } from '../lib/categories';
+
+const navCategories = CATEGORIES.filter((c) => c.label !== 'Recovery' && c.label !== 'Motivation');
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="/" class="logo" aria-label="Mindtivate home">
+      Mindtivate<span class="logo-dot">.</span>
+    </a>
+
+    <nav class="primary-nav" aria-label="Primary">
+      <ul>
+        {navCategories.map((c) => (
+          <li><a href={`/category/${toCategorySlug(c.label)}`}>{c.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <a href="/#newsletter" class="btn btn-primary header-cta">Join the newsletter</a>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    background: var(--color-cream);
+    border-bottom: 1px solid var(--color-border);
+    position: sticky;
+    top: 0;
+    z-index: 40;
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .logo {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: var(--color-plum);
+    letter-spacing: -0.01em;
+  }
+
+  .logo:hover {
+    text-decoration: none;
+  }
+
+  .logo-dot {
+    color: var(--color-terracotta);
+  }
+
+  .primary-nav ul {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+  }
+
+  .primary-nav a {
+    color: var(--color-plum-soft);
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+
+  .primary-nav a:hover {
+    color: var(--color-terracotta-dark);
+  }
+
+  .header-cta {
+    padding: 0.6em 1.3em;
+    font-size: 0.88rem;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 860px) {
+    .primary-nav {
+      display: none;
+    }
+  }
+</style>

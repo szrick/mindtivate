@@ -1,0 +1,90 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import AffiliateDisclosure from '../components/AffiliateDisclosure.astro';
+import ProductCallout from '../components/ProductCallout.astro';
+import NewsletterSignup from '../components/NewsletterSignup.astro';
+import { getEntries, getEntry } from 'astro:content';
+import { toCategorySlug } from '../lib/categories';
+
+interface Props {
+  article: CollectionEntry<'articles'>;
+}
+
+const { article } = Astro.props;
+const { title, description, pubDate, updatedDate, category, heroImage, heroImageAlt, author, featuredProducts } =
+  article.data;
+
+const authorEntry = author ? await getEntry(author) : null;
+const products = featuredProducts?.length ? await getEntries(featuredProducts) : [];
+
+const formattedDate = pubDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+const categorySlug = toCategorySlug(category);
+---
+
+<BaseLayout title={title} description={description} image={heroImage?.src} article>
+  <article class="section container article">
+    <header class="article-header">
+      <a href={`/category/${categorySlug}`} class="tag">{category}</a>
+      <h1>{title}</h1>
+      <p class="article-meta">
+        {authorEntry && <span>By {authorEntry.data.name}</span>}
+        <time datetime={pubDate.toISOString()}>{formattedDate}</time>
+        {updatedDate && <span>(updated {updatedDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })})</span>}
+      </p>
+    </header>
+
+    {heroImage && (
+      <img src={heroImage.src} alt={heroImageAlt ?? title} class="article-hero" width="1200" height="675" />
+    )}
+
+    <AffiliateDisclosure />
+
+    <div class="prose">
+      <slot />
+    </div>
+
+    {products.length > 0 && (
+      <section class="article-products">
+        <h2>Mentioned in this article</h2>
+        {products.map((product) => <ProductCallout product={product} />)}
+      </section>
+    )}
+  </article>
+
+  <div class="section container">
+    <NewsletterSignup />
+  </div>
+</BaseLayout>
+
+<style>
+  .article {
+    max-width: 720px;
+  }
+
+  .article-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .article-meta {
+    display: flex;
+    gap: 0.9em;
+    flex-wrap: wrap;
+    font-size: 0.88rem;
+    color: var(--color-plum-soft);
+    margin-top: 0.6em;
+  }
+
+  .article-hero {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    margin: 1.5rem 0 2rem;
+  }
+
+  .article-products {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border);
+  }
+</style>

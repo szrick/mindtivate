@@ -1,0 +1,174 @@
+# Pages CMS configuration — https://pagescms.org
+# Connect this repo at app.pagescms.org (GitHub OAuth), branch: main.
+# Editors (writers, the article-generation pipeline, and reviewers) get a
+# structured UI over the markdown files in src/content/ instead of raw git.
+
+media:
+  input: public/images
+  output: /images
+
+content:
+  - name: articles
+    label: Articles
+    type: collection
+    path: src/content/articles
+    format: yaml-frontmatter
+    extension: md
+    subfolders: false
+    view:
+      fields: [title, category, status, pubDate, sourceSubreddit]
+      sort: [pubDate]
+      primary: title
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: description
+        label: SEO / preview description
+        type: text
+        required: true
+      - name: pubDate
+        label: Publish date
+        type: date
+        required: true
+      - name: updatedDate
+        label: Last updated
+        type: date
+      - name: category
+        label: Category
+        type: select
+        options:
+          values: [Weight Loss, Strength Training, Nutrition, Mental Health, Bodyweight Fitness, Recovery, Motivation]
+        required: true
+      - name: heroImage
+        label: Hero image
+        type: image
+      - name: status
+        label: Status
+        type: select
+        options:
+          values: [draft, in-review, published]
+        default: draft
+        required: true
+      - name: draft
+        label: Hide from site (draft)
+        type: boolean
+        default: true
+      - name: author
+        label: Author
+        type: reference
+        collection: authors
+      - name: sourceSubreddit
+        label: Source subreddit (research origin)
+        type: string
+        description: "e.g. r/xxfitness — the community thread that inspired this article"
+      - name: sourceThreadUrl
+        label: Source thread URL
+        type: string
+      - name: featuredProducts
+        label: Featured / affiliate products
+        type: reference
+        collection: products
+        list: true
+      - name: pinterestPinUrl
+        label: Pinterest pin URL
+        type: string
+      - name: tags
+        label: Tags
+        type: string
+        list: true
+      - name: body
+        label: Body
+        type: rich-text
+
+  - name: products
+    label: Products (affiliate)
+    type: collection
+    path: src/content/products
+    format: yaml-frontmatter
+    extension: md
+    view:
+      fields: [name, category, program, status]
+      primary: name
+    fields:
+      - name: name
+        label: Product name
+        type: string
+        required: true
+      - name: category
+        label: Category
+        type: select
+        options:
+          values: [Equipment, Apparel, Supplement, App / Program, Book, Wearable]
+        required: true
+      - name: image
+        label: Product image
+        type: image
+      - name: shortPitch
+        label: One-line pitch
+        type: string
+        required: true
+      - name: affiliateProgram
+        label: Affiliate program
+        type: string
+        description: "e.g. Amazon Associates, ShareASale, direct brand program"
+      - name: affiliateStatus
+        label: Application status
+        type: select
+        options:
+          values: [not-applied, applied, approved, rejected, active]
+        default: not-applied
+        required: true
+      - name: affiliateUrl
+        label: Affiliate link
+        type: string
+      - name: disclosureRequired
+        label: Requires FTC disclosure
+        type: boolean
+        default: true
+      - name: problemSolved
+        label: Problem this solves (from Reddit research)
+        type: text
+      - name: body
+        label: Notes / full review body
+        type: rich-text
+
+  - name: authors
+    label: Authors
+    type: collection
+    path: src/content/authors
+    format: yaml-frontmatter
+    extension: md
+    view:
+      fields: [name, role]
+      primary: name
+    fields:
+      - name: name
+        label: Name
+        type: string
+        required: true
+      - name: role
+        label: Role
+        type: string
+      - name: bio
+        label: Bio
+        type: text
+      - name: avatar
+        label: Avatar
+        type: image
+
+  - name: settings
+    label: Site settings
+    type: file
+    path: src/content/settings/site.yml
+    fields:
+      - name: newsletterHeadline
+        label: Newsletter headline
+        type: string
+      - name: newsletterSubtext
+        label: Newsletter subtext
+        type: string
+      - name: senderFormAction
+        label: Sender.net form action URL
+        type: string

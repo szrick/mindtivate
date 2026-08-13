@@ -1,0 +1,139 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <p class="logo">Mindtivate<span class="logo-dot">.</span></p>
+      <p class="tagline">
+        Evidence-checked fitness, nutrition, and mental-health guidance for
+        women — sourced from the questions real communities are actually
+        asking.
+      </p>
+      <a href="https://www.pinterest.com/mindtivate/" target="_blank" rel="noopener noreferrer" class="social-link">
+        Follow on Pinterest
+      </a>
+    </div>
+
+    <div class="footer-col">
+      <h4>Explore</h4>
+      <ul>
+        <li><a href="/articles">All articles</a></li>
+        <li><a href="/category/weight-loss">Weight Loss</a></li>
+        <li><a href="/category/strength-training">Strength Training</a></li>
+        <li><a href="/category/nutrition">Nutrition</a></li>
+        <li><a href="/category/mental-health">Mental Health</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-col">
+      <h4>About</h4>
+      <ul>
+        <li><a href="/about">Our approach</a></li>
+        <li><a href="/contact">Contact</a></li>
+        <li><a href="/affiliate-disclosure">Affiliate disclosure</a></li>
+        <li><a href="/privacy-policy">Privacy policy</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container footer-legal">
+    <p>&copy; {year} Mindtivate. All rights reserved.</p>
+    <p>
+      Content is for informational purposes only and is not medical advice.
+      Some links may be affiliate links — see our
+      <a href="/affiliate-disclosure">disclosure</a>.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--color-plum);
+    color: #cfc9d6;
+    margin-top: 4rem;
+  }
+
+  .footer-inner {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 2.5rem;
+    padding-top: 3.5rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .footer-brand .logo {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 0.8em;
+  }
+
+  .logo-dot {
+    color: var(--color-terracotta);
+  }
+
+  .tagline {
+    color: #b8b1c2;
+    max-width: 36ch;
+  }
+
+  .social-link {
+    color: #f2c9bb;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .footer-col h4 {
+    font-family: var(--font-body);
+    color: #fff;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 1em;
+  }
+
+  .footer-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7em;
+  }
+
+  .footer-col a {
+    color: #b8b1c2;
+    font-size: 0.92rem;
+  }
+
+  .footer-col a:hover {
+    color: #fff;
+  }
+
+  .footer-legal {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-size: 0.82rem;
+    color: #8a8393;
+  }
+
+  .footer-legal a {
+    color: #a89fb5;
+  }
+
+  @media (max-width: 720px) {
+    .footer-inner {
+      grid-template-columns: 1fr 1fr;
+    }
+    .footer-brand {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

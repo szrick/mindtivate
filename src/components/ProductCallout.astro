@@ -1,0 +1,83 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  product: CollectionEntry<'products'>;
+}
+
+const { product } = Astro.props;
+const { name, shortPitch, image, affiliateStatus, affiliateUrl, disclosureRequired } = product.data;
+
+const isLive = ['approved', 'active'].includes(affiliateStatus) && Boolean(affiliateUrl);
+---
+
+<aside class="product-callout card" aria-label={`Recommended product: ${name}`}>
+  {image && <img src={image.src} alt={name} width="160" height="160" loading="lazy" />}
+  <div class="product-callout-body">
+    <p class="eyebrow">We recommend</p>
+    <h4>{name}</h4>
+    <p class="pitch">{shortPitch}</p>
+    {isLive ? (
+      <a
+        href={affiliateUrl}
+        class="btn btn-primary"
+        rel="sponsored noopener noreferrer"
+        target="_blank"
+      >
+        Check current price
+      </a>
+    ) : (
+      <p class="pending">Affiliate link pending review — not yet published.</p>
+    )}
+    {disclosureRequired && isLive && (
+      <p class="disclosure-note">
+        This is an affiliate link — we may earn a commission at no extra cost
+        to you. See our <a href="/affiliate-disclosure">disclosure</a>.
+      </p>
+    )}
+  </div>
+</aside>
+
+<style>
+  .product-callout {
+    display: flex;
+    gap: 1.2rem;
+    align-items: flex-start;
+    padding: 1.4rem;
+    margin: 2rem 0;
+    background: var(--color-cream-deep);
+    border: 1px solid var(--color-border);
+  }
+
+  .product-callout img {
+    width: 96px;
+    height: 96px;
+    object-fit: contain;
+    border-radius: var(--radius-sm);
+    background: #fff;
+    flex-shrink: 0;
+  }
+
+  .product-callout-body h4 {
+    margin: 0.1em 0 0.3em;
+    font-size: 1.1rem;
+  }
+
+  .pitch {
+    font-size: 0.95rem;
+    margin-bottom: 0.9em;
+  }
+
+  .pending {
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--color-plum-soft);
+    margin: 0;
+  }
+
+  .disclosure-note {
+    font-size: 0.78rem;
+    color: var(--color-plum-soft);
+    margin: 0.8em 0 0;
+  }
+</style>
