@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://szrick.github.io/mindtivate/sitemap-index.xml
+Sitemap: https://mindtivate.com/sitemap-index.xml

@@ -10,15 +10,19 @@
    GitHub's DNS instructions (a `CNAME` record to
    `<your-github-username>.github.io`, or the apex `A`/`ALIAS` records
    GitHub documents). Enable "Enforce HTTPS" once the certificate issues.
-4. **Until the custom domain's DNS is live**, the site is only reachable at
-   the default project URL `https://szrick.github.io/mindtivate/`, which
-   serves from a `/mindtivate/` subpath — that's what `astro.config.mjs`
-   (`site`/`base`) and `public/robots.txt` are currently configured for.
-   Once `mindtivate.com` actually resolves to the site, cut over:
-   - `astro.config.mjs`: `site: 'https://mindtivate.com'`, `base: '/'`
-   - `public/robots.txt`: update the `Sitemap:` line to match
-   - add `public/CNAME` containing `mindtivate.com`
-   - commit, push, and confirm the deploy workflow succeeds
+4. The site is configured for the `mindtivate.com` custom domain root
+   (`astro.config.mjs`: `site: 'https://mindtivate.com'`, `base: '/'`;
+   `public/CNAME` contains `mindtivate.com`). If DNS hasn't propagated yet
+   after adding the custom domain, GitHub Pages will show a "domain does
+   not resolve" notice in **Settings → Pages** and the TLS certificate can
+   take anywhere from a few minutes to ~24 hours to issue — that's normal,
+   not a bug. Once GitHub shows the domain as verified with HTTPS enforced,
+   the site should load fully styled.
+   - If the custom domain is ever removed and the site reverts to the
+     default project URL (`https://szrick.github.io/mindtivate/`), you'd
+     need to reverse this: `site: 'https://szrick.github.io'`,
+     `base: '/mindtivate/'`, update `public/robots.txt`'s `Sitemap:` line,
+     and remove `public/CNAME`.
 
 ## 2. Pages CMS
 
