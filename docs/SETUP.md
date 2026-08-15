@@ -45,10 +45,30 @@
 
 ## 4. Reddit — research (+ optional comment posting)
 
-1. Log in to the Reddit account you'll use, go to
-   [reddit.com/prefs/apps](https://www.reddit.com/prefs/apps), and create
-   an app of type **script**.
-2. Note the client ID (under the app name) and client secret.
+**Since late 2025, creating the app is no longer the whole story.** Log in
+to the Reddit account you'll use, go to
+[reddit.com/prefs/apps](https://www.reddit.com/prefs/apps), and create an
+app of type **script** as before — that still works instantly and gives
+you a client ID/secret. But actually pulling an OAuth token with those
+credentials now requires separate **manual approval** under Reddit's
+Responsible Builder Policy (linked on the app-creation page). Registering
+the app and being allowed to use it are two different gates now; the
+second one is the one that can take time and isn't guaranteed.
+
+1. Create the script app as usual; note the client ID and client secret.
+2. Complete Reddit's approval form for API access. Approvals reportedly
+   favor **established, clearly-scoped, non-hobby-looking** use cases.
+   To maximize the odds:
+   - Describe the use case specifically and factually — e.g. "Automated
+     research tool for mindtivate.com: reads posts from a small, fixed
+     list of public health/fitness subreddits to identify recurring
+     reader questions for article research. Read-only; no posting."
+     Avoid vague descriptions like "post message."
+   - Link a real, live privacy policy — this site already has one at
+     `https://mindtivate.com/privacy-policy`, use that.
+   - Use a real project identity rather than something that reads as a
+     personal/throwaway account.
+   - Note: new accounts are limited to one registered app.
 3. Add to `.env`: `REDDIT_CLIENT_ID`, `REDDIT_CLIENT_SECRET`,
    `REDDIT_USERNAME`, `REDDIT_PASSWORD`, and a descriptive
    `REDDIT_USER_AGENT` (Reddit rate-limits generic user agents harder).
@@ -56,6 +76,16 @@
    the Action never posts).
 5. Read [COMPLIANCE.md](COMPLIANCE.md) before using `--post` on the
    engagement-draft script.
+
+**If approval is slow, denied, or you'd rather not wait on it:**
+[Arctic Shift](https://arctic-shift.photon-reddit.com/) is a free,
+actively maintained Pushshift-style archive with a much higher rate limit
+(~120,000 req/hour) than similar free services, and needs no Reddit app
+or OAuth at all — a reasonable fallback for `1-reddit-research.mjs` if the
+official API path stalls. It wasn't wired into the pipeline scripts by
+default since it's a third-party community service with its own
+reliability tradeoffs, not Reddit's own infrastructure — swap it in if
+needed.
 
 ## 5. Affiliate programs
 
