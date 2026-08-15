@@ -109,7 +109,7 @@ const BARE_IMAGE_URL_RE = /(https?:\/\/\S+\.(?:png|jpe?g|webp))/i;
  */
 export async function generatePoeImage({ prompt, model }) {
   const apiKey = requireApiKey();
-  const imageModel = model || process.env.POE_IMAGE_MODEL || 'FLUX-pro-1.1';
+  const imageModel = model || process.env.POE_IMAGE_MODEL || 'GPT-Image-1';
 
   const res = await fetch(API_URL, {
     method: 'POST',

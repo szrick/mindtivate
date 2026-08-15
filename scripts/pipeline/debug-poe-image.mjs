@@ -5,8 +5,8 @@
 // running the full pipeline (and its other Poe calls) each time.
 //
 // Usage:
-//   node scripts/pipeline/debug-poe-image.mjs "FLUX-pro-1.1"
-//   node scripts/pipeline/debug-poe-image.mjs "GPT-Image-1" "a red circle on a white background"
+//   node scripts/pipeline/debug-poe-image.mjs "GPT-Image-1"
+//   node scripts/pipeline/debug-poe-image.mjs "FLUX-pro-1.1" "a red circle on a white background"
 
 import { loadEnv } from '../lib/env.mjs';
 
