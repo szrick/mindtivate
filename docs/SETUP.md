@@ -43,7 +43,25 @@
    Actions**, add repo secret `ANTHROPIC_API_KEY`. Optionally add a repo
    **variable** `ANTHROPIC_MODEL` if you want to pin a specific model.
 
-## 4. Reddit — research (+ optional comment posting)
+## 4. Reddit research and (optional) comment posting
+
+These are two separate concerns with two separate setups now.
+
+### Research (stage 1) — nothing to set up
+
+`1-reddit-research.mjs` reads [Arctic Shift](https://arctic-shift.photon-reddit.com/)
+(`scripts/lib/arcticshift.mjs`), a free, community-run Pushshift-style
+Reddit archive. **No Reddit account, app, or credentials needed** — this
+is the default and requires zero setup. Trade-offs worth knowing: it's
+third-party community infrastructure (no uptime guarantee) and data can
+lag up to ~36 hours behind live Reddit, and it has no "hot" ranking, only
+chronological — none of which matters much for a weekly research scan.
+
+### Comment posting (stage 6, optional) — requires a real Reddit app
+
+This part is unavoidable: actually posting a comment as a Reddit account
+requires a real, authenticated Reddit session. If you want the `--post`
+capability on `6-reddit-engagement-draft.mjs`:
 
 **Since late 2025, creating the app is no longer the whole story.** Log in
 to the Reddit account you'll use, go to
@@ -59,11 +77,13 @@ second one is the one that can take time and isn't guaranteed.
 2. Complete Reddit's approval form for API access. Approvals reportedly
    favor **established, clearly-scoped, non-hobby-looking** use cases.
    To maximize the odds:
-   - Describe the use case specifically and factually — e.g. "Automated
-     research tool for mindtivate.com: reads posts from a small, fixed
-     list of public health/fitness subreddits to identify recurring
-     reader questions for article research. Read-only; no posting."
-     Avoid vague descriptions like "post message."
+   - Describe the use case specifically and factually — e.g. "Posts a
+     single, human-reviewed comment on mindtivate.com's behalf, linking
+     to a researched article, only on threads the article was originally
+     sourced from. Every comment is manually approved before posting —
+     see mindtivate.com/affiliate-disclosure and
+     mindtivate.com/privacy-policy." Avoid vague descriptions like "post
+     message."
    - Link a real, live privacy policy — this site already has one at
      `https://mindtivate.com/privacy-policy`, use that.
    - Use a real project identity rather than something that reads as a
@@ -72,20 +92,14 @@ second one is the one that can take time and isn't guaranteed.
 3. Add to `.env`: `REDDIT_CLIENT_ID`, `REDDIT_CLIENT_SECRET`,
    `REDDIT_USERNAME`, `REDDIT_PASSWORD`, and a descriptive
    `REDDIT_USER_AGENT` (Reddit rate-limits generic user agents harder).
-4. For the scheduled Action, add the same as repo secrets (research only —
-   the Action never posts).
-5. Read [COMPLIANCE.md](COMPLIANCE.md) before using `--post` on the
-   engagement-draft script.
+   These are **not** needed by the scheduled Action, which only runs
+   stages 1–3 (research/match/draft) — never stage 6.
+4. Read [COMPLIANCE.md](COMPLIANCE.md) before using `--post`.
 
-**If approval is slow, denied, or you'd rather not wait on it:**
-[Arctic Shift](https://arctic-shift.photon-reddit.com/) is a free,
-actively maintained Pushshift-style archive with a much higher rate limit
-(~120,000 req/hour) than similar free services, and needs no Reddit app
-or OAuth at all — a reasonable fallback for `1-reddit-research.mjs` if the
-official API path stalls. It wasn't wired into the pipeline scripts by
-default since it's a third-party community service with its own
-reliability tradeoffs, not Reddit's own infrastructure — swap it in if
-needed.
+If approval is slow or denied, the research pipeline keeps working fine
+without it — you'd just draft the Reddit comment (`6-reddit-engagement-draft.mjs`
+without `--post`) and post it manually through the Reddit website/app
+yourself instead of through the script.
 
 ## 5. Affiliate programs
 

@@ -1,9 +1,18 @@
 // Minimal Reddit API client (no dependencies). Uses a "script" app OAuth
-// grant, which is the correct app type for a single account acting on its
-// own behalf (research + optional manual comment posting).
+// grant. This is ONLY needed for the optional stage 6 comment-posting
+// capability (scripts/pipeline/6-reddit-engagement-draft.mjs) — actually
+// posting as a Reddit account inherently requires a real, authenticated
+// Reddit session, there's no way around that.
 //
-// Create a script app at https://www.reddit.com/prefs/apps and set
-// REDDIT_CLIENT_ID / REDDIT_CLIENT_SECRET / REDDIT_USERNAME /
+// Research (stage 1) no longer uses this file — it reads from Arctic
+// Shift instead (see scripts/lib/arcticshift.mjs), because Reddit's own
+// API now gates new OAuth tokens behind manual approval under their
+// Responsible Builder Policy (see docs/SETUP.md), while Arctic Shift
+// needs no approval and no Reddit account at all.
+//
+// If you do want stage 6's posting capability, create a script app at
+// https://www.reddit.com/prefs/apps, get it approved per docs/SETUP.md,
+// and set REDDIT_CLIENT_ID / REDDIT_CLIENT_SECRET / REDDIT_USERNAME /
 // REDDIT_PASSWORD / REDDIT_USER_AGENT in .env.
 
 const TOKEN_URL = 'https://www.reddit.com/api/v1/access_token';
@@ -55,33 +64,6 @@ async function redditGet(token, path) {
     throw new Error(`Reddit GET ${path} failed: ${res.status} ${await res.text()}`);
   }
   return res.json();
-}
-
-/**
- * Fetch recent posts from a subreddit listing (hot or top) for scanning.
- */
-export async function fetchSubredditPosts(token, subreddit, { sort = 'hot', t = 'week', limit = 50 } = {}) {
-  const query = new URLSearchParams({ limit: String(limit) });
-  if (sort === 'top') query.set('t', t);
-  const path = `/r/${subreddit}/${sort}.json?${query.toString()}`;
-  const json = await redditGet(token, path);
-  return (json.data?.children ?? []).map((child) => child.data);
-}
-
-/**
- * Full-text search within a subreddit.
- */
-export async function searchSubreddit(token, subreddit, query, { sort = 'relevance', t = 'month', limit = 25 } = {}) {
-  const params = new URLSearchParams({
-    q: query,
-    restrict_sr: '1',
-    sort,
-    t,
-    limit: String(limit),
-  });
-  const path = `/r/${subreddit}/search.json?${params.toString()}`;
-  const json = await redditGet(token, path);
-  return (json.data?.children ?? []).map((child) => child.data);
 }
 
 /**
