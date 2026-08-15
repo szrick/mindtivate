@@ -40,12 +40,16 @@ export function writeMarkdownFile({ frontmatter, body }) {
 // fields back out of files this same module wrote. Not a general YAML
 // parser; nested structures (lists, references) are intentionally left as
 // raw strings for the caller to handle.
+//
+// \r?\n throughout this file: git on Windows checks files out with CRLF
+// by default (no .gitattributes forcing LF here), so a plain \n match
+// silently fails on every field read on a Windows checkout.
 export function readFrontmatter(fileContents) {
-  const match = fileContents.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+  const match = fileContents.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
   if (!match) return { data: {}, body: fileContents };
   const [, rawFrontmatter, body] = match;
   const data = {};
-  for (const line of rawFrontmatter.split('\n')) {
+  for (const line of rawFrontmatter.split(/\r?\n/)) {
     const idx = line.indexOf(':');
     if (idx === -1) continue;
     const key = line.slice(0, idx).trim();
@@ -66,14 +70,15 @@ export function readFrontmatter(fileContents) {
 // ">" block scalars (e.g. problemSolved) that already exist in hand-edited
 // content files. No-ops if the key is already present.
 export function insertFrontmatterField(fileContents, key, value, { comment } = {}) {
-  const match = fileContents.match(/^---\n([\s\S]*?)\n---\n?/);
+  const match = fileContents.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
   if (!match) throw new Error('File has no frontmatter block to insert into');
+  const nl = match[0].includes('\r\n') ? '\r\n' : '\n';
   const rawFrontmatter = match[1];
-  const alreadySet = rawFrontmatter.split('\n').some((line) => line.trim().startsWith(`${key}:`));
+  const alreadySet = rawFrontmatter.split(/\r?\n/).some((line) => line.trim().startsWith(`${key}:`));
   if (alreadySet) return fileContents;
 
-  const insertion = `${comment ? `# ${comment}\n` : ''}${key}: ${yamlScalar(value)}`;
-  const newFrontmatterBlock = `---\n${rawFrontmatter}\n${insertion}\n---\n`;
+  const insertion = `${comment ? `# ${comment}${nl}` : ''}${key}: ${yamlScalar(value)}`;
+  const newFrontmatterBlock = `---${nl}${rawFrontmatter}${nl}${insertion}${nl}---${nl}`;
   return fileContents.slice(0, match.index) + newFrontmatterBlock + fileContents.slice(match.index + match[0].length);
 }
 

@@ -111,7 +111,12 @@ export async function generatePoeImage({ prompt, model }) {
   });
 
   if (!res.ok) {
-    throw new Error(`Poe image API error: ${res.status} ${await res.text()}`);
+    const body = await res.text();
+    const hint =
+      res.status >= 500
+        ? ` (a 5xx here usually means POE_IMAGE_MODEL="${imageModel}" isn't a bot handle your Poe account can actually reach via the chat-completions API — check the exact handle at https://poe.com and via /explore, not a bug in the request itself)`
+        : '';
+    throw new Error(`Poe image API error: ${res.status} ${body}${hint}`);
   }
 
   const data = await res.json();
