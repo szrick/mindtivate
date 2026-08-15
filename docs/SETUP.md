@@ -52,7 +52,7 @@ Only needed if you use `6-reddit-engagement-draft.mjs`. Stages 2 and 3
    - `POE_MODEL` — the bot used to write briefs and article text. Defaults
      to `Claude-Sonnet-4.5`.
    - `POE_IMAGE_MODEL` — the image-gen bot used for stage 3's hero
-     illustration. Defaults to `FLUX-pro-1.1`.
+     illustration. Defaults to `GPT-Image-1`.
    - `POE_SEARCH_MODEL` — the web-search-capable bot used for stage 3's
      authority-source lookup and its amazon.com product-image search
      (see COMPLIANCE.md — every match is unverified until a human
