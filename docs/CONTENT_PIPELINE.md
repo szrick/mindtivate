@@ -24,7 +24,9 @@ authenticated Reddit session — see that section below.
 
 ## 2. Product match (`scripts/pipeline/2-product-match.mjs`)
 
-For each pain point, asks Claude to produce a **research brief** — a
+For each pain point, asks a model (via the [Poe API](https://poe.com/api_key),
+`scripts/lib/poe.mjs` — set `POE_API_KEY` and optionally `POE_MODEL`) to
+produce a **research brief** — a
 product category and a search query — not a specific product or link.
 Finding a real product and getting into its affiliate program is
 inherently a human step (browsing, comparing, applying, waiting for
@@ -110,6 +112,6 @@ step.
 ## Scheduled automation
 
 `.github/workflows/content-pipeline.yml` runs stages 1–3 every Monday and
-opens a PR with any new drafts. It requires `ANTHROPIC_API_KEY` and the
-`REDDIT_*` secrets to be set as repository secrets. It never touches
-stages 5 or 6 and never merges its own PR.
+opens a PR with any new drafts. It requires `ANTHROPIC_API_KEY`,
+`POE_API_KEY`, and the `REDDIT_*` secrets to be set as repository secrets.
+It never touches stages 5 or 6 and never merges its own PR.

@@ -10,7 +10,7 @@
 
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { loadEnv } from '../lib/env.mjs';
-import { askClaudeForJson } from '../lib/claude.mjs';
+import { askPoeForJson } from '../lib/poe.mjs';
 
 loadEnv();
 
@@ -35,7 +35,7 @@ Respond with strict JSON only, no prose, matching this shape:
 
 async function briefFor(painPoint) {
   const prompt = `Reddit pain point from r/${painPoint.subreddit}:\nTitle: ${painPoint.title}\nDetail: ${painPoint.selftextExcerpt}\n\nProduce the JSON brief.`;
-  return askClaudeForJson({ system: SYSTEM_PROMPT, prompt, maxTokens: 400 });
+  return askPoeForJson({ system: SYSTEM_PROMPT, prompt, maxTokens: 400 });
 }
 
 async function run() {
@@ -56,7 +56,7 @@ async function run() {
       briefs.push({ painPoint, brief });
       console.log(`  [${painPoint.subreddit}] "${painPoint.title.slice(0, 60)}..." -> ${brief.category}: ${brief.searchQuery}`);
     } catch (err) {
-      console.warn(`  skipped (Claude error): ${painPoint.title.slice(0, 60)}... — ${err.message}`);
+      console.warn(`  skipped (Poe error): ${painPoint.title.slice(0, 60)}... — ${err.message}`);
     }
   }
 

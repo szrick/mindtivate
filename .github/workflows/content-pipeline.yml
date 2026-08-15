@@ -34,6 +34,9 @@ jobs:
 
       - name: Match candidate products
         run: npm run pipeline:match
+        env:
+          POE_API_KEY: ${{ secrets.POE_API_KEY }}
+          POE_MODEL: ${{ vars.POE_MODEL }}
 
       - name: Draft article with Claude
         run: npm run pipeline:draft

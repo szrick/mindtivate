@@ -43,6 +43,15 @@
    Actions**, add repo secret `ANTHROPIC_API_KEY`. Optionally add a repo
    **variable** `ANTHROPIC_MODEL` if you want to pin a specific model.
 
+## 3b. Poe — product research briefs (stage 2)
+
+1. Create an API key at [poe.com/api_key](https://poe.com/api_key).
+2. Locally: add it to `.env` as `POE_API_KEY`. Optionally set `POE_MODEL`
+   to a specific Poe bot handle available on your account (defaults to
+   `Claude-Sonnet-4.5`).
+3. For the scheduled GitHub Action: add repo secret `POE_API_KEY` and,
+   optionally, repo variable `POE_MODEL`.
+
 ## 4. Reddit research and (optional) comment posting
 
 These are two separate concerns with two separate setups now.
