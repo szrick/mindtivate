@@ -10,7 +10,7 @@
 
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { loadEnv } from '../lib/env.mjs';
-import { fetchSubredditPosts } from '../lib/arcticshift.mjs';
+import { fetchSubredditPosts, permalinkFor } from '../lib/arcticshift.mjs';
 
 loadEnv();
 
@@ -56,7 +56,7 @@ async function run() {
       .map((post) => ({
         subreddit,
         title: post.title,
-        url: `https://www.reddit.com${post.permalink}`,
+        url: `https://www.reddit.com${permalinkFor(post)}`,
         selftextExcerpt: (post.selftext ?? '').slice(0, 500),
         score: post.score,
         numComments: post.num_comments,
