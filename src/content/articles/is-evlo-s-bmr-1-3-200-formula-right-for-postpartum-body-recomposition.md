@@ -3,8 +3,8 @@ title: "Is EVLO's BMR × 1.3 − 200 Formula Right for Postpartum Body Recomposi
 description: "Breaking down EVLO Fitness's calorie formula for body recomposition—what the math means, why it works for some, and what to watch for postpartum."
 pubDate: 2026-08-15
 category: Nutrition
-status: draft
-draft: true
+status: published
+draft: false
 author: "mindtivate-team"
 sourceSubreddit: r/xxfitness
 sourceThreadUrl: "https://www.reddit.com/r/xxfitness/comments/1vlw6wi/"
