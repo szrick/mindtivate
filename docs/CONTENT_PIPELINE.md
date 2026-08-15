@@ -44,11 +44,30 @@ link for anything less than `approved`/`active`.
 ## 3. Draft (`scripts/pipeline/3-generate-article.mjs`)
 
 Takes one pain point + brief (and, if you pass `--product <slug>`, a real
-product record) and asks Claude to write the article in Mindtivate's
-editorial voice (see the system prompt in the script). Always writes with
-`status: draft` and `draft: true` — the schema in `src/content/config.ts`
-defaults to draft too, so a script that forgot to set it would still not
-publish.
+product record) and, via the [Poe API](https://poe.com/api_key)
+(`scripts/lib/poe.mjs`), does three things:
+
+1. **Searches for authority sources** (`POE_SEARCH_MODEL`, a web-search-
+   capable Poe bot) — a best-effort lookup for real, currently-reachable
+   .gov/.edu/major-health-org URLs relevant to the topic. If this fails or
+   returns nothing, drafting continues without citations rather than
+   blocking. When sources are found, the article prompt requires the model
+   to cite at least one as an inline markdown link, using only the exact
+   URLs returned — it's instructed never to invent a URL of its own.
+2. **Drafts the article** (`POE_MODEL`) in Mindtivate's editorial voice
+   (see the system prompt in the script). Always writes with `status:
+   draft` and `draft: true` — the schema in `src/content/config.ts`
+   defaults to draft too, so a script that forgot to set it would still
+   not publish.
+3. **Generates images** (`POE_IMAGE_MODEL`): a hero illustration for the
+   article (`src/content/articles/_images/<slug>-hero.<ext>`), and — if
+   `--product` is passed and that product record doesn't already have an
+   `image` field — a product image, saved under
+   `src/content/products/_images/` and linked into the product's
+   frontmatter automatically, with a comment flagging it as an
+   **AI-generated placeholder** to swap for a real product photo before
+   `affiliateStatus` goes live. Image generation is also non-fatal — a
+   failure just means no image, same as before this existed.
 
 ## Review
 
@@ -58,6 +77,13 @@ generated it) and check:
 - Does it actually answer the researched question?
 - Is any product mention accurate, and does the linked product record have
   an approved, correct affiliate URL?
+- **If a product image was AI-generated**, replace it with a real photo of
+  the actual product before the affiliate link goes live — an AI
+  illustration must never stand in for what the reader will actually
+  receive.
+- Do any cited sources actually say what the article claims? The search
+  step finds real URLs, but doesn't verify the article represents them
+  accurately — that's still a human check.
 - Does the tone match — no diet-culture language, no medical claims?
 
 Set `status: published` (and `draft: false`) and merge/save.
@@ -112,6 +138,9 @@ step.
 ## Scheduled automation
 
 `.github/workflows/content-pipeline.yml` runs stages 1–3 every Monday and
-opens a PR with any new drafts. It requires `ANTHROPIC_API_KEY`,
-`POE_API_KEY`, and the `REDDIT_*` secrets to be set as repository secrets.
-It never touches stages 5 or 6 and never merges its own PR.
+opens a PR with any new drafts. It requires `POE_API_KEY` (stages 2 and 3
+both run on Poe now) and the `REDDIT_*` secrets to be set as repository
+secrets. `ANTHROPIC_API_KEY` is no longer needed by this workflow — stage 6
+(Reddit engagement drafts) is the only remaining Anthropic caller, and that
+stage is never run by this scheduled workflow. It never touches stages 5
+or 6 and never merges its own PR.

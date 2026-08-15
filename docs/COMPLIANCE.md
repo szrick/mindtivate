@@ -93,7 +93,15 @@ designed around.
   anecdote from a named individual who didn't write it. Bylines use the
   `mindtivate-team` author record for exactly this reason — see
   `src/content/authors/mindtivate-team.md`.
-- Claude-drafted articles go through a human review step before
+- AI-drafted articles go through a human review step before
   `status: published` (see CONTENT_PIPELINE.md) specifically to catch
   factual errors, overclaiming, or a product mention that doesn't actually
   fit — automation drafts, a human is accountable for what ships.
+- **AI-generated product images are placeholders, never a substitute for a
+  real product photo.** `3-generate-article.mjs` may generate a product
+  image via Poe when a product record has none, and marks it in the
+  file's frontmatter as an AI-generated placeholder for exactly this
+  reason. Showing readers a fabricated image next to a real affiliate
+  link misrepresents what they'd actually receive — treat a flagged
+  placeholder as a blocker on `affiliateStatus` reaching `approved`/
+  `active` until it's replaced with a genuine photo of the product.

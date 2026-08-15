@@ -2,7 +2,7 @@
 // the value shapes our own content schemas use (strings, booleans, dates,
 // flat arrays of strings) — it is not a general YAML serializer.
 
-function yamlScalar(value) {
+export function yamlScalar(value) {
   if (value instanceof Date) {
     return value.toISOString().slice(0, 10);
   }
@@ -58,6 +58,23 @@ export function readFrontmatter(fileContents) {
     else data[key] = value;
   }
   return { data, body: body.trim() };
+}
+
+// Inserts a single flat field into an existing file's frontmatter block
+// without touching anything else — deliberately not a parse+rewrite
+// round-trip, since readFrontmatter/toFrontmatter would flatten multi-line
+// ">" block scalars (e.g. problemSolved) that already exist in hand-edited
+// content files. No-ops if the key is already present.
+export function insertFrontmatterField(fileContents, key, value, { comment } = {}) {
+  const match = fileContents.match(/^---\n([\s\S]*?)\n---\n?/);
+  if (!match) throw new Error('File has no frontmatter block to insert into');
+  const rawFrontmatter = match[1];
+  const alreadySet = rawFrontmatter.split('\n').some((line) => line.trim().startsWith(`${key}:`));
+  if (alreadySet) return fileContents;
+
+  const insertion = `${comment ? `# ${comment}\n` : ''}${key}: ${yamlScalar(value)}`;
+  const newFrontmatterBlock = `---\n${rawFrontmatter}\n${insertion}\n---\n`;
+  return fileContents.slice(0, match.index) + newFrontmatterBlock + fileContents.slice(match.index + match[0].length);
 }
 
 export function slugify(title) {

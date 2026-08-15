@@ -35,22 +35,32 @@
    settings collections.
 4. Invite editors — they'll get the form UI, no git knowledge required.
 
-## 3. Anthropic (Claude) — article drafting
+## 3. Anthropic (Claude) — Reddit engagement drafts (stage 6, optional)
+
+Only needed if you use `6-reddit-engagement-draft.mjs`. Stages 2 and 3
+(product matching and article drafting) run on Poe instead — see below.
 
 1. Create an API key at [console.anthropic.com](https://console.anthropic.com).
 2. Locally: add it to `.env` as `ANTHROPIC_API_KEY`.
-3. For the scheduled GitHub Action: **Settings → Secrets and variables →
-   Actions**, add repo secret `ANTHROPIC_API_KEY`. Optionally add a repo
-   **variable** `ANTHROPIC_MODEL` if you want to pin a specific model.
+3. For the scheduled GitHub Action: not needed — `content-pipeline.yml`
+   never runs stage 6.
 
-## 3b. Poe — product research briefs (stage 2)
+## 3b. Poe — product research briefs & article drafting (stages 2 & 3)
 
 1. Create an API key at [poe.com/api_key](https://poe.com/api_key).
-2. Locally: add it to `.env` as `POE_API_KEY`. Optionally set `POE_MODEL`
-   to a specific Poe bot handle available on your account (defaults to
-   `Claude-Sonnet-4.5`).
+2. Locally: add it to `.env` as `POE_API_KEY`, plus:
+   - `POE_MODEL` — the bot used to write briefs and article text. Defaults
+     to `Claude-Sonnet-4.5`.
+   - `POE_IMAGE_MODEL` — the image-gen bot used for stage 3's hero
+     illustration and product images. Defaults to `FLUX-pro-1.1`.
+   - `POE_SEARCH_MODEL` — the web-search-capable bot used for stage 3's
+     authority-source lookup. Defaults to `Web-Search`.
+   All three are bot **handles**, not fixed identifiers — check
+   [poe.com](https://poe.com) for what's actually available on your
+   account/plan and adjust if a default doesn't resolve.
 3. For the scheduled GitHub Action: add repo secret `POE_API_KEY` and,
-   optionally, repo variable `POE_MODEL`.
+   optionally, repo variables `POE_MODEL` / `POE_IMAGE_MODEL` /
+   `POE_SEARCH_MODEL`.
 
 ## 4. Reddit research and (optional) comment posting
 
