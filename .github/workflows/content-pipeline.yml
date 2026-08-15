@@ -57,10 +57,10 @@ jobs:
             **Nothing here is published.** Every new file under
             `src/content/articles/` has `status: draft` and `draft: true`.
             Review in Pages CMS: verify affiliate links/status on any
-            referenced product, replace any AI-generated product image
-            (flagged with a comment in the product's frontmatter) with a
-            real photo before it goes live, and spot-check any cited
-            source links, then flip status to `published` and merge.
+            referenced product, confirm any amazon.com-sourced product
+            image (flagged with a comment in the product's frontmatter)
+            actually matches before it goes live, and spot-check any
+            cited source links, then flip status to `published` and merge.
           branch: content/pipeline-draft-${{ github.run_number }}
           add-paths: |
             src/content/articles/**

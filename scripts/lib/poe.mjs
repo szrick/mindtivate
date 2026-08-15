@@ -82,6 +82,15 @@ export async function searchAuthoritySources({ topic, count = 4 }) {
   }
 }
 
+async function downloadImage(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Failed to download image from ${url}: ${res.status}`);
+  const contentType = res.headers.get('content-type') || 'image/jpeg';
+  const buffer = Buffer.from(await res.arrayBuffer());
+  const ext = contentType.includes('webp') ? 'webp' : contentType.includes('png') ? 'png' : 'jpg';
+  return { buffer, ext };
+}
+
 const IMAGE_MARKDOWN_RE = /!\[[^\]]*\]\((https?:\/\/[^\s)]+)\)/;
 const BARE_IMAGE_URL_RE = /(https?:\/\/\S+\.(?:png|jpe?g|webp))/i;
 
@@ -93,6 +102,10 @@ const BARE_IMAGE_URL_RE = /(https?:\/\/\S+\.(?:png|jpe?g|webp))/i;
  * shapes defensively and throws a descriptive error (including a slice of
  * the raw response) if neither is found — that's usually a sign
  * POE_IMAGE_MODEL doesn't match a bot available on your account.
+ *
+ * Used for article hero illustrations only — see findAmazonProductImage
+ * below for product images, which are sourced from real listings instead
+ * of generated.
  */
 export async function generatePoeImage({ prompt, model }) {
   const apiKey = requireApiKey();
@@ -132,10 +145,51 @@ export async function generatePoeImage({ prompt, model }) {
     );
   }
 
-  const imgRes = await fetch(imageUrl);
-  if (!imgRes.ok) throw new Error(`Failed to download generated image from ${imageUrl}: ${imgRes.status}`);
-  const contentType = imgRes.headers.get('content-type') || 'image/png';
-  const buffer = Buffer.from(await imgRes.arrayBuffer());
-  const ext = contentType.includes('webp') ? 'webp' : contentType.includes('jpeg') ? 'jpg' : 'png';
-  return { buffer, ext };
+  return downloadImage(imageUrl);
+}
+
+const AMAZON_SEARCH_SYSTEM_PROMPT = `You have live web search access. Search amazon.com ONLY (no other retailer)
+for a real, currently listed product matching the description given. This
+is for a human editor to manually review before ever applying to Amazon's
+affiliate program — accuracy matters more than finding *something*. Only
+report a product you actually found in amazon.com search results; never
+fabricate or guess a listing, image URL, or product page URL.
+
+Respond with strict JSON only, no prose outside the JSON:
+{"found": boolean, "matchedTitle": string | null, "productImageUrl": string | null, "productPageUrl": string | null}
+Set found to false and the other fields to null if you cannot confirm a
+genuine, specific match.`;
+
+/**
+ * Searches amazon.com (via POE_SEARCH_MODEL) for a real product matching
+ * `query` and downloads its listing image. Returns { found: false } if no
+ * confident match was found, or { found: false, error } if the search
+ * itself failed — both non-fatal for the caller. The image this returns
+ * is a real Amazon listing photo, not AI-generated, but it's still
+ * unverified: the caller is responsible for flagging it for human review
+ * before publishing (see COMPLIANCE.md on rehosting marketplace images).
+ */
+export async function findAmazonProductImage({ query }) {
+  const model = process.env.POE_SEARCH_MODEL || 'Web-Search';
+  const prompt = `Product to find on amazon.com: ${query}`;
+  let result;
+  try {
+    result = await askPoeForJson({ system: AMAZON_SEARCH_SYSTEM_PROMPT, prompt, maxTokens: 500, model });
+  } catch (err) {
+    return { found: false, error: err.message };
+  }
+  if (!result?.found || !result.productImageUrl) return { found: false };
+
+  try {
+    const { buffer, ext } = await downloadImage(result.productImageUrl);
+    return {
+      found: true,
+      buffer,
+      ext,
+      matchedTitle: result.matchedTitle ?? null,
+      productPageUrl: result.productPageUrl ?? null,
+    };
+  } catch (err) {
+    return { found: false, error: err.message };
+  }
 }

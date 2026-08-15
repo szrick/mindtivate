@@ -59,15 +59,19 @@ product record) and, via the [Poe API](https://poe.com/api_key)
    draft` and `draft: true` — the schema in `src/content/config.ts`
    defaults to draft too, so a script that forgot to set it would still
    not publish.
-3. **Generates images** (`POE_IMAGE_MODEL`): a hero illustration for the
-   article (`src/content/articles/_images/<slug>-hero.<ext>`), and — if
+3. **Generates a hero illustration** (`POE_IMAGE_MODEL`) for the article
+   (`src/content/articles/_images/<slug>-hero.<ext>`). Non-fatal — a
+   failure just means no hero image.
+4. **Finds a product image on amazon.com** (`POE_SEARCH_MODEL`) — only if
    `--product` is passed and that product record doesn't already have an
-   `image` field — a product image, saved under
+   `image` field. This searches amazon.com for a matching real listing and
+   downloads its photo (not AI-generated), saved under
    `src/content/products/_images/` and linked into the product's
-   frontmatter automatically, with a comment flagging it as an
-   **AI-generated placeholder** to swap for a real product photo before
-   `affiliateStatus` goes live. Image generation is also non-fatal — a
-   failure just means no image, same as before this existed.
+   frontmatter automatically, with a comment flagging the match as
+   **unverified** and noting the matched listing title/URL when found. Also
+   non-fatal — no confirmed match just means no image, same as today.
+   See COMPLIANCE.md for why this needs a human check (wrong-match risk,
+   and rehosting a marketplace image outside Amazon's own API).
 
 ## Review
 
@@ -77,10 +81,10 @@ generated it) and check:
 - Does it actually answer the researched question?
 - Is any product mention accurate, and does the linked product record have
   an approved, correct affiliate URL?
-- **If a product image was AI-generated**, replace it with a real photo of
-  the actual product before the affiliate link goes live — an AI
-  illustration must never stand in for what the reader will actually
-  receive.
+- **If a product image was pulled from amazon.com**, confirm it's actually
+  the exact product (the match is unverified) before the affiliate link
+  goes live, and consider replacing it with an image sourced through
+  Amazon's Product Advertising API once you're an approved Associate.
 - Do any cited sources actually say what the article claims? The search
   step finds real URLs, but doesn't verify the article represents them
   accurately — that's still a human check.

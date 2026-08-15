@@ -14,7 +14,7 @@
 
 import { existsSync, readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { loadEnv } from '../lib/env.mjs';
-import { askPoeForJson, searchAuthoritySources, generatePoeImage } from '../lib/poe.mjs';
+import { askPoeForJson, searchAuthoritySources, generatePoeImage, findAmazonProductImage } from '../lib/poe.mjs';
 import { writeMarkdownFile, slugify, readFrontmatter, insertFrontmatterField } from '../lib/frontmatter.mjs';
 
 loadEnv();
@@ -45,35 +45,56 @@ function loadProduct(slug) {
   return { slug, ...data };
 }
 
-// Best-effort: generate a product image if the record doesn't already have
-// one, and link it into the product's frontmatter without disturbing any
-// hand-written multi-line fields (see insertFrontmatterField). Non-fatal —
-// a missing product image just means ProductCallout.astro renders without
-// one, same as today.
+// Best-effort: find a real amazon.com listing image for the product if the
+// record doesn't already have one, and link it into the product's
+// frontmatter without disturbing any hand-written multi-line fields (see
+// insertFrontmatterField). Non-fatal — a missing product image just means
+// ProductCallout.astro renders without one, same as today. Only runs when
+// a product is actually being used in an article (called from the
+// --product path below), not proactively for the whole catalog.
 async function ensureProductImage(product) {
   if (product.image) return;
   try {
-    console.log(`Generating product image for "${product.name}"...`);
-    const imagePrompt = `Simple, clean flat-illustration style product image for the category "${product.category}": ${product.name} — ${product.shortPitch}. Neutral light background, no brand logos, no readable text, no packaging claims.`;
-    const { buffer, ext } = await generatePoeImage({ prompt: imagePrompt });
+    console.log(`Searching amazon.com for "${product.name}"...`);
+    const query = `${product.name} — ${product.shortPitch}`;
+    const result = await findAmazonProductImage({ query });
+
+    if (result.error) {
+      console.warn(`  amazon.com image search skipped: ${result.error}`);
+      return;
+    }
+    if (!result.found) {
+      console.warn('  no confirmed amazon.com match found — leaving product without an image');
+      return;
+    }
 
     const imagesDir = 'src/content/products/_images';
     mkdirSync(imagesDir, { recursive: true });
-    const imageFileName = `${product.slug}.${ext}`;
-    writeFileSync(`${imagesDir}/${imageFileName}`, buffer);
+    const imageFileName = `${product.slug}.${result.ext}`;
+    writeFileSync(`${imagesDir}/${imageFileName}`, result.buffer);
 
     const productPath = `src/content/products/${product.slug}.md`;
     const raw = readFileSync(productPath, 'utf8');
+    const commentLines = [
+      'Image pulled from an amazon.com listing found via search — this is a real',
+      'product photo, but the match is unverified. Confirm it is the exact item',
+      'before applying for the affiliate program or setting affiliateStatus live.',
+    ];
+    if (result.matchedTitle) {
+      commentLines.push(
+        `Matched listing: "${result.matchedTitle}"${result.productPageUrl ? ` — ${result.productPageUrl}` : ''}`
+      );
+    }
     const updated = insertFrontmatterField(raw, 'image', `./_images/${imageFileName}`, {
-      comment: 'AI-generated placeholder — replace with a real product photo before affiliateStatus goes live.',
+      comment: commentLines.join('\n'),
     });
     writeFileSync(productPath, updated);
     product.image = `./_images/${imageFileName}`;
     console.log(`  saved ${imagesDir}/${imageFileName} and linked it from ${productPath}`);
-    console.log('  NOTE: this is an AI-generated placeholder, not a real photo of the product —');
-    console.log('  swap it for an actual product photo before affiliateStatus goes to approved/active.');
+    if (result.matchedTitle) console.log(`  matched amazon.com listing: "${result.matchedTitle}"`);
+    console.log('  NOTE: unverified match — confirm it is the exact product before publishing.');
   } catch (err) {
-    console.warn(`  product image generation skipped: ${err.message}`);
+    console.warn(`  product image search skipped: ${err.message}`);
   }
 }
 

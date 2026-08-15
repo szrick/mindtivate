@@ -97,11 +97,20 @@ designed around.
   `status: published` (see CONTENT_PIPELINE.md) specifically to catch
   factual errors, overclaiming, or a product mention that doesn't actually
   fit — automation drafts, a human is accountable for what ships.
-- **AI-generated product images are placeholders, never a substitute for a
-  real product photo.** `3-generate-article.mjs` may generate a product
-  image via Poe when a product record has none, and marks it in the
-  file's frontmatter as an AI-generated placeholder for exactly this
-  reason. Showing readers a fabricated image next to a real affiliate
-  link misrepresents what they'd actually receive — treat a flagged
-  placeholder as a blocker on `affiliateStatus` reaching `approved`/
-  `active` until it's replaced with a genuine photo of the product.
+- **Product images are sourced from amazon.com, and every one is an
+  unverified match until a human confirms it.** `3-generate-article.mjs`
+  uses a Poe search bot to find a real amazon.com listing for a product
+  record with no image, downloads that listing's photo, and rehosts it as
+  a static asset in this repo — flagged in the product file's frontmatter
+  as an unverified match, with the matched listing title/URL when
+  available. Two risks this creates, both requiring a human check before
+  publishing:
+  - **Wrong match.** The search can return a similar-but-different
+    product. Confirm it's the exact item before applying for the
+    affiliate program.
+  - **Rehosting risk.** This downloads and re-serves a marketplace image
+    outside Amazon's Product Advertising API, which is the officially
+    sanctioned way to use their product imagery under the Associates
+    Program Operating Agreement. Treat a flagged image as a placeholder
+    to replace with an API-sourced or manufacturer-provided image before
+    `affiliateStatus` reaches `approved`/`active` on a real, live link.

@@ -77,7 +77,13 @@ export function insertFrontmatterField(fileContents, key, value, { comment } = {
   const alreadySet = rawFrontmatter.split(/\r?\n/).some((line) => line.trim().startsWith(`${key}:`));
   if (alreadySet) return fileContents;
 
-  const insertion = `${comment ? `# ${comment}${nl}` : ''}${key}: ${yamlScalar(value)}`;
+  const commentBlock = comment
+    ? comment
+        .split('\n')
+        .map((line) => `# ${line}`)
+        .join(nl) + nl
+    : '';
+  const insertion = `${commentBlock}${key}: ${yamlScalar(value)}`;
   const newFrontmatterBlock = `---${nl}${rawFrontmatter}${nl}${insertion}${nl}---${nl}`;
   return fileContents.slice(0, match.index) + newFrontmatterBlock + fileContents.slice(match.index + match[0].length);
 }
