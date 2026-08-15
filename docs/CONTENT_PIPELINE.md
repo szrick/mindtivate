@@ -6,13 +6,21 @@ End-to-end path from a Reddit thread to a published, promoted article.
 
 Scans `r/loseit`, `r/xxfitness`, `r/bodyweightfitness`, `r/nutrition`, and
 `r/mentalhealth` (edit `TARGET_SUBREDDITS` in the script to change the
-list) for hot and top-of-month posts, filters for ones that read like a
-specific, recurring, answerable problem (regex heuristics for phrases like
-"any recommendations", "how do I", "struggling with"; excludes megathreads
-and mod posts), and keeps ones with at least 5 comments as a signal the
+list) for recent posts, filters for ones that read like a specific,
+recurring, answerable problem (regex heuristics for phrases like "any
+recommendations", "how do I", "struggling with"; excludes megathreads and
+mod posts), and keeps ones with at least 5 comments as a signal the
 question resonates. Writes candidates to
 `scripts/pipeline/output/research-<timestamp>.json` (gitignored — this is
 working data, not published content).
+
+Reads from [Arctic Shift](https://arctic-shift.photon-reddit.com/)
+(`scripts/lib/arcticshift.mjs`), a free third-party Reddit archive, rather
+than Reddit's own API — no Reddit app, approval, or account needed for
+this stage. See `docs/SETUP.md` for why (Reddit now gates new OAuth
+tokens behind manual approval). A real Reddit app is still required for
+stage 6's optional comment-posting, since that inherently needs an
+authenticated Reddit session — see that section below.
 
 ## 2. Product match (`scripts/pipeline/2-product-match.mjs`)
 

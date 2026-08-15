@@ -28,13 +28,9 @@ jobs:
         run: npm ci
 
       - name: Research Reddit pain points
+        # Reads Arctic Shift, not Reddit's own API — no Reddit app,
+        # approval, or account secrets needed here. See docs/SETUP.md.
         run: npm run pipeline:research
-        env:
-          REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
-          REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
-          REDDIT_USERNAME: ${{ secrets.REDDIT_USERNAME }}
-          REDDIT_PASSWORD: ${{ secrets.REDDIT_PASSWORD }}
-          REDDIT_USER_AGENT: ${{ secrets.REDDIT_USER_AGENT }}
 
       - name: Match candidate products
         run: npm run pipeline:match

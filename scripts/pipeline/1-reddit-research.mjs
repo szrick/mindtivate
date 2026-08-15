@@ -2,11 +2,15 @@
 // Stage 1: scan target subreddits for recurring, specific problems worth
 // writing about. Writes a JSON file of candidate pain points for stage 2.
 //
+// Reads from Arctic Shift (see scripts/lib/arcticshift.mjs) rather than
+// Reddit's own API — no Reddit developer-app approval or account needed
+// for this stage. See docs/SETUP.md for why.
+//
 // Usage: npm run pipeline:research
 
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { loadEnv } from '../lib/env.mjs';
-import { getRedditToken, fetchSubredditPosts } from '../lib/reddit.mjs';
+import { fetchSubredditPosts } from '../lib/arcticshift.mjs';
 
 loadEnv();
 
@@ -35,18 +39,16 @@ function looksLikePainPoint(post) {
 }
 
 async function run() {
-  const token = await getRedditToken();
   const results = [];
 
   for (const subreddit of TARGET_SUBREDDITS) {
     console.log(`Scanning r/${subreddit}...`);
-    const [hot, top] = await Promise.all([
-      fetchSubredditPosts(token, subreddit, { sort: 'hot', limit: 50 }),
-      fetchSubredditPosts(token, subreddit, { sort: 'top', t: 'month', limit: 50 }),
-    ]);
+    // Arctic Shift has no "hot"/"top" ranking, only chronological — pull
+    // the most recent 100 (its per-request max) and let the pain-point
+    // heuristic + engagement threshold below do the real filtering.
+    const recent = await fetchSubredditPosts(subreddit, { limit: 100 });
 
-    const candidates = [...hot, ...top]
-      .filter((post, index, arr) => arr.findIndex((p) => p.id === post.id) === index) // de-dupe
+    const candidates = recent
       .filter(looksLikePainPoint)
       .filter((post) => post.num_comments >= 5) // some engagement = a real recurring question
       .sort((a, b) => b.num_comments - a.num_comments)
