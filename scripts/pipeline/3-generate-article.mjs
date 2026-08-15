@@ -102,9 +102,28 @@ async function findSources(entry) {
   const topic = `${entry.painPoint.title} — ${entry.brief.problemSolved}`;
   console.log('Searching for authority sources to cite...');
   const { sources, error } = await searchAuthoritySources({ topic });
-  if (error) console.warn(`  source search skipped: ${error}`);
-  else console.log(`  found ${sources.length} candidate source(s)`);
+  if (error) {
+    console.warn(`  source search skipped: ${error}`);
+  } else {
+    console.log(`  found ${sources.length} candidate source(s):`);
+    for (const s of sources) console.log(`    - ${s.title}: ${s.url}`);
+  }
   return sources;
+}
+
+// Sanity check, not a hard gate: the system prompt tells the model to only
+// cite the exact URLs it was given, but a small chance of substitution
+// (a similar-looking URL, a slightly different path) is exactly the
+// failure mode the source-search step exists to prevent — worth a flag
+// rather than trusting compliance silently.
+function warnOnUnexpectedCitations(bodyMarkdown, sources) {
+  const citedUrls = [...bodyMarkdown.matchAll(/\]\((https?:\/\/[^\s)]+)\)/g)].map((m) => m[1]);
+  const allowedUrls = new Set(sources.map((s) => s.url));
+  const unexpected = citedUrls.filter((url) => !allowedUrls.has(url));
+  if (unexpected.length > 0) {
+    console.warn('  WARNING: article cites URL(s) not in the found source list — verify manually before publishing:');
+    for (const url of unexpected) console.warn(`    - ${url}`);
+  }
 }
 
 async function generateHeroImage(title, slug) {
@@ -186,6 +205,7 @@ Write the article JSON now.`;
 
   console.log('Drafting article with Poe...');
   const draft = await askPoeForJson({ system: SYSTEM_PROMPT, prompt, maxTokens: 3000 });
+  warnOnUnexpectedCitations(draft.bodyMarkdown, sources);
 
   const slug = slugify(draft.title);
   const filePath = `src/content/articles/${slug}.md`;
