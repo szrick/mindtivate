@@ -14,17 +14,24 @@
 
 const API_BASE = 'https://arctic-shift.photon-reddit.com';
 
+// Arctic Shift has no `permalink` field — reconstruct it from `subreddit`
+// + `id` instead (Reddit's permalink format is fully deterministic;
+// see permalinkFor() below). `url` is the post's outbound link, not its
+// reddit.com location, so it's not useful for that purpose.
 const POST_FIELDS = [
   'id',
   'title',
   'selftext',
-  'permalink',
   'score',
   'num_comments',
   'created_utc',
   'subreddit',
   'author',
 ].join(',');
+
+export function permalinkFor(post) {
+  return `/r/${post.subreddit}/comments/${post.id}/`;
+}
 
 async function arcticShiftGet(path, params) {
   const url = new URL(`${API_BASE}${path}`);
