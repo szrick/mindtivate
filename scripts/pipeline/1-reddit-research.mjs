@@ -6,15 +6,32 @@
 // Reddit's own API — no Reddit developer-app approval or account needed
 // for this stage. See docs/SETUP.md for why.
 //
-// Usage: npm run pipeline:research
+// Usage:
+//   npm run pipeline:research
+//   npm run pipeline:research -- --subreddits loseit,xxfitness,nutrition
+//   npm run pipeline:research -- --subreddits loseit --query "weight loss"
+//
+// --subreddits scopes the scan to a comma-separated list instead of the
+// default TARGET_SUBREDDITS. --query switches from a plain chronological
+// scan to Arctic Shift's keyword search (title + selftext) within each
+// scoped subreddit, for a topic-focused batch (e.g. a weight-loss push).
 
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { loadEnv } from '../lib/env.mjs';
-import { fetchSubredditPosts, permalinkFor } from '../lib/arcticshift.mjs';
+import { fetchSubredditPosts, searchSubreddit, permalinkFor } from '../lib/arcticshift.mjs';
 
 loadEnv();
 
-const TARGET_SUBREDDITS = ['loseit', 'xxfitness', 'bodyweightfitness', 'nutrition', 'mentalhealth'];
+const DEFAULT_SUBREDDITS = ['loseit', 'xxfitness', 'bodyweightfitness', 'nutrition', 'mentalhealth'];
+
+function parseArgs(argv) {
+  const args = {};
+  for (let i = 0; i < argv.length; i++) {
+    if (argv[i] === '--subreddits') args.subreddits = argv[++i].split(',').map((s) => s.trim());
+    else if (argv[i] === '--query') args.query = argv[++i];
+  }
+  return args;
+}
 
 // Heuristics for "this is a recurring, answerable problem" rather than a
 // vent post, a personal medical question, or a moderator announcement.
@@ -39,14 +56,20 @@ function looksLikePainPoint(post) {
 }
 
 async function run() {
+  const args = parseArgs(process.argv.slice(2));
+  const targetSubreddits = args.subreddits ?? DEFAULT_SUBREDDITS;
   const results = [];
 
-  for (const subreddit of TARGET_SUBREDDITS) {
-    console.log(`Scanning r/${subreddit}...`);
+  for (const subreddit of targetSubreddits) {
+    console.log(args.query ? `Searching r/${subreddit} for "${args.query}"...` : `Scanning r/${subreddit}...`);
     // Arctic Shift has no "hot"/"top" ranking, only chronological — pull
-    // the most recent 100 (its per-request max) and let the pain-point
-    // heuristic + engagement threshold below do the real filtering.
-    const recent = await fetchSubredditPosts(subreddit, { limit: 100 });
+    // up to 100 (its per-request max) and let the pain-point heuristic +
+    // engagement threshold below do the real filtering. With --query,
+    // this is a keyword search (title + selftext) instead of a plain
+    // chronological scan, for a topic-focused batch.
+    const recent = args.query
+      ? await searchSubreddit(subreddit, args.query, { limit: 100 })
+      : await fetchSubredditPosts(subreddit, { limit: 100 });
 
     const candidates = recent
       .filter(looksLikePainPoint)

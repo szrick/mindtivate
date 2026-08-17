@@ -5,14 +5,26 @@ End-to-end path from a Reddit thread to a published, promoted article.
 ## 1. Research (`scripts/pipeline/1-reddit-research.mjs`)
 
 Scans `r/loseit`, `r/xxfitness`, `r/bodyweightfitness`, `r/nutrition`, and
-`r/mentalhealth` (edit `TARGET_SUBREDDITS` in the script to change the
-list) for recent posts, filters for ones that read like a specific,
-recurring, answerable problem (regex heuristics for phrases like "any
-recommendations", "how do I", "struggling with"; excludes megathreads and
-mod posts), and keeps ones with at least 5 comments as a signal the
-question resonates. Writes candidates to
+`r/mentalhealth` by default for recent posts, filters for ones that read
+like a specific, recurring, answerable problem (regex heuristics for
+phrases like "any recommendations", "how do I", "struggling with";
+excludes megathreads and mod posts), and keeps ones with at least 5
+comments as a signal the question resonates. Writes candidates to
 `scripts/pipeline/output/research-<timestamp>.json` (gitignored — this is
 working data, not published content).
+
+To scope a run to a specific topic or subreddit set (e.g. a weight-loss
+batch) instead of editing the script:
+
+```bash
+npm run pipeline:research -- --subreddits loseit,xxfitness,nutrition
+npm run pipeline:research -- --subreddits loseit --query "weight loss"
+```
+
+`--subreddits` overrides the default list; `--query` switches from a
+plain chronological scan to Arctic Shift's keyword search (title +
+selftext) within each scoped subreddit, so results actually match the
+topic instead of just whatever's most recent.
 
 Reads from [Arctic Shift](https://arctic-shift.photon-reddit.com/)
 (`scripts/lib/arcticshift.mjs`), a free third-party Reddit archive, rather
