@@ -55,10 +55,33 @@ product record) and, via the [Poe API](https://poe.com/api_key)
    to cite at least one as an inline markdown link, using only the exact
    URLs returned — it's instructed never to invent a URL of its own.
 2. **Drafts the article** (`POE_MODEL`) in Mindtivate's editorial voice
-   (see the system prompt in the script). Always writes with `status:
-   draft` and `draft: true` — the schema in `src/content/config.ts`
-   defaults to draft too, so a script that forgot to set it would still
-   not publish.
+   (see `BASE_VOICE_PROMPT` in the script — never diet-culture/fear-based,
+   no medical diagnoses, cite only verified sources, one natural product
+   mention — this stays fixed no matter which structure template is
+   used). Always writes with `status: draft` and `draft: true` — the
+   schema in `src/content/config.ts` defaults to draft too, so a script
+   that forgot to set it would still not publish.
+
+   **Structure templates** (`scripts/lib/article-templates.mjs`, chosen
+   via `--template <id>`, defaults to `standard`) control shape/length/
+   style on top of that fixed voice:
+   - `standard` (600-900 words) — open-ended explainer, `##` subheadings
+     as content calls for them. The original/default shape.
+   - `self-listicle` (1100-1300 words) — modeled on self.com's "[N]
+     Simple [Time] Habits That [Benefit]" format: intro (hook + nuance +
+     reassurance + list setup) then one `##` per habit (why → what → how,
+     ~200-300 words each), no separate conclusion — the last habit
+     doubles as the wrap-up. Second-person, short paragraphs,
+     conversational connective phrases.
+   - `quick-hacks` (800-1200 words) — fast/snackable, Marie Claire
+     "hacks" style: very tight intro, 4-6 punchy tips (~120-180 words
+     each), minimal science depth, speed-focused framing.
+
+   Run with an unknown `--template` value to print the current list of
+   valid ids. Add a new one by adding an entry to `ARTICLE_TEMPLATES` in
+   `article-templates.mjs` — each needs `wordCountTarget`, `maxTokens`,
+   and a `guidance` string describing the structure/style; the voice and
+   compliance rules apply automatically regardless.
 3. **Generates a hero illustration** (`POE_IMAGE_MODEL`) for the article
    (`src/content/articles/_images/<slug>-hero.<ext>`). Non-fatal — a
    failure just means no hero image.
