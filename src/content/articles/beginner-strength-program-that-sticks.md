@@ -5,7 +5,7 @@ description: >
   like lifting. Here's a simpler starting point built around what
   actually keeps people showing up.
 pubDate: 2026-07-14
-category: Strength Training
+category: Body
 status: published
 draft: false
 author: mindtivate-team

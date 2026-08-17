@@ -4,7 +4,7 @@ description: >
   Jumping straight to pull-ups rarely works. Here's the progression that
   actually builds the strength to get your first one.
 pubDate: 2026-08-04
-category: Bodyweight Fitness
+category: Body
 status: published
 draft: false
 author: mindtivate-team

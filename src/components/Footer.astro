@@ -1,5 +1,6 @@
 ---
 import { withBase } from '../lib/url';
+import { CATEGORIES, toCategorySlug } from '../lib/categories';
 
 const year = new Date().getFullYear();
 ---
@@ -9,8 +10,8 @@ const year = new Date().getFullYear();
     <div class="footer-brand">
       <p class="logo">Mindtivate<span class="logo-dot">.</span></p>
       <p class="tagline">
-        Evidence-checked fitness, nutrition, and mental-health guidance for
-        women — sourced from the questions real communities are actually
+        Evidence-checked health and wellness guidance for women —
+        sourced from the questions real communities are actually
         asking.
       </p>
       <a href="https://www.pinterest.com/mindtivate/" target="_blank" rel="noopener noreferrer" class="social-link">
@@ -22,10 +23,9 @@ const year = new Date().getFullYear();
       <h4>Explore</h4>
       <ul>
         <li><a href={withBase('/articles')}>All articles</a></li>
-        <li><a href={withBase('/category/weight-loss')}>Weight Loss</a></li>
-        <li><a href={withBase('/category/strength-training')}>Strength Training</a></li>
-        <li><a href={withBase('/category/nutrition')}>Nutrition</a></li>
-        <li><a href={withBase('/category/mental-health')}>Mental Health</a></li>
+        {CATEGORIES.map((c) => (
+          <li><a href={withBase(`/category/${toCategorySlug(c.label)}`)}>{c.label}</a></li>
+        ))}
       </ul>
     </div>
 

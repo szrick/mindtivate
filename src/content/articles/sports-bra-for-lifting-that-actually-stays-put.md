@@ -5,7 +5,7 @@ description: >
   heavy lifts and pull-ups without digging in? Here's what the research says
   and what to look for.
 pubDate: 2026-08-01
-category: Strength Training
+category: Body
 status: draft
 draft: true
 author: mindtivate-team

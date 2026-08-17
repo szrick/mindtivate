@@ -1,12 +1,12 @@
 export const CATEGORIES = [
-  { label: 'Weight Loss', blurb: 'Sustainable approaches, not crash diets.' },
-  { label: 'Strength Training', blurb: 'Lifting programs and form guidance.' },
-  { label: 'Nutrition', blurb: 'What the research actually says.' },
-  { label: 'Mental Health', blurb: 'The mind side of fitness and habits.' },
-  { label: 'Bodyweight Fitness', blurb: 'No-gym strength and mobility.' },
-  { label: 'Beauty', blurb: 'Skincare, hair, and self-care that actually works.' },
-  { label: 'Motivation', blurb: 'Staying consistent when motivation dips.' },
-  { label: 'Love', blurb: 'Body image, self-worth, and relationships.' },
+  { label: 'Body', blurb: 'Strength, bodyweight training, and body recomposition.' },
+  { label: 'Food', blurb: 'Eating for energy, hormones, and real life — not restriction.' },
+  { label: 'Mind', blurb: 'Stress, habits, and the mental side of change.' },
+  { label: 'Hormones', blurb: 'Cycle health, PCOS, perimenopause, and menopause.' },
+  { label: 'Love', blurb: 'Relationships, boundaries, and connection.' },
+  { label: 'Beauty', blurb: 'Skin, hair, and beauty from the inside out.' },
+  { label: 'Sleep', blurb: 'Rest, recovery, and moving without pain.' },
+  { label: 'Life Stages', blurb: 'Fitness and health through every decade.' },
 ] as const;
 
 export type CategoryLabel = (typeof CATEGORIES)[number]['label'];

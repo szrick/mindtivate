@@ -2,7 +2,7 @@
 title: Should You Eat BMR × 1.3 − 200 for Body Recomposition? What the Math Really Means
 description: "Unpacking the EVLO calorie formula for postpartum body recomposition: what BMR × 1.3 − 200 actually does, why it might work—and what to watch for."
 pubDate: 2026-08-15
-category: Nutrition
+category: Food
 status: draft
 draft: true
 author: "mindtivate-team"

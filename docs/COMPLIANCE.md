@@ -10,26 +10,27 @@ designed around.
 - **Self-promotion.** Reddit's site-wide rules and most subreddit rules
   restrict posting your own content, and several target subreddits go
   further:
-  - r/xxfitness and r/loseit moderate heavily against promotional content
-    and low-effort links; both expect comments to stand on their own as a
-    real answer.
-  - r/bodyweightfitness and r/nutrition have wiki/FAQ-first cultures and
-    are quick to remove anything that reads as an ad.
-  - r/mentalhealth is stricter still — treat it as research-only (read what
-    people struggle with) and do not comment there with a product or
-    article link at all; mental-health communities are a poor fit for
-    promotional replies regardless of platform rules, and a wrong or
-    pushy reply in a vulnerable-user context risks real harm, not just a
-    ban.
-  - r/SkincareAddiction, r/GetMotivated, and r/relationship_advice (added
-    to research's default subreddit list to cover the Beauty, Motivation,
-    and Love site categories) haven't been engaged with via stage 6 yet —
+  - r/xxfitness moderates heavily against promotional content and
+    low-effort links; comments need to stand on their own as a real
+    answer.
+  - r/nutrition has a wiki/FAQ-first culture and is quick to remove
+    anything that reads as an ad.
+  - r/mentalhealth and r/relationship_advice are stricter still — treat
+    both as research-only (read what people struggle with) and do not
+    comment there with a product or article link at all. Both deal with
+    people in emotionally vulnerable situations (mental health struggles;
+    breakups, conflict, abuse), so they're a poor fit for promotional
+    replies regardless of platform rules — a wrong or pushy reply in a
+    vulnerable-user context risks real harm, not just a ban.
+  - r/WomensHealth, r/SkincareAddiction, r/sleep, and r/AskWomen (the
+    current default subreddit list, `DEFAULT_SUBREDDITS` in
+    `1-reddit-research.mjs`, covering Hormones, Beauty, Sleep, and Life
+    Stages respectively) haven't been engaged with via stage 6 yet —
     apply the same research-first, no-low-effort-promo posture as the
     others until their current rules and mod culture have actually been
-    checked. r/relationship_advice in particular deals with people in
-    emotionally vulnerable situations (breakups, conflict, abuse) much
-    like r/mentalhealth — treat it the same way: research-only, no
-    product or article links in comments there.
+    checked. r/WomensHealth in particular can involve sensitive medical
+    topics — lean toward the same research-only caution as
+    r/mentalhealth there too.
   - Check each subreddit's current rules before commenting — they change,
     and rules are enforced per-subreddit, not uniformly.
 - **Why stage 6 is human-gated.** `scripts/pipeline/6-reddit-engagement-draft.mjs`

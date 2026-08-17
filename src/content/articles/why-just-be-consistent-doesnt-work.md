@@ -4,7 +4,7 @@ description: >
   "Just be consistent" isn't wrong, but it isn't a plan either. Here's what
   actually determines whether a new habit survives a bad week.
 pubDate: 2026-07-28
-category: Mental Health
+category: Mind
 status: published
 draft: false
 author: mindtivate-team

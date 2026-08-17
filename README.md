@@ -1,6 +1,6 @@
 # Mindtivate
 
-Fitness, nutrition, and mental-health content for women — built with
+Evidence-based health and wellness content for women — built with
 [Astro](https://astro.build), content-managed with
 [Pages CMS](https://pagescms.org), hosted on GitHub Pages.
 
