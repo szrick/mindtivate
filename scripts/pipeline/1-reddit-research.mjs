@@ -12,7 +12,7 @@
 //   npm run pipeline:research -- --subreddits loseit --query "weight loss"
 //
 // --subreddits scopes the scan to a comma-separated list instead of the
-// default TARGET_SUBREDDITS. --query switches from a plain chronological
+// default DEFAULT_SUBREDDITS. --query switches from a plain chronological
 // scan to Arctic Shift's keyword search (title + selftext) within each
 // scoped subreddit, for a topic-focused batch (e.g. a weight-loss push).
 
@@ -22,7 +22,12 @@ import { fetchSubredditPosts, searchSubreddit, permalinkFor } from '../lib/arcti
 
 loadEnv();
 
-const DEFAULT_SUBREDDITS = ['loseit', 'xxfitness', 'bodyweightfitness', 'nutrition', 'mentalhealth'];
+// Covers all 7 site categories (src/lib/categories.ts) — loseit=Weight
+// Loss, xxfitness=Strength Training (+general), bodyweightfitness=
+// Bodyweight Fitness, nutrition=Nutrition, mentalhealth=Mental Health,
+// sleep=Recovery, GetMotivated=Motivation. Previously only 5 of 7
+// categories had a subreddit actually feeding them.
+const DEFAULT_SUBREDDITS = ['loseit', 'xxfitness', 'bodyweightfitness', 'nutrition', 'mentalhealth', 'sleep', 'GetMotivated'];
 
 function parseArgs(argv) {
   const args = {};
