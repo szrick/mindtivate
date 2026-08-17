@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HeroSlider from '../components/HeroSlider.astro';
 import NewsletterSignup from '../components/NewsletterSignup.astro';
+import CategoryIcon from '../components/CategoryIcon.astro';
 import { CATEGORIES, toCategorySlug } from '../lib/categories';
 import { withBase } from '../lib/url';
 
@@ -33,6 +34,7 @@ const sliderArticles = allArticles
     <div class="category-grid">
       {CATEGORIES.map((c) => (
         <a href={withBase(`/category/${toCategorySlug(c.label)}`)} class="category-card card">
+          <CategoryIcon label={c.label} />
           <h3>{c.label}</h3>
           <p>{c.blurb}</p>
         </a>
@@ -73,6 +75,7 @@ const sliderArticles = allArticles
   }
 
   .category-card h3 {
+    margin-top: 0.6em;
     margin-bottom: 0.3em;
     color: var(--color-terracotta-dark);
   }
