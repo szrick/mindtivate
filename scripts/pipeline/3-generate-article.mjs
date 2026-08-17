@@ -140,8 +140,9 @@ const HERO_SCENE_HINTS = {
   Nutrition: 'a woman preparing or enjoying a wholesome meal in her kitchen, natural light',
   'Mental Health': 'a woman in a quiet, grounding moment — journaling, stretching, or sitting with a warm drink, calm and present',
   'Bodyweight Fitness': 'a woman doing a bodyweight exercise like push-ups, a stretch, or a yoga pose, at home or outdoors',
-  Recovery: 'a woman resting or gently stretching in a cozy setting, soft morning or evening light',
+  Beauty: 'a woman doing a simple skincare or self-care routine — washing her face, applying moisturizer, or a quiet bathroom-mirror moment, natural light',
   Motivation: 'a woman lacing up her shoes or starting her day with quiet, grounded determination',
+  Love: 'a woman with a warm, confident expression in a candid moment — journaling, laughing with a friend, or a quiet moment of self-reflection',
 };
 
 async function generateHeroImage(title, slug, category) {
@@ -189,7 +190,7 @@ Respond with strict JSON only, no prose outside the JSON, matching:
 {
   "title": string,
   "description": string (max 160 chars, for SEO),
-  "category": "Weight Loss" | "Strength Training" | "Nutrition" | "Mental Health" | "Bodyweight Fitness" | "Recovery" | "Motivation",
+  "category": "Weight Loss" | "Strength Training" | "Nutrition" | "Mental Health" | "Bodyweight Fitness" | "Beauty" | "Motivation" | "Love",
   "tags": string[] (2-5 short tags),
   "bodyMarkdown": string (${template.wordCountTarget} words of markdown, using ## subheadings, no title heading, no frontmatter)
 }`;

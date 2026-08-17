@@ -5,11 +5,12 @@ End-to-end path from a Reddit thread to a published, promoted article.
 ## 1. Research (`scripts/pipeline/1-reddit-research.mjs`)
 
 Scans `r/loseit`, `r/xxfitness`, `r/bodyweightfitness`, `r/nutrition`,
-`r/mentalhealth`, `r/sleep`, and `r/GetMotivated` by default — one
-subreddit per site category (`src/lib/categories.ts`: Weight Loss,
-Strength Training, Bodyweight Fitness, Nutrition, Mental Health,
-Recovery, Motivation respectively) — for recent posts, filters for ones
-that read like a specific, recurring, answerable problem (regex
+`r/mentalhealth`, `r/SkincareAddiction`, `r/GetMotivated`, and
+`r/relationship_advice` by default — one subreddit per site category
+(`src/lib/categories.ts`: Weight Loss, Strength Training, Bodyweight
+Fitness, Nutrition, Mental Health, Beauty, Motivation, Love
+respectively) — for recent posts, filters for ones that read like a
+specific, recurring, answerable problem (regex
 heuristics for phrases like "any recommendations", "how do I",
 "struggling with"; excludes megathreads and mod posts), and keeps ones
 with at least 5 comments as a signal the question resonates. Writes

@@ -21,11 +21,15 @@ designed around.
     promotional replies regardless of platform rules, and a wrong or
     pushy reply in a vulnerable-user context risks real harm, not just a
     ban.
-  - r/sleep and r/GetMotivated (added to research's default subreddit list
-    to cover the Recovery and Motivation site categories) haven't been
-    engaged with via stage 6 yet — apply the same research-first,
-    no-low-effort-promo posture as the others until their current rules
-    and mod culture have actually been checked.
+  - r/SkincareAddiction, r/GetMotivated, and r/relationship_advice (added
+    to research's default subreddit list to cover the Beauty, Motivation,
+    and Love site categories) haven't been engaged with via stage 6 yet —
+    apply the same research-first, no-low-effort-promo posture as the
+    others until their current rules and mod culture have actually been
+    checked. r/relationship_advice in particular deals with people in
+    emotionally vulnerable situations (breakups, conflict, abuse) much
+    like r/mentalhealth — treat it the same way: research-only, no
+    product or article links in comments there.
   - Check each subreddit's current rules before commenting — they change,
     and rules are enforced per-subreddit, not uniformly.
 - **Why stage 6 is human-gated.** `scripts/pipeline/6-reddit-engagement-draft.mjs`

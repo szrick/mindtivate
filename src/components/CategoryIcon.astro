@@ -31,14 +31,10 @@ const iconStyle = `width:${size};height:${size};${color ? `color:${color};` : ''
     </g>
   )}
   {label === 'Mental Health' && (
-    <path
-      fill="none"
-      stroke="currentColor"
-      stroke-width="1.8"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-    />
+    <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 16a4 4 0 0 1 0-8 5 5 0 0 1 9.6-1.5A4.5 4.5 0 0 1 18 15.5" />
+      <line x1="6" y1="16" x2="18" y2="15.9" />
+    </g>
   )}
   {label === 'Bodyweight Fitness' && (
     <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -50,15 +46,27 @@ const iconStyle = `width:${size};height:${size};${color ? `color:${color};` : ''
       <line x1="12" y1="15" x2="17" y2="21" />
     </g>
   )}
-  {label === 'Recovery' && (
+  {label === 'Beauty' && (
     <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-      <polyline points="23 4 23 10 17 10" />
-      <polyline points="1 20 1 14 7 14" />
-      <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+      <path d="M2 12 Q12 4 22 12 Q12 20 2 12 Z" />
+      <circle cx="12" cy="12" r="2.6" />
+      <line x1="4" y1="6" x2="6" y2="8.5" />
+      <line x1="9" y1="3.2" x2="10" y2="6" />
+      <line x1="15" y1="3.2" x2="14" y2="6" />
     </g>
   )}
   {label === 'Motivation' && (
     <path fill="currentColor" stroke="none" d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2z" />
+  )}
+  {label === 'Love' && (
+    <path
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.8"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+    />
   )}
 </svg>
 

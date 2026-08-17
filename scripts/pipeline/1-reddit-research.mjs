@@ -22,12 +22,21 @@ import { fetchSubredditPosts, searchSubreddit, permalinkFor } from '../lib/arcti
 
 loadEnv();
 
-// Covers all 7 site categories (src/lib/categories.ts) — loseit=Weight
+// Covers all 8 site categories (src/lib/categories.ts) — loseit=Weight
 // Loss, xxfitness=Strength Training (+general), bodyweightfitness=
 // Bodyweight Fitness, nutrition=Nutrition, mentalhealth=Mental Health,
-// sleep=Recovery, GetMotivated=Motivation. Previously only 5 of 7
-// categories had a subreddit actually feeding them.
-const DEFAULT_SUBREDDITS = ['loseit', 'xxfitness', 'bodyweightfitness', 'nutrition', 'mentalhealth', 'sleep', 'GetMotivated'];
+// SkincareAddiction=Beauty, GetMotivated=Motivation,
+// relationship_advice=Love.
+const DEFAULT_SUBREDDITS = [
+  'loseit',
+  'xxfitness',
+  'bodyweightfitness',
+  'nutrition',
+  'mentalhealth',
+  'SkincareAddiction',
+  'GetMotivated',
+  'relationship_advice',
+];
 
 function parseArgs(argv) {
   const args = {};
