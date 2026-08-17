@@ -4,8 +4,9 @@ export const CATEGORIES = [
   { label: 'Nutrition', blurb: 'What the research actually says.' },
   { label: 'Mental Health', blurb: 'The mind side of fitness and habits.' },
   { label: 'Bodyweight Fitness', blurb: 'No-gym strength and mobility.' },
-  { label: 'Recovery', blurb: 'Sleep, rest days, and injury prevention.' },
+  { label: 'Beauty', blurb: 'Skincare, hair, and self-care that actually works.' },
   { label: 'Motivation', blurb: 'Staying consistent when motivation dips.' },
+  { label: 'Love', blurb: 'Body image, self-worth, and relationships.' },
 ] as const;
 
 export type CategoryLabel = (typeof CATEGORIES)[number]['label'];

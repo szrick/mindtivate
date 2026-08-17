@@ -39,7 +39,7 @@ content:
         label: Category
         type: select
         options:
-          values: [Weight Loss, Strength Training, Nutrition, Mental Health, Bodyweight Fitness, Recovery, Motivation]
+          values: [Weight Loss, Strength Training, Nutrition, Mental Health, Bodyweight Fitness, Beauty, Motivation, Love]
         required: true
       - name: heroImage
         label: Hero image
