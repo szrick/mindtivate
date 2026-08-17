@@ -1,6 +1,7 @@
 ---
 import { CATEGORIES, toCategorySlug } from '../lib/categories';
 import { withBase } from '../lib/url';
+import CategoryIcon from './CategoryIcon.astro';
 
 const navCategories = CATEGORIES.filter((c) => c.label !== 'Recovery' && c.label !== 'Motivation');
 ---
@@ -15,7 +16,12 @@ const navCategories = CATEGORIES.filter((c) => c.label !== 'Recovery' && c.label
     <nav class="primary-nav" aria-label="Primary">
       <ul>
         {navCategories.map((c) => (
-          <li><a href={withBase(`/category/${toCategorySlug(c.label)}`)}>{c.label}</a></li>
+          <li>
+            <a href={withBase(`/category/${toCategorySlug(c.label)}`)}>
+              <CategoryIcon label={c.label} size="1.15rem" />
+              {c.label}
+            </a>
+          </li>
         ))}
       </ul>
     </nav>
@@ -37,7 +43,7 @@ const navCategories = CATEGORIES.filter((c) => c.label !== 'Recovery' && c.label
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1.5rem;
+    gap: 2.5rem;
     padding-top: 1rem;
     padding-bottom: 1rem;
   }
@@ -70,12 +76,16 @@ const navCategories = CATEGORIES.filter((c) => c.label !== 'Recovery' && c.label
   .primary-nav ul {
     list-style: none;
     display: flex;
-    gap: 1.5rem;
+    gap: 1.2rem;
     margin: 0;
     padding: 0;
   }
 
   .primary-nav a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    white-space: nowrap;
     color: var(--color-plum-soft);
     font-weight: 500;
     font-size: 0.95rem;

@@ -1,12 +1,15 @@
 ---
 interface Props {
   label: string;
+  size?: string;
+  color?: string;
 }
 
-const { label } = Astro.props;
+const { label, size = '1.9rem', color } = Astro.props;
+const iconStyle = `width:${size};height:${size};${color ? `color:${color};` : ''}`;
 ---
 
-<svg class="category-icon" viewBox="0 0 24 24" aria-hidden="true">
+<svg class="category-icon" viewBox="0 0 24 24" aria-hidden="true" style={iconStyle}>
   {label === 'Weight Loss' && (
     <g fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="3,5 9,11 13,7 21,19" />
@@ -61,8 +64,7 @@ const { label } = Astro.props;
 
 <style>
   .category-icon {
-    width: 1.9rem;
-    height: 1.9rem;
-    color: var(--color-terracotta-dark);
+    flex-shrink: 0;
+    color: inherit;
   }
 </style>
