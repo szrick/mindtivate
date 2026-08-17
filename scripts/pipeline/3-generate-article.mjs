@@ -10,21 +10,27 @@
 // continues without it rather than blocking the whole run.
 //
 // Usage:
-//   npm run pipeline:draft -- --index 0 [--product some-product-slug] [--briefs path.json]
+//   npm run pipeline:draft -- --index 0 [--product some-product-slug] [--briefs path.json] [--template id]
+//
+// --template selects the structural shape (word count, section layout,
+// style) from scripts/lib/article-templates.mjs. Defaults to "standard".
+// Run with an unknown id to see the list of available ones.
 
 import { existsSync, readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { loadEnv } from '../lib/env.mjs';
 import { askPoeForJson, searchAuthoritySources, generatePoeImage, findAmazonProductImage } from '../lib/poe.mjs';
 import { writeMarkdownFile, slugify, readFrontmatter, insertFrontmatterField } from '../lib/frontmatter.mjs';
+import { ARTICLE_TEMPLATES, listTemplateIds } from '../lib/article-templates.mjs';
 
 loadEnv();
 
 function parseArgs(argv) {
-  const args = { index: 0 };
+  const args = { index: 0, template: 'standard' };
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--index') args.index = Number(argv[++i]);
     else if (argv[i] === '--product') args.product = argv[++i];
     else if (argv[i] === '--briefs') args.briefs = argv[++i];
+    else if (argv[i] === '--template') args.template = argv[++i];
   }
   return args;
 }
@@ -144,7 +150,11 @@ async function generateHeroImage(title, slug) {
   }
 }
 
-const SYSTEM_PROMPT = `You are the editorial voice of Mindtivate, a fitness/nutrition/mental-health
+// Fixed regardless of --template: Mindtivate's voice and compliance rules
+// (never diet-culture/fear-based, no medical diagnoses, cite only
+// verified sources, one natural product mention). A template only adds
+// structural/style guidance on top of this — see article-templates.mjs.
+const BASE_VOICE_PROMPT = `You are the editorial voice of Mindtivate, a fitness/nutrition/mental-health
 site for women. Voice: direct, warm, non-judgmental, evidence-based, never
 diet-culture or fear-based. You never give medical diagnoses. You start
 from a specific problem a real person raised, explain the "why" behind it
@@ -155,7 +165,12 @@ You may be given a list of verified authority sources (real URLs someone
 already checked). When sources are provided, back up at least one
 specific factual claim with an inline markdown link using one of those
 exact URLs — never invent, alter, or guess a URL yourself. If no sources
-are provided, write in general terms without any links or citations.
+are provided, write in general terms without any links or citations.`;
+
+function buildSystemPrompt(template) {
+  return `${BASE_VOICE_PROMPT}
+
+${template.guidance}
 
 Respond with strict JSON only, no prose outside the JSON, matching:
 {
@@ -163,11 +178,19 @@ Respond with strict JSON only, no prose outside the JSON, matching:
   "description": string (max 160 chars, for SEO),
   "category": "Weight Loss" | "Strength Training" | "Nutrition" | "Mental Health" | "Bodyweight Fitness" | "Recovery" | "Motivation",
   "tags": string[] (2-5 short tags),
-  "bodyMarkdown": string (600-900 words of markdown, using ## subheadings, no title heading, no frontmatter)
+  "bodyMarkdown": string (${template.wordCountTarget} words of markdown, using ## subheadings, no title heading, no frontmatter)
 }`;
+}
 
 async function run() {
   const args = parseArgs(process.argv.slice(2));
+  const template = ARTICLE_TEMPLATES[args.template];
+  if (!template) {
+    console.error(`Unknown --template "${args.template}". Available: ${listTemplateIds().join(', ')}`);
+    process.exitCode = 1;
+    return;
+  }
+
   const briefsPath = args.briefs || latestBriefsFile();
   if (!briefsPath) {
     console.error('No product-briefs file found. Run `npm run pipeline:match` first.');
@@ -203,8 +226,8 @@ ${sourcesBlock}
 
 Write the article JSON now.`;
 
-  console.log('Drafting article with Poe...');
-  const draft = await askPoeForJson({ system: SYSTEM_PROMPT, prompt, maxTokens: 3000 });
+  console.log(`Drafting article with Poe (template: ${template.label})...`);
+  const draft = await askPoeForJson({ system: buildSystemPrompt(template), prompt, maxTokens: template.maxTokens });
   warnOnUnexpectedCitations(draft.bodyMarkdown, sources);
 
   const slug = slugify(draft.title);
