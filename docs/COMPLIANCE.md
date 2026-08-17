@@ -114,3 +114,14 @@ designed around.
     Program Operating Agreement. Treat a flagged image as a placeholder
     to replace with an API-sourced or manufacturer-provided image before
     `affiliateStatus` reaches `approved`/`active` on a real, live link.
+- **Article hero photos are AI-generated lifestyle images, not real
+  photography of a real person.** `3-generate-article.mjs` generates
+  these via Poe rather than sourcing real stock/editorial photography.
+  This is lower-stakes than the product-image case above — a hero photo
+  isn't claiming to depict a specific real customer or reader the way a
+  product photo claims to depict a specific real item — but it's still
+  worth knowing before publishing: don't caption or reference it in a way
+  that implies it's a real person's photo (e.g. a testimonial), and
+  reviewers should sanity-check it doesn't have obvious AI-image
+  artifacts (distorted hands/faces) that would look unprofessional on a
+  live article.
