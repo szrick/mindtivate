@@ -132,10 +132,23 @@ function warnOnUnexpectedCitations(bodyMarkdown, sources) {
   }
 }
 
-async function generateHeroImage(title, slug) {
+// Category -> scene hint, so the hero photo is actually about the
+// article's topic rather than one generic image for every piece.
+const HERO_SCENE_HINTS = {
+  'Weight Loss': 'a woman going about an everyday healthy routine — cooking a simple meal, walking outside, or getting ready for her day',
+  'Strength Training': 'a woman mid-set in a strength workout — lifting weights or using resistance equipment, focused expression, gym or home-gym setting',
+  Nutrition: 'a woman preparing or enjoying a wholesome meal in her kitchen, natural light',
+  'Mental Health': 'a woman in a quiet, grounding moment — journaling, stretching, or sitting with a warm drink, calm and present',
+  'Bodyweight Fitness': 'a woman doing a bodyweight exercise like push-ups, a stretch, or a yoga pose, at home or outdoors',
+  Recovery: 'a woman resting or gently stretching in a cozy setting, soft morning or evening light',
+  Motivation: 'a woman lacing up her shoes or starting her day with quiet, grounded determination',
+};
+
+async function generateHeroImage(title, slug, category) {
   try {
     console.log('Generating hero image...');
-    const imagePrompt = `Flat, minimalist editorial illustration for a women's fitness and wellness article titled "${title}". Warm, soft color palette (cream, plum, blush tones), simple shapes, no text, no logos, no readable words, no photorealistic faces.`;
+    const sceneHint = HERO_SCENE_HINTS[category] || 'a woman in a candid, everyday moment related to the topic';
+    const imagePrompt = `Editorial lifestyle photograph for a women's health and wellness article titled "${title}". Show ${sceneHint}. Candid, documentary-style composition — natural and unposed, not an overly retouched stock-photo look. Diverse in age, body type, and skin tone; avoid one narrow beauty standard. Natural, warm lighting; soft warm color grading (cream, muted plum, blush undertones) to match an editorial brand palette. Shallow depth of field for an artistic, magazine-quality feel. No visible text, logos, or watermarks in the image.`;
     const { buffer, ext } = await generatePoeImage({ prompt: imagePrompt });
 
     const imagesDir = 'src/content/articles/_images';
@@ -143,7 +156,7 @@ async function generateHeroImage(title, slug) {
     const imageFileName = `${slug}-hero.${ext}`;
     writeFileSync(`${imagesDir}/${imageFileName}`, buffer);
     console.log(`  saved ${imagesDir}/${imageFileName}`);
-    return { heroImage: `./_images/${imageFileName}`, heroImageAlt: `Illustration for "${title}"` };
+    return { heroImage: `./_images/${imageFileName}`, heroImageAlt: `Lifestyle photo related to "${title}"` };
   } catch (err) {
     console.warn(`  hero image generation skipped: ${err.message}`);
     return {};
@@ -238,7 +251,7 @@ Write the article JSON now.`;
     return;
   }
 
-  const heroImageFields = await generateHeroImage(draft.title, slug);
+  const heroImageFields = await generateHeroImage(draft.title, slug, draft.category);
 
   const frontmatter = {
     title: draft.title,

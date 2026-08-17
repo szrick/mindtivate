@@ -82,9 +82,14 @@ product record) and, via the [Poe API](https://poe.com/api_key)
    `article-templates.mjs` — each needs `wordCountTarget`, `maxTokens`,
    and a `guidance` string describing the structure/style; the voice and
    compliance rules apply automatically regardless.
-3. **Generates a hero illustration** (`POE_IMAGE_MODEL`) for the article
-   (`src/content/articles/_images/<slug>-hero.<ext>`). Non-fatal — a
-   failure just means no hero image.
+3. **Generates a hero photo** (`POE_IMAGE_MODEL`) for the article
+   (`src/content/articles/_images/<slug>-hero.<ext>`) — an editorial-style
+   lifestyle photograph of a woman in a candid, topically-relevant moment
+   (the scene hint is chosen from the article's category — see
+   `HERO_SCENE_HINTS` in the script), not a stock-photo pose or a single
+   narrow beauty standard. Non-fatal — a failure just means no hero image.
+   These are AI-generated, not real photography of a real person — see
+   COMPLIANCE.md.
 4. **Finds a product image on amazon.com** (`POE_SEARCH_MODEL`) — only if
    `--product` is passed and that product record doesn't already have an
    `image` field. This searches amazon.com for a matching real listing and
