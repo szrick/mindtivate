@@ -8,6 +8,7 @@ const navCategories = CATEGORIES.filter((c) => c.label !== 'Recovery' && c.label
 <header class="site-header">
   <div class="container header-inner">
     <a href={withBase('/')} class="logo" aria-label="Mindtivate home">
+      <img src={withBase('/logo-icon.png')} alt="" class="logo-icon" width="32" height="28" />
       Mindtivate<span class="logo-dot">.</span>
     </a>
 
@@ -42,6 +43,9 @@ const navCategories = CATEGORIES.filter((c) => c.label !== 'Recovery' && c.label
   }
 
   .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
     font-family: var(--font-heading);
     font-weight: 700;
     font-size: 1.4rem;
@@ -51,6 +55,12 @@ const navCategories = CATEGORIES.filter((c) => c.label !== 'Recovery' && c.label
 
   .logo:hover {
     text-decoration: none;
+  }
+
+  .logo-icon {
+    display: block;
+    width: 2.3rem;
+    height: auto;
   }
 
   .logo-dot {
