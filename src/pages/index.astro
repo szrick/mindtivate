@@ -34,7 +34,7 @@ const sliderArticles = allArticles
     <div class="category-grid">
       {CATEGORIES.map((c) => (
         <a href={withBase(`/category/${toCategorySlug(c.label)}`)} class="category-card card">
-          <CategoryIcon label={c.label} />
+          <CategoryIcon label={c.label} color="var(--color-terracotta-dark)" />
           <h3>{c.label}</h3>
           <p>{c.blurb}</p>
         </a>
