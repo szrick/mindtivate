@@ -5,7 +5,7 @@ description: >
   a number. Here's what current research actually supports for active
   women.
 pubDate: 2026-07-21
-category: Nutrition
+category: Food
 status: published
 draft: false
 author: mindtivate-team

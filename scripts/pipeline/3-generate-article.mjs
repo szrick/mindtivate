@@ -135,14 +135,14 @@ function warnOnUnexpectedCitations(bodyMarkdown, sources) {
 // Category -> scene hint, so the hero photo is actually about the
 // article's topic rather than one generic image for every piece.
 const HERO_SCENE_HINTS = {
-  'Weight Loss': 'a woman going about an everyday healthy routine — cooking a simple meal, walking outside, or getting ready for her day',
-  'Strength Training': 'a woman mid-set in a strength workout — lifting weights or using resistance equipment, focused expression, gym or home-gym setting',
-  Nutrition: 'a woman preparing or enjoying a wholesome meal in her kitchen, natural light',
-  'Mental Health': 'a woman in a quiet, grounding moment — journaling, stretching, or sitting with a warm drink, calm and present',
-  'Bodyweight Fitness': 'a woman doing a bodyweight exercise like push-ups, a stretch, or a yoga pose, at home or outdoors',
-  Beauty: 'a woman doing a simple skincare or self-care routine — washing her face, applying moisturizer, or a quiet bathroom-mirror moment, natural light',
-  Motivation: 'a woman lacing up her shoes or starting her day with quiet, grounded determination',
+  Body: 'a woman mid-set in a strength workout, doing a bodyweight exercise, or in an everyday healthy-routine moment — lifting weights, a push-up or stretch, walking outside, focused and natural',
+  Food: 'a woman preparing or enjoying a wholesome meal in her kitchen, natural light',
+  Mind: 'a woman in a quiet, grounding moment — journaling, stretching, or sitting with a warm drink, calm and present',
+  Hormones: 'a woman in a calm, everyday self-care moment — resting a hand on her stomach, sitting with tea, or a quiet moment checking in with herself, warm natural light',
   Love: 'a woman with a warm, confident expression in a candid moment — journaling, laughing with a friend, or a quiet moment of self-reflection',
+  Beauty: 'a woman doing a simple skincare or self-care routine — washing her face, applying moisturizer, or a quiet bathroom-mirror moment, natural light',
+  Sleep: 'a woman resting or gently stretching in a cozy setting, soft morning or evening light',
+  'Life Stages': "a woman in an everyday moment that reflects where she's at in life — with a baby, mid-workout in her 40s, or simply going about her day, natural and unposed",
 };
 
 async function generateHeroImage(title, slug, category) {
@@ -190,7 +190,7 @@ Respond with strict JSON only, no prose outside the JSON, matching:
 {
   "title": string,
   "description": string (max 160 chars, for SEO),
-  "category": "Weight Loss" | "Strength Training" | "Nutrition" | "Mental Health" | "Bodyweight Fitness" | "Beauty" | "Motivation" | "Love",
+  "category": "Body" | "Food" | "Mind" | "Hormones" | "Love" | "Beauty" | "Sleep" | "Life Stages",
   "tags": string[] (2-5 short tags),
   "bodyMarkdown": string (${template.wordCountTarget} words of markdown, using ## subheadings, no title heading, no frontmatter)
 }`;

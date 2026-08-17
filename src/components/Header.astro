@@ -3,12 +3,13 @@ import { CATEGORIES, toCategorySlug } from '../lib/categories';
 import { withBase } from '../lib/url';
 import CategoryIcon from './CategoryIcon.astro';
 
-// Keeps the sticky nav to the same 5 items it's always shown — Beauty
-// (previously Recovery), Motivation, and the new Love category are all
-// hidden here to avoid overflowing the header at common viewport widths
-// (adding a 6th item measurably overflowed at 1280px). All 8 categories
-// still appear in the homepage's full topic grid regardless.
-const navCategories = CATEGORIES.filter((c) => c.label !== 'Beauty' && c.label !== 'Motivation' && c.label !== 'Love');
+// The new category labels (Body, Food, Mind, etc.) are much shorter than
+// the old ones (Strength Training, Bodyweight Fitness), so all 8 fit in
+// the header without the overflow the old longer labels caused at 6
+// items — verified at 1280px before shipping this. If categories grow
+// longer/more numerous again, re-check for overflow before assuming it
+// still fits.
+const navCategories = CATEGORIES;
 ---
 
 <header class="site-header">

@@ -39,7 +39,7 @@ content:
         label: Category
         type: select
         options:
-          values: [Weight Loss, Strength Training, Nutrition, Mental Health, Bodyweight Fitness, Beauty, Motivation, Love]
+          values: [Body, Food, Mind, Hormones, Love, Beauty, Sleep, Life Stages]
         required: true
       - name: heroImage
         label: Hero image

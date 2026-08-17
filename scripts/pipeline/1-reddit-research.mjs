@@ -22,20 +22,24 @@ import { fetchSubredditPosts, searchSubreddit, permalinkFor } from '../lib/arcti
 
 loadEnv();
 
-// Covers all 8 site categories (src/lib/categories.ts) — loseit=Weight
-// Loss, xxfitness=Strength Training (+general), bodyweightfitness=
-// Bodyweight Fitness, nutrition=Nutrition, mentalhealth=Mental Health,
-// SkincareAddiction=Beauty, GetMotivated=Motivation,
-// relationship_advice=Love.
+// Covers all 8 site categories (src/lib/categories.ts) — xxfitness=Body
+// (strength + bodyweight + general fitness content all show up there),
+// nutrition=Food, mentalhealth=Mind, WomensHealth=Hormones,
+// relationship_advice=Love, SkincareAddiction=Beauty, sleep=Sleep. Life
+// Stages has no single well-established dedicated subreddit — AskWomen
+// is the broadest reasonable fit (postpartum/aging/decade-specific
+// threads show up there), but it's the weakest-targeted mapping of the
+// 8; consider --subreddits for a more specific one-off batch (e.g.
+// r/Mommit for a postpartum-focused run).
 const DEFAULT_SUBREDDITS = [
-  'loseit',
   'xxfitness',
-  'bodyweightfitness',
   'nutrition',
   'mentalhealth',
-  'SkincareAddiction',
-  'GetMotivated',
+  'WomensHealth',
   'relationship_advice',
+  'SkincareAddiction',
+  'sleep',
+  'AskWomen',
 ];
 
 function parseArgs(argv) {
