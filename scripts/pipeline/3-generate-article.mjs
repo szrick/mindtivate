@@ -104,6 +104,21 @@ async function ensureProductImage(product) {
   }
 }
 
+// Real internal link candidates: only articles actually live on the
+// site (status: published, draft: false) — a link to a draft could
+// point at something that never ends up published, or isn't live yet.
+function listPublishedArticles() {
+  const dir = 'src/content/articles';
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir)
+    .filter((f) => f.endsWith('.md'))
+    .map((f) => {
+      const { data } = readFrontmatter(readFileSync(`${dir}/${f}`, 'utf8'));
+      return { slug: f.replace(/\.md$/, ''), ...data };
+    })
+    .filter((a) => a.status === 'published' && a.draft === false);
+}
+
 async function findSources(entry) {
   const topic = `${entry.painPoint.title} — ${entry.brief.problemSolved}`;
   console.log('Searching for authority sources to cite...');
@@ -129,6 +144,21 @@ function warnOnUnexpectedCitations(bodyMarkdown, sources) {
   if (unexpected.length > 0) {
     console.warn('  WARNING: article cites URL(s) not in the found source list — verify manually before publishing:');
     for (const url of unexpected) console.warn(`    - ${url}`);
+  }
+}
+
+// Same non-fatal spirit as warnOnUnexpectedCitations: the system prompt
+// tells the model to only link to articles from the given list, this
+// flags anything that slipped through (a plausible-sounding slug the
+// model guessed at, or a stale one), so a dangling internal link doesn't
+// silently ship.
+function warnOnUnexpectedInternalLinks(bodyMarkdown, articles) {
+  const linkedSlugs = [...bodyMarkdown.matchAll(/\]\(\/articles\/([a-z0-9-]+)\/?\)/g)].map((m) => m[1]);
+  const allowedSlugs = new Set(articles.map((a) => a.slug));
+  const unexpected = linkedSlugs.filter((slug) => !allowedSlugs.has(slug));
+  if (unexpected.length > 0) {
+    console.warn('  WARNING: article links internally to slug(s) not in the known published list — verify manually before publishing:');
+    for (const slug of unexpected) console.warn(`    - /articles/${slug}/`);
   }
 }
 
@@ -218,6 +248,16 @@ specific factual claim with an inline markdown link using one of those
 exact URLs — never invent, alter, or guess a URL yourself. If no sources
 are provided, write in general terms without any links or citations.
 
+INTERNAL LINKS: You may also be given a list of Mindtivate's own existing
+published articles. Where one is genuinely relevant to a specific point
+you're making — not just topically adjacent — link to it inline using
+its exact path from the list, with descriptive anchor text (never "click
+here" or "this article"). Same rule as external sources: never invent a
+path to an article that isn't on the list. Don't force it — 0-2 internal
+links in a piece is normal; stuffing one in every section reads as SEO
+padding, not a genuine reference. If no other articles are listed (or
+none are actually relevant), don't include any internal links.
+
 TITLE: Make it specific and genuinely interesting, not generic. Prefer a
 concrete number, a named formula/method, a real tension, or the actual
 question being asked over a flat label ("A Guide to X", "Understanding
@@ -301,6 +341,14 @@ async function run() {
         .join('\n')}`
     : '\n\nNo verified external sources are available this run — write in general terms and do not include any citation links or URLs.';
 
+  const existingArticles = listPublishedArticles();
+  console.log(`Found ${existingArticles.length} existing published article(s) as internal-link candidates.`);
+  const internalLinksBlock = existingArticles.length
+    ? `\n\nMindtivate's own published articles you may link to internally (use these exact paths as markdown links, only where genuinely relevant; do not invent a path to an article not listed):\n${existingArticles
+        .map((a) => `- "${a.title}" (/articles/${a.slug}/) — ${a.description}`)
+        .join('\n')}`
+    : '\n\nNo other published articles exist yet — do not include any internal /articles/ links.';
+
   const prompt = `Pain point (from r/${entry.painPoint.subreddit}): "${entry.painPoint.title}"
 Detail: ${entry.painPoint.selftextExcerpt}
 
@@ -308,12 +356,14 @@ Product research brief: ${entry.brief.category} — ${entry.brief.searchQuery}
 Problem it should solve: ${entry.brief.problemSolved}
 ${product ? `\nMatched product record: "${product.name}" — ${product.shortPitch}` : '\nNo specific product matched yet — write the article without a hard product recommendation.'}
 ${sourcesBlock}
+${internalLinksBlock}
 
 Write the article JSON now.`;
 
   console.log(`Drafting article with Poe (template: ${template.label})...`);
   const draft = await askPoeForJson({ system: buildSystemPrompt(template), prompt, maxTokens: template.maxTokens });
   warnOnUnexpectedCitations(draft.bodyMarkdown, sources);
+  warnOnUnexpectedInternalLinks(draft.bodyMarkdown, existingArticles);
   warnOnTitleLength(draft.title);
   warnOnAiClicheLanguage(draft.bodyMarkdown);
 

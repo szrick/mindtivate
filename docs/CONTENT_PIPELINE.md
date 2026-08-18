@@ -182,6 +182,19 @@ product record) and, via the [Poe API](https://poe.com/api_key)
    `article-templates.mjs` — each needs `wordCountTarget`, `maxTokens`,
    and a `guidance` string describing the structure/style; the voice and
    compliance rules apply automatically regardless.
+
+   **Internal links**: before drafting, `listPublishedArticles()` scans
+   `src/content/articles/` for existing `status: published, draft:
+   false` articles and offers them as internal-link candidates (title +
+   `/articles/<slug>/` path + description) — same "here's the exact
+   list, never invent one" pattern as external citations. The model is
+   told to link only where genuinely relevant (not force one into every
+   article) and to cap it around 0-2 links so it reads as a real
+   reference, not SEO padding. Draft articles are deliberately excluded
+   as link targets — linking to something that might never get published
+   would leave a dangling link. `warnOnUnexpectedInternalLinks` is the
+   same non-fatal "trust but verify" check as the citation one, flagging
+   any `/articles/` link that doesn't match a real known slug.
 3. **Generates a hero photo** (`POE_IMAGE_MODEL`) for the article
    (`src/content/articles/_images/<slug>-hero.<ext>`) — an editorial-style
    lifestyle photograph of a woman in a candid, topically-relevant moment
