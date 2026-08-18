@@ -98,7 +98,31 @@ product record) and, via the [Poe API](https://poe.com/api_key)
    (see `BASE_VOICE_PROMPT` in the script — never diet-culture/fear-based,
    no medical diagnoses, cite only verified sources, one natural product
    mention — this stays fixed no matter which structure template is
-   used). Always writes with `status: draft` and `draft: true` — the
+   used). `BASE_VOICE_PROMPT` also carries three quality rules that apply
+   to every template:
+   - **Titles**: specific and genuinely interesting over generic ("A
+     Guide to X"), no clickbait/curiosity-gap withholding, aimed at
+     under ~60 characters (Google's search-result truncation point)
+     where the template's title format allows.
+   - **SEO**: work the actual topic into the title and the first 1-2
+     sentences (no throat-clearing intro), write the meta description to
+     earn the click rather than just restate the title, descriptive
+     subheadings — explicitly instructed *against* keyword-stuffing,
+     since that reads badly to humans and is penalized by modern search
+     ranking anyway.
+   - **Sounds human, not AI-generated**: an explicit list of stock
+     AI-writing tells to avoid ("delve into," "in today's fast-paced
+     world," "game-changer," etc.), vary sentence length, use
+     contractions, prefer concrete detail over hedged generalities.
+
+   Two non-fatal post-generation checks back these up (same "trust but
+   verify" pattern as the citation check below) — `warnOnTitleLength`
+   flags a title over 65 characters, and `warnOnAiClicheLanguage` flags
+   any of those stock phrases that slipped through anyway. Neither
+   blocks the write; both just print a note so a human reviewer knows to
+   look.
+
+   Always writes with `status: draft` and `draft: true` — the
    schema in `src/content/config.ts` defaults to draft too, so a script
    that forgot to set it would still not publish.
 

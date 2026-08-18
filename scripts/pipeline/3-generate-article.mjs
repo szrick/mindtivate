@@ -132,6 +132,43 @@ function warnOnUnexpectedCitations(bodyMarkdown, sources) {
   }
 }
 
+// Google truncates search-result titles around ~60 characters — not a
+// hard rule (a longer, clearly better title beats an artificially
+// chopped one), so this warns rather than blocks.
+function warnOnTitleLength(title) {
+  if (title.length > 65) {
+    console.warn(`  NOTE: title is ${title.length} chars — may get truncated in search results (aim for ~60): "${title}"`);
+  }
+}
+
+// Same non-fatal spirit as the citation check above: the system prompt
+// tells the model to avoid these, but LLMs default back to them easily,
+// so this flags any that slipped through rather than trusting the
+// instruction silently.
+const AI_CLICHE_PATTERNS = [
+  /in today's fast-paced world/i,
+  /it'?s important to note that/i,
+  /it'?s worth noting/i,
+  /in conclusion,/i,
+  /delve into/i,
+  /navigate the/i,
+  /unlock the/i,
+  /game[\s-]changer/i,
+  /tapestry/i,
+  /elevate your/i,
+  /in the realm of/i,
+  /dive into the world of/i,
+  /a testament to/i,
+  /stands as a/i,
+];
+
+function warnOnAiClicheLanguage(bodyMarkdown) {
+  const hits = AI_CLICHE_PATTERNS.map((re) => bodyMarkdown.match(re)?.[0]).filter(Boolean);
+  if (hits.length > 0) {
+    console.warn(`  NOTE: found ${hits.length} stock AI-writing phrase(s), consider a pass to tighten: ${hits.join(', ')}`);
+  }
+}
+
 // Category -> scene hint, so the hero photo is actually about the
 // article's topic rather than one generic image for every piece.
 const HERO_SCENE_HINTS = {
@@ -179,7 +216,41 @@ You may be given a list of verified authority sources (real URLs someone
 already checked). When sources are provided, back up at least one
 specific factual claim with an inline markdown link using one of those
 exact URLs — never invent, alter, or guess a URL yourself. If no sources
-are provided, write in general terms without any links or citations.`;
+are provided, write in general terms without any links or citations.
+
+TITLE: Make it specific and genuinely interesting, not generic. Prefer a
+concrete number, a named formula/method, a real tension, or the actual
+question being asked over a flat label ("A Guide to X", "Understanding
+X"). No clickbait or curiosity-gap withholding ("You Won't Believe...")
+— that cuts against the evidence-based tone. Keep it under ~60
+characters where the template's title format allows, since Google
+truncates search results around there; a few extra characters for a
+clearly better, more specific title beats an artificially chopped one.
+
+SEO: Work the article's actual topic/primary phrase naturally into the
+title and the first 1-2 sentences of the body — a reader or search
+engine should know what this is about immediately, not after a
+throat-clearing intro. The "description" field is the search-result
+snippet, not just a summary: write it to earn the click (specific,
+concrete, under 160 characters), not as a dry restatement of the title.
+Subheadings should be specific and descriptive ("Why cortisol spikes
+after a bad night's sleep", not "Background" or "More Information").
+Never keyword-stuff — repeating the same phrase unnaturally reads badly
+to humans and is penalized by modern search ranking; write for the
+reader first.
+
+SOUND LIKE A PERSON WROTE THIS, NOT AN AI: avoid stock AI-writing tells —
+phrases like "in today's fast-paced world," "it's important to note
+that," "it's worth noting," "in conclusion," "delve into," "navigate
+the," "unlock the," "game-changer," "tapestry," "elevate your," "in the
+realm of," "dive into the world of," "a testament to," "stands as a."
+Vary sentence length — a short sentence next to a longer one reads more
+human than uniform medium-length sentences throughout. Use contractions
+where a person would ("it's," "you're," "don't"). Prefer concrete,
+specific detail over vague generalities. Don't hedge every claim into
+mush ("may potentially help support") — state what the evidence actually
+shows, with appropriate uncertainty only where the evidence itself is
+genuinely mixed.`;
 
 function buildSystemPrompt(template) {
   return `${BASE_VOICE_PROMPT}
@@ -243,6 +314,8 @@ Write the article JSON now.`;
   console.log(`Drafting article with Poe (template: ${template.label})...`);
   const draft = await askPoeForJson({ system: buildSystemPrompt(template), prompt, maxTokens: template.maxTokens });
   warnOnUnexpectedCitations(draft.bodyMarkdown, sources);
+  warnOnTitleLength(draft.title);
+  warnOnAiClicheLanguage(draft.bodyMarkdown);
 
   const slug = slugify(draft.title);
   const filePath = `src/content/articles/${slug}.md`;
