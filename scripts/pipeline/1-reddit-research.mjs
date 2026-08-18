@@ -11,10 +11,11 @@
 //   npm run pipeline:research -- --subreddits loseit,xxfitness,nutrition
 //   npm run pipeline:research -- --subreddits loseit --query "weight loss"
 //
-// --subreddits scopes the scan to a comma-separated list instead of the
-// default DEFAULT_SUBREDDITS. --query switches from a plain chronological
-// scan to Arctic Shift's keyword search (title + selftext) within each
-// scoped subreddit, for a topic-focused batch (e.g. a weight-loss push).
+// --subreddits overrides the default (a flat custom list, not grouped by
+// category — for a one-off topic-scoped batch). --query switches from a
+// plain chronological scan to Arctic Shift's keyword search (title +
+// selftext) within each scoped subreddit; applies whether you're on the
+// default category-grouped list or a custom --subreddits one.
 
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { loadEnv } from '../lib/env.mjs';
@@ -22,25 +23,22 @@ import { fetchSubredditPosts, searchSubreddit, permalinkFor } from '../lib/arcti
 
 loadEnv();
 
-// Covers all 8 site categories (src/lib/categories.ts) — xxfitness=Body
-// (strength + bodyweight + general fitness content all show up there),
-// nutrition=Food, mentalhealth=Mind, WomensHealth=Hormones,
-// relationship_advice=Love, SkincareAddiction=Beauty, sleep=Sleep. Life
-// Stages has no single well-established dedicated subreddit — AskWomen
-// is the broadest reasonable fit (postpartum/aging/decade-specific
-// threads show up there), but it's the weakest-targeted mapping of the
-// 8; consider --subreddits for a more specific one-off batch (e.g.
-// r/Mommit for a postpartum-focused run).
-const DEFAULT_SUBREDDITS = [
-  'xxfitness',
-  'nutrition',
-  'mentalhealth',
-  'WomensHealth',
-  'relationship_advice',
-  'SkincareAddiction',
-  'sleep',
-  'AskWomen',
-];
+// 5 subreddits per site category (src/lib/categories.ts), so each
+// category draws from a real spread of communities instead of a single
+// source. Confidence varies — the first 2-3 per category are
+// well-established, high-traffic communities; the rest are real but
+// smaller/more niche, so if one consistently returns 0 candidates, it
+// may be quieter than expected or worth swapping via --subreddits.
+const DEFAULT_SUBREDDITS_BY_CATEGORY = {
+  Body: ['xxfitness', 'loseit', 'bodyweightfitness', 'Fitness', 'GYM'],
+  Food: ['nutrition', 'EatCheapAndHealthy', 'MealPrepSunday', 'intermittentfasting', 'volumeeating'],
+  Mind: ['mentalhealth', 'GetMotivated', 'Anxiety', 'selfimprovement', 'DecidingToBeBetter'],
+  Hormones: ['WomensHealth', 'PCOS', 'Menopause', 'period', 'TwoXChromosomes'],
+  Love: ['relationship_advice', 'dating_advice', 'relationships', 'Marriage', 'datingoverthirty'],
+  Beauty: ['SkincareAddiction', 'MakeupAddiction', 'HaircareScience', '30PlusSkinCare', 'beauty'],
+  Sleep: ['sleep', 'insomnia', 'flexibility', 'stretching', 'backpain'],
+  'Life Stages': ['AskWomen', 'Mommit', 'beyondthebump', 'AskWomenOver30', 'Parenting'],
+};
 
 function parseArgs(argv) {
   const args = {};
@@ -73,39 +71,57 @@ function looksLikePainPoint(post) {
   return PAIN_SIGNAL_PATTERNS.some((re) => re.test(text));
 }
 
+// Scans (or --query searches) one subreddit and returns its filtered,
+// tagged candidates. targetCategory is a hint for review/organization —
+// stage 3 still assigns the article's actual category itself, this
+// doesn't bind it.
+async function scanSubreddit(subreddit, query, targetCategory) {
+  console.log(
+    `  ${query ? `Searching r/${subreddit} for "${query}"` : `Scanning r/${subreddit}`}${targetCategory ? ` (${targetCategory})` : ''}...`
+  );
+  // Arctic Shift has no "hot"/"top" ranking, only chronological — pull up
+  // to 100 (its per-request max) and let the pain-point heuristic +
+  // engagement threshold below do the real filtering.
+  const recent = query
+    ? await searchSubreddit(subreddit, query, { limit: 100 })
+    : await fetchSubredditPosts(subreddit, { limit: 100 });
+
+  const candidates = recent
+    .filter(looksLikePainPoint)
+    .filter((post) => post.num_comments >= 5) // some engagement = a real recurring question
+    .sort((a, b) => b.num_comments - a.num_comments)
+    .slice(0, 10)
+    .map((post) => ({
+      ...(targetCategory ? { targetCategory } : {}),
+      subreddit,
+      title: post.title,
+      url: `https://www.reddit.com${permalinkFor(post)}`,
+      selftextExcerpt: (post.selftext ?? '').slice(0, 500),
+      score: post.score,
+      numComments: post.num_comments,
+      createdUtc: post.created_utc,
+    }));
+
+  console.log(`    found ${candidates.length} candidate pain points`);
+  return candidates;
+}
+
 async function run() {
   const args = parseArgs(process.argv.slice(2));
-  const targetSubreddits = args.subreddits ?? DEFAULT_SUBREDDITS;
   const results = [];
 
-  for (const subreddit of targetSubreddits) {
-    console.log(args.query ? `Searching r/${subreddit} for "${args.query}"...` : `Scanning r/${subreddit}...`);
-    // Arctic Shift has no "hot"/"top" ranking, only chronological — pull
-    // up to 100 (its per-request max) and let the pain-point heuristic +
-    // engagement threshold below do the real filtering. With --query,
-    // this is a keyword search (title + selftext) instead of a plain
-    // chronological scan, for a topic-focused batch.
-    const recent = args.query
-      ? await searchSubreddit(subreddit, args.query, { limit: 100 })
-      : await fetchSubredditPosts(subreddit, { limit: 100 });
-
-    const candidates = recent
-      .filter(looksLikePainPoint)
-      .filter((post) => post.num_comments >= 5) // some engagement = a real recurring question
-      .sort((a, b) => b.num_comments - a.num_comments)
-      .slice(0, 10)
-      .map((post) => ({
-        subreddit,
-        title: post.title,
-        url: `https://www.reddit.com${permalinkFor(post)}`,
-        selftextExcerpt: (post.selftext ?? '').slice(0, 500),
-        score: post.score,
-        numComments: post.num_comments,
-        createdUtc: post.created_utc,
-      }));
-
-    results.push(...candidates);
-    console.log(`  found ${candidates.length} candidate pain points`);
+  if (args.subreddits) {
+    console.log(`Scanning ${args.subreddits.length} custom subreddit(s)...`);
+    for (const subreddit of args.subreddits) {
+      results.push(...(await scanSubreddit(subreddit, args.query)));
+    }
+  } else {
+    for (const [category, subreddits] of Object.entries(DEFAULT_SUBREDDITS_BY_CATEGORY)) {
+      console.log(`\n=== ${category} ===`);
+      for (const subreddit of subreddits) {
+        results.push(...(await scanSubreddit(subreddit, args.query, category)));
+      }
+    }
   }
 
   mkdirSync('scripts/pipeline/output', { recursive: true });

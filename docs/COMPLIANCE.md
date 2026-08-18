@@ -8,29 +8,25 @@ designed around.
 ## Reddit
 
 - **Self-promotion.** Reddit's site-wide rules and most subreddit rules
-  restrict posting your own content, and several target subreddits go
-  further:
-  - r/xxfitness moderates heavily against promotional content and
-    low-effort links; comments need to stand on their own as a real
-    answer.
-  - r/nutrition has a wiki/FAQ-first culture and is quick to remove
-    anything that reads as an ad.
-  - r/mentalhealth and r/relationship_advice are stricter still — treat
-    both as research-only (read what people struggle with) and do not
-    comment there with a product or article link at all. Both deal with
-    people in emotionally vulnerable situations (mental health struggles;
-    breakups, conflict, abuse), so they're a poor fit for promotional
-    replies regardless of platform rules — a wrong or pushy reply in a
-    vulnerable-user context risks real harm, not just a ban.
-  - r/WomensHealth, r/SkincareAddiction, r/sleep, and r/AskWomen (the
-    current default subreddit list, `DEFAULT_SUBREDDITS` in
-    `1-reddit-research.mjs`, covering Hormones, Beauty, Sleep, and Life
-    Stages respectively) haven't been engaged with via stage 6 yet —
-    apply the same research-first, no-low-effort-promo posture as the
-    others until their current rules and mod culture have actually been
-    checked. r/WomensHealth in particular can involve sensitive medical
-    topics — lean toward the same research-only caution as
-    r/mentalhealth there too.
+  restrict posting your own content. Stage 1 now scans 5 subreddits per
+  site category (`DEFAULT_SUBREDDITS_BY_CATEGORY` in
+  `1-reddit-research.mjs`, 40 total) — too many to keep an individually
+  audited list current here, so the default policy is: **treat every one
+  of them as research-only until its current rules and mod culture have
+  actually been checked**, the same posture stage 6 already requires
+  before `--post` does anything (see below). Never assume a subreddit is
+  promo-friendly just because it's in the default list; that list is
+  about finding real recurring questions, not vetted commenting targets.
+  - Extra caution, not just the default posture: subreddits centered on
+    mental health or emotionally vulnerable situations — r/mentalhealth,
+    r/Anxiety (Mind), r/relationship_advice (Love), r/PCOS,
+    r/Menopause, r/WomensHealth (Hormones) — warrant treating as
+    research-only *permanently*, not just until checked: do not comment
+    there with a product or article link at all. A wrong or pushy reply
+    in a vulnerable-user context risks real harm, not just a ban.
+  - r/xxfitness and r/nutrition (long-standing in this list) are known
+    to moderate heavily against promotional/low-effort content; comments
+    there need to stand on their own as a real answer.
   - Check each subreddit's current rules before commenting — they change,
     and rules are enforced per-subreddit, not uniformly.
 - **Why stage 6 is human-gated.** `scripts/pipeline/6-reddit-engagement-draft.mjs`

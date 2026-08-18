@@ -4,15 +4,35 @@ End-to-end path from a Reddit thread to a published, promoted article.
 
 ## 1. Research (`scripts/pipeline/1-reddit-research.mjs`)
 
-Scans `r/xxfitness`, `r/nutrition`, `r/mentalhealth`, `r/WomensHealth`,
-`r/relationship_advice`, `r/SkincareAddiction`, `r/sleep`, and
-`r/AskWomen` by default — one subreddit per site category
-(`src/lib/categories.ts`: Body, Food, Mind, Hormones, Love, Beauty,
-Sleep, Life Stages respectively; `r/AskWomen` for Life Stages is the
-weakest-targeted of the 8 — there's no single well-established
-dedicated subreddit for that category, see the comment above
-`DEFAULT_SUBREDDITS` in the script) — for recent posts, filters for ones
-that read like a specific, recurring, answerable problem (regex
+Scans 5 subreddits per site category by default (40 total —
+`DEFAULT_SUBREDDITS_BY_CATEGORY` in the script), so each of the 8
+categories (`src/lib/categories.ts`: Body, Food, Mind, Hormones, Love,
+Beauty, Sleep, Life Stages) draws from a real spread of communities
+instead of one source each:
+
+| Category | Subreddits |
+|---|---|
+| Body | xxfitness, loseit, bodyweightfitness, Fitness, GYM |
+| Food | nutrition, EatCheapAndHealthy, MealPrepSunday, intermittentfasting, volumeeating |
+| Mind | mentalhealth, GetMotivated, Anxiety, selfimprovement, DecidingToBeBetter |
+| Hormones | WomensHealth, PCOS, Menopause, period, TwoXChromosomes |
+| Love | relationship_advice, dating_advice, relationships, Marriage, datingoverthirty |
+| Beauty | SkincareAddiction, MakeupAddiction, HaircareScience, 30PlusSkinCare, beauty |
+| Sleep | sleep, insomnia, flexibility, stretching, backpain |
+| Life Stages | AskWomen, Mommit, beyondthebump, AskWomenOver30, Parenting |
+
+The first 2-3 per row are well-established, high-traffic communities;
+the rest are real but smaller/more niche — if one consistently returns 0
+candidates, it may just be quieter than expected, or worth swapping via
+`--subreddits`. Each result is tagged with a `targetCategory` field
+(a hint from which category's search found it, not an authoritative
+classification — stage 3 still assigns the article's actual category).
+This is a lot more subreddits than before, so a default run takes
+noticeably longer and makes many more Arctic Shift requests than the
+old single-subreddit-per-category version.
+
+For recent posts, filters for ones that read like a specific, recurring,
+answerable problem (regex
 heuristics for phrases like "any recommendations", "how do I",
 "struggling with"; excludes megathreads and mod posts), and keeps ones
 with at least 5 comments as a signal the question resonates. Writes
@@ -27,8 +47,10 @@ npm run pipeline:research -- --subreddits loseit,xxfitness,nutrition
 npm run pipeline:research -- --subreddits loseit --query "weight loss"
 ```
 
-`--subreddits` overrides the default list; `--query` switches from a
-plain chronological scan to Arctic Shift's keyword search (title +
+`--subreddits` overrides the whole default (a flat custom list, not
+grouped/tagged by category — for a one-off topic-scoped batch); `--query`
+switches from a plain chronological scan to Arctic Shift's keyword
+search (title +
 selftext) within each scoped subreddit, so results actually match the
 topic instead of just whatever's most recent.
 
