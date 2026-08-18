@@ -116,6 +116,42 @@ product record) and, via the [Poe API](https://poe.com/api_key)
    - `quick-hacks` (800-1200 words) — fast/snackable, Marie Claire
      "hacks" style: very tight intro, 4-6 punchy tips (~120-180 words
      each), minimal science depth, speed-focused framing.
+   - `personal-essay` (700-1000 words) — opens grounded in the real
+     Reddit poster's actual situation (quoted/paraphrased, explicitly
+     attributed to them), pivots into the site's usual third-person
+     analysis, closes back on their situation. Deliberately *not* a
+     first-person "I tried X" narrative written as the site's own
+     experience — that would violate COMPLIANCE.md's rule against
+     presenting AI-drafted content as a real personal anecdote under the
+     anonymous `mindtivate-team` byline. This template exists to capture
+     the engagement value of concrete, specific, emotionally-grounded
+     openings without that honesty problem.
+   - `myth-vs-fact` (900-1200 words) — 3-5 `## Myth: ...` / **Fact:**
+     pairs, each correction specific (numbers/timeframes/mechanisms, not
+     "it depends"), myths grounded in real misconceptions from the
+     source thread rather than invented strawmen.
+   - `ask-the-expert-qa` (900-1200 words) — 4-6 literal question-then-
+     answer pairs, phrased the way a real reader would actually ask,
+     escalating from basic to nuanced.
+   - `self-assessment-checklist` (700-1000 words) — a reflective
+     checklist (5-8 items) the reader works through, explicitly framed as
+     non-diagnostic, with a "what your answers might mean" section in
+     rough bands rather than a verdict.
+   - `step-by-step-guide` (800-1100 words) — front-loaded value
+     statement, then 4-7 numbered `## Step N:` sections, closing with a
+     realistic expectation-setting note instead of a generic sign-off.
+   - `comparison` (900-1200 words) — "X vs. Y" format: neutral
+     definitions of each option, then key differences, then situational
+     ("if X, go with A; if Y, go with B") guidance rather than crowning
+     one universal winner.
+
+   The 6 non-`standard`/`self-listicle`/`quick-hacks` templates above
+   were derived from research into what actually drives engagement/
+   retention in health content (personal essays, myth-correction
+   Q&A, expert-Q&A, interactive/checklist formats, how-to structure,
+   and comparison content) — see the git history on
+   `scripts/lib/article-templates.mjs` for the specific findings behind
+   each one.
 
    Run with an unknown `--template` value to print the current list of
    valid ids. Add a new one by adding an entry to `ARTICLE_TEMPLATES` in
