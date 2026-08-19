@@ -1,0 +1,105 @@
+---
+// Shared markup for the boxed newsletter CTA used at both the middle and
+// the bottom of an article. Both placements render this exact same
+// component so they're guaranteed to look identical — including under a
+// browser's own forced-dark rendering, which can otherwise treat two
+// separately-styled elements differently even when their CSS colors
+// match on paper.
+import { getEntry } from 'astro:content';
+import { withBase } from '../lib/url';
+
+interface Props {
+  id?: string;
+}
+
+const { id = 'inline-newsletter-email' } = Astro.props;
+
+const settings = await getEntry('settings', 'site');
+const formAction = settings?.data.senderFormAction ?? '#';
+---
+
+<aside class="inline-newsletter" aria-label="Newsletter signup">
+  <p class="inline-newsletter-eyebrow">Mindtivate Insights</p>
+  <p class="inline-newsletter-copy">
+    Health, fitness, beauty, hormones, relationships, and practical tips
+    for living well, delivered to your inbox free.
+  </p>
+  <form class="inline-newsletter-form" action={formAction} method="post" target="_blank">
+    <label for={id} class="visually-hidden">Email address</label>
+    <input
+      id={id}
+      type="email"
+      name="email"
+      required
+      placeholder="you@example.com"
+      autocomplete="email"
+    />
+    <button type="submit" class="btn btn-primary">Sign up</button>
+  </form>
+  <p class="inline-newsletter-consent">
+    By signing up, you agree to our <a href={withBase('/privacy-policy')}>privacy policy</a>.
+  </p>
+</aside>
+
+<style>
+  .inline-newsletter {
+    max-width: 720px;
+    margin: 2.5rem 0;
+    padding: 1.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-cream-deep);
+  }
+
+  .inline-newsletter-eyebrow {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--color-plum);
+    margin: 0 0 0.5em;
+  }
+
+  .inline-newsletter-copy {
+    color: var(--color-plum-soft);
+    font-size: 0.95rem;
+    margin: 0 0 1.1em;
+  }
+
+  .inline-newsletter-form {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    margin: 0 0 0.8em;
+  }
+
+  .inline-newsletter-form input {
+    flex: 1 1 200px;
+    padding: 0.75em 1.1em;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background: var(--color-white);
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+  }
+
+  .inline-newsletter-form input:focus-visible {
+    outline: 3px solid var(--color-terracotta);
+  }
+
+  .inline-newsletter-form .btn {
+    padding: 0.7em 1.4em;
+    font-size: 0.8rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .inline-newsletter-consent {
+    font-size: 0.78rem;
+    color: var(--color-plum-soft);
+    margin: 0;
+  }
+
+  .inline-newsletter-consent a {
+    color: var(--color-plum-soft);
+  }
+</style>

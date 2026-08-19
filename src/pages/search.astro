@@ -1,0 +1,99 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Search" description="Search Mindtivate articles by keyword.">
+  <section class="section container search-page">
+    <p class="eyebrow">Search</p>
+    <h1 id="search-heading">Search results</h1>
+    <p id="search-status" class="search-status"></p>
+    <div id="search-results" class="search-results"></div>
+  </section>
+</BaseLayout>
+
+<style>
+  .search-status {
+    color: var(--color-plum-soft);
+  }
+
+  .search-results {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .search-result {
+    display: block;
+    padding: 1.4rem;
+    color: inherit;
+  }
+
+  .search-result:hover {
+    text-decoration: none;
+  }
+
+  .search-result h3 {
+    margin: 0.6em 0 0.3em;
+  }
+
+  .search-result p {
+    font-size: 0.92rem;
+    margin: 0;
+  }
+</style>
+
+<script>
+  const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+  const heading = document.getElementById('search-heading');
+  const status = document.getElementById('search-status');
+  const results = document.getElementById('search-results');
+
+  const query = new URLSearchParams(window.location.search).get('q')?.trim() ?? '';
+
+  if (heading) {
+    heading.textContent = query ? `Results for "${query}"` : 'Search results';
+  }
+
+  if (!query) {
+    if (status) status.textContent = 'Use the search icon in the header to look up a topic.';
+  } else {
+    fetch(`${base}/search-index.json`)
+      .then((res) => res.json())
+      .then((articles: { slug: string; title: string; description: string; category: string; searchText: string }[]) => {
+        const q = query.toLowerCase();
+        const matches = articles.filter((a) => a.searchText.includes(q));
+
+        if (matches.length === 0) {
+          if (status) status.textContent = `No articles matched "${query}". Try a different keyword.`;
+          return;
+        }
+
+        if (status) {
+          status.textContent = `${matches.length} article${matches.length === 1 ? '' : 's'} found.`;
+        }
+
+        matches.forEach((a) => {
+          const link = document.createElement('a');
+          link.className = 'search-result card';
+          link.href = `${base}/articles/${a.slug}/`;
+
+          const tag = document.createElement('span');
+          tag.className = 'tag';
+          tag.textContent = a.category;
+
+          const h3 = document.createElement('h3');
+          h3.textContent = a.title;
+
+          const p = document.createElement('p');
+          p.textContent = a.description;
+
+          link.append(tag, h3, p);
+          results?.append(link);
+        });
+      })
+      .catch(() => {
+        if (status) status.textContent = 'Something went wrong loading search results.';
+      });
+  }
+</script>

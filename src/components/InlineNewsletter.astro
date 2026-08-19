@@ -1,101 +1,15 @@
 ---
-// Inserted client-side into the middle of an article's body (see the
-// <script> below) — one editorial pattern borrowed from SELF.com's inline
-// newsletter boxes, shortened and reworded for Mindtivate's broader
-// (not single-topic) newsletter.
-import { getEntry } from 'astro:content';
-import { withBase } from '../lib/url';
-
-const settings = await getEntry('settings', 'site');
-const formAction = settings?.data.senderFormAction ?? '#';
+// Client-side-inserted copy of NewsletterBox, placed at the middle of an
+// article's body (see the <script> below) — one editorial pattern
+// borrowed from SELF.com's inline newsletter boxes. The bottom-of-article
+// newsletter box (rendered directly in ArticleLayout.astro) uses the same
+// NewsletterBox component so both placements are guaranteed identical.
+import NewsletterBox from './NewsletterBox.astro';
 ---
 
 <template data-inline-newsletter-template>
-  <aside class="inline-newsletter" aria-label="Newsletter signup">
-    <p class="inline-newsletter-eyebrow">Mindtivate Insights</p>
-    <p class="inline-newsletter-copy">
-      Health, fitness, beauty, hormones, relationships, and practical tips
-      for living well, delivered to your inbox free.
-    </p>
-    <form class="inline-newsletter-form" action={formAction} method="post" target="_blank">
-      <label for="inline-newsletter-email" class="visually-hidden">Email address</label>
-      <input
-        id="inline-newsletter-email"
-        type="email"
-        name="email"
-        required
-        placeholder="you@example.com"
-        autocomplete="email"
-      />
-      <button type="submit" class="btn btn-primary">Sign up</button>
-    </form>
-    <p class="inline-newsletter-consent">
-      By signing up, you agree to our <a href={withBase('/privacy-policy')}>privacy policy</a>.
-    </p>
-  </aside>
+  <NewsletterBox id="inline-newsletter-email-mid" />
 </template>
-
-<style>
-  .inline-newsletter {
-    margin: 2.5rem 0;
-    padding: 1.75rem;
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-lg);
-    background: var(--color-cream-deep);
-  }
-
-  .inline-newsletter-eyebrow {
-    font-family: var(--font-heading);
-    font-weight: 700;
-    font-size: 1.05rem;
-    color: var(--color-plum);
-    margin: 0 0 0.5em;
-  }
-
-  .inline-newsletter-copy {
-    color: var(--color-plum-soft);
-    font-size: 0.95rem;
-    margin: 0 0 1.1em;
-  }
-
-  .inline-newsletter-form {
-    display: flex;
-    gap: 0.6rem;
-    flex-wrap: wrap;
-    margin: 0 0 0.8em;
-  }
-
-  .inline-newsletter-form input {
-    flex: 1 1 200px;
-    padding: 0.75em 1.1em;
-    border-radius: 999px;
-    border: 1px solid var(--color-border);
-    background: var(--color-white);
-    font-family: var(--font-body);
-    font-size: 0.92rem;
-  }
-
-  .inline-newsletter-form input:focus-visible {
-    outline: 3px solid var(--color-terracotta);
-  }
-
-  .inline-newsletter-form .btn {
-    padding: 0.7em 1.4em;
-    font-size: 0.8rem;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
-  }
-
-  .inline-newsletter-consent {
-    font-size: 0.78rem;
-    color: var(--color-plum-soft);
-    margin: 0;
-  }
-
-  .inline-newsletter-consent a {
-    color: var(--color-plum-soft);
-  }
-</style>
 
 <script>
   function pickAnchor(blocks: Element[], targetIndex: number): Element | null {
