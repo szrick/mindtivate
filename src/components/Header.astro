@@ -47,6 +47,34 @@ const navCategories = CATEGORIES;
       </ul>
     </nav>
 
+    <button
+      type="button"
+      class="search-toggle"
+      data-search-toggle
+      aria-label="Search"
+      aria-expanded="false"
+      aria-controls="header-search-bar"
+    >
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+        <circle cx="10.5" cy="10.5" r="7" fill="none" stroke="currentColor" stroke-width="1.8" />
+        <line x1="15.8" y1="15.8" x2="21" y2="21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+    </button>
+  </div>
+
+  <div id="header-search-bar" class="header-search-bar" data-header-search-bar hidden>
+    <form class="header-search-form container" action={withBase('/search')} method="get">
+      <label for="header-search-input" class="visually-hidden">Search articles</label>
+      <input
+        id="header-search-input"
+        name="q"
+        type="search"
+        placeholder="Search articles by keyword…"
+        autocomplete="off"
+        data-search-input
+      />
+      <button type="submit" class="btn btn-primary">Search</button>
+    </form>
   </div>
 
   <nav id="mobile-menu" class="mobile-menu" data-mobile-menu aria-label="Categories" hidden>
@@ -75,8 +103,7 @@ const navCategories = CATEGORIES;
   .header-inner {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 2.5rem;
+    gap: 2rem;
     padding-top: 1rem;
     padding-bottom: 1rem;
   }
@@ -85,6 +112,7 @@ const navCategories = CATEGORIES;
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    flex-shrink: 0;
   }
 
   .menu-toggle {
@@ -136,10 +164,16 @@ const navCategories = CATEGORIES;
     color: var(--color-terracotta);
   }
 
+  .primary-nav {
+    flex: 1;
+    min-width: 0;
+  }
+
   .primary-nav ul {
     list-style: none;
     display: flex;
-    gap: 1.2rem;
+    justify-content: space-between;
+    gap: 1rem;
     margin: 0;
     padding: 0;
   }
@@ -156,6 +190,51 @@ const navCategories = CATEGORIES;
 
   .primary-nav a:hover {
     color: var(--color-terracotta-dark);
+  }
+
+  .search-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border: none;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--color-plum);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .search-toggle:hover {
+    color: var(--color-terracotta-dark);
+  }
+
+  .header-search-bar {
+    border-top: 1px solid var(--color-border);
+    background: var(--color-cream);
+  }
+
+  .header-search-form {
+    display: flex;
+    gap: 0.6rem;
+    padding: 1rem 1.5rem;
+  }
+
+  .header-search-form input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.7em 1.1em;
+    border-radius: 999px;
+    border: 1px solid var(--color-border);
+    background: var(--color-white);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--color-plum);
+  }
+
+  .header-search-form input:focus-visible {
+    outline: 3px solid var(--color-terracotta);
   }
 
   .mobile-menu {
@@ -244,6 +323,45 @@ const navCategories = CATEGORIES;
       const target = e.target as Node;
       if (!menu!.contains(target) && !toggle!.contains(target)) {
         closeMenu();
+      }
+    });
+  }
+
+  const searchToggle = document.querySelector<HTMLButtonElement>('[data-search-toggle]');
+  const searchBar = document.querySelector<HTMLElement>('[data-header-search-bar]');
+  const searchInput = document.querySelector<HTMLInputElement>('[data-search-input]');
+
+  if (searchToggle && searchBar && searchInput) {
+    function closeSearch() {
+      searchBar!.hidden = true;
+      searchToggle!.setAttribute('aria-expanded', 'false');
+      searchToggle!.setAttribute('aria-label', 'Search');
+    }
+
+    function openSearch() {
+      searchBar!.hidden = false;
+      searchToggle!.setAttribute('aria-expanded', 'true');
+      searchToggle!.setAttribute('aria-label', 'Close search');
+      searchInput!.focus();
+    }
+
+    searchToggle.addEventListener('click', () => {
+      if (searchBar!.hidden) openSearch();
+      else closeSearch();
+    });
+
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !searchBar!.hidden) {
+        closeSearch();
+        searchToggle!.focus();
+      }
+    });
+
+    document.addEventListener('click', (e: MouseEvent) => {
+      if (searchBar!.hidden) return;
+      const target = e.target as Node;
+      if (!searchBar!.contains(target) && !searchToggle!.contains(target)) {
+        closeSearch();
       }
     });
   }
