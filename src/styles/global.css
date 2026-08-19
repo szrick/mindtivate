@@ -92,7 +92,13 @@ img {
 }
 
 .section {
-  padding: clamp(2.5rem, 4vw, 5rem) 0;
+  /* Longhand on purpose: this class is combined with .container on most
+     content sections, and a `padding` shorthand here would silently wipe
+     out .container's horizontal padding (equal specificity, later in the
+     cascade) rather than merge with it — that bug had every ".section
+     container" element flush against the viewport edge on mobile. */
+  padding-top: clamp(2.5rem, 4vw, 5rem);
+  padding-bottom: clamp(2.5rem, 4vw, 5rem);
 }
 
 .eyebrow {
