@@ -29,7 +29,10 @@ const navCategories = CATEGORIES;
       </button>
 
       <a href={withBase('/')} class="logo" aria-label="Mindtivate home">
-        <img src={withBase('/logo-icon.png')} alt="" class="logo-icon" width="32" height="28" />
+        <picture>
+          <source srcset={withBase('/logo-icon-light.png')} media="(prefers-color-scheme: dark)" />
+          <img src={withBase('/logo-icon.png')} alt="" class="logo-icon" width="32" height="28" />
+        </picture>
         <span class="logo-text">Mindtivate<span class="logo-dot">.</span></span>
       </a>
     </div>
@@ -285,6 +288,77 @@ const navCategories = CATEGORIES;
   @media (min-width: 861px) {
     .mobile-menu {
       display: none !important;
+    }
+  }
+
+  /* The header background otherwise stays fixed light regardless of
+     browser/OS dark-mode heuristics (see global.css's color-scheme:
+     light) — that opt-out targets automatic forced-dark repainting, not
+     a genuine prefers-color-scheme: dark media query, so this rule still
+     applies for users whose system is actually set to dark. Goes dark to
+     match the footer, with the logo/hamburger/nav swapped to light to
+     match — otherwise a real dark-mode visitor gets light chrome on a
+     background their browser is already trying to darken. */
+  @media (prefers-color-scheme: dark) {
+    .site-header {
+      background: var(--color-plum);
+      border-bottom-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .logo-text {
+      color: #fff;
+    }
+
+    .menu-toggle .bar {
+      background: #fff;
+    }
+
+    .primary-nav a {
+      color: #cfc9d6;
+    }
+
+    .primary-nav a:hover {
+      color: #fff;
+    }
+
+    .search-toggle {
+      color: #fff;
+    }
+
+    .search-toggle:hover {
+      color: var(--color-terracotta);
+    }
+
+    .header-search-bar {
+      background: var(--color-plum);
+      border-top-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .header-search-form input {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.25);
+      color: #fff;
+    }
+
+    .header-search-form input::placeholder {
+      color: #b8b1c2;
+    }
+
+    .mobile-menu {
+      background: var(--color-plum);
+      border-top-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .mobile-menu a {
+      color: #cfc9d6;
+    }
+
+    .mobile-menu a:hover {
+      color: #fff;
+    }
+
+    .mobile-menu li {
+      border-bottom-color: rgba(255, 255, 255, 0.12);
     }
   }
 </style>

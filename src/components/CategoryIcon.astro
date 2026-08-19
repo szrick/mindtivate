@@ -60,8 +60,10 @@ const iconStyle = `width:${size};height:${size};${color ? `color:${color};` : ''
   )}
   {label === 'Sleep' && (
     <g fill="currentColor" stroke="none">
-      <circle cx="11" cy="12" r="8" />
-      <circle cx="15" cy="9" r="7" fill="var(--color-cream)" />
+      <path
+        fill-rule="evenodd"
+        d="M3 12A8 8 0 1 0 19 12A8 8 0 1 0 3 12Z M8 9A7 7 0 1 0 22 9A7 7 0 1 0 8 9Z"
+      />
       <circle cx="19" cy="5.5" r="0.9" />
       <circle cx="21" cy="9" r="0.6" />
     </g>
