@@ -1,0 +1,48 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import ArticleCard from './ArticleCard.astro';
+
+interface Props {
+  article: CollectionEntry<'articles'>;
+}
+
+const { article } = Astro.props;
+const { category } = article.data;
+
+const others = await getCollection(
+  'articles',
+  (entry) => entry.data.status === 'published' && !entry.data.draft && entry.slug !== article.slug,
+);
+
+const byRecency = (a: CollectionEntry<'articles'>, b: CollectionEntry<'articles'>) =>
+  b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
+
+// Same-category articles first (most relevant), then fill any remaining
+// slots with the site's other most recent articles.
+const sameCategory = others.filter((a) => a.data.category === category).sort(byRecency);
+const rest = others.filter((a) => a.data.category !== category).sort(byRecency);
+const relatedArticles = [...sameCategory, ...rest].slice(0, 5);
+---
+
+{relatedArticles.length > 0 && (
+  <section class="section container related-articles">
+    <p class="eyebrow">Keep reading</p>
+    <h2>Related articles</h2>
+    <div class="related-articles-grid">
+      {relatedArticles.map((related) => <ArticleCard article={related} />)}
+    </div>
+  </section>
+)}
+
+<style>
+  .related-articles {
+    padding-top: 0;
+  }
+
+  .related-articles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+</style>

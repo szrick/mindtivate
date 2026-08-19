@@ -4,6 +4,8 @@ import BaseLayout from './BaseLayout.astro';
 import AffiliateDisclosure from '../components/AffiliateDisclosure.astro';
 import ProductCallout from '../components/ProductCallout.astro';
 import NewsletterSignup from '../components/NewsletterSignup.astro';
+import InlineNewsletter from '../components/InlineNewsletter.astro';
+import RelatedArticles from '../components/RelatedArticles.astro';
 import { getEntries, getEntry } from 'astro:content';
 import { toCategorySlug } from '../lib/categories';
 import { withBase } from '../lib/url';
@@ -45,6 +47,8 @@ const categorySlug = toCategorySlug(category);
       <slot />
     </div>
 
+    <InlineNewsletter />
+
     {products.length > 0 && (
       <section class="article-products">
         <h2>Mentioned in this article</h2>
@@ -52,6 +56,8 @@ const categorySlug = toCategorySlug(category);
       </section>
     )}
   </article>
+
+  <RelatedArticles article={article} />
 
   <div class="section container">
     <NewsletterSignup />
