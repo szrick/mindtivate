@@ -1,0 +1,163 @@
+---
+// Homepage featured section: a big 2/3-width lead article alongside two
+// smaller 1/3-width articles on desktop. On mobile the same 3 articles
+// stack one after another (see the media query below) — there's no
+// separate mobile-only content, just a different layout of the same set.
+import type { CollectionEntry } from 'astro:content';
+import { withBase } from '../lib/url';
+
+interface Props {
+  articles: CollectionEntry<'articles'>[];
+}
+
+const { articles } = Astro.props;
+const [main, ...side] = articles;
+---
+
+{main && (
+  <div class="featured-grid">
+    <a href={withBase(`/articles/${main.slug}`)} class="featured-card featured-main">
+      {main.data.heroImage && (
+        <img
+          src={main.data.heroImage.src}
+          alt={main.data.heroImageAlt ?? main.data.title}
+          loading="eager"
+        />
+      )}
+      <div class="featured-scrim"></div>
+      <div class="featured-copy">
+        <span class="tag">{main.data.category}</span>
+        <h2>{main.data.title}</h2>
+        <p>{main.data.description}</p>
+      </div>
+    </a>
+
+    {side.length > 0 && (
+      <div class="featured-side">
+        {side.map((article) => (
+          <a href={withBase(`/articles/${article.slug}`)} class="featured-card featured-side-item">
+            {article.data.heroImage && (
+              <img
+                src={article.data.heroImage.src}
+                alt={article.data.heroImageAlt ?? article.data.title}
+                loading="lazy"
+              />
+            )}
+            <div class="featured-scrim"></div>
+            <div class="featured-copy featured-copy-sm">
+              <span class="tag">{article.data.category}</span>
+              <h3>{article.data.title}</h3>
+            </div>
+          </a>
+        ))}
+      </div>
+    )}
+  </div>
+)}
+
+<style>
+  .featured-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .featured-card {
+    position: relative;
+    display: block;
+    color: #fff;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+  }
+
+  .featured-card:hover {
+    text-decoration: none;
+  }
+
+  .featured-card img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0;
+  }
+
+  .featured-scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgba(47, 42, 51, 0.82) 0%, rgba(47, 42, 51, 0.15) 55%, rgba(47, 42, 51, 0) 100%);
+  }
+
+  .featured-copy {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: clamp(1.25rem, 3vw, 2.5rem);
+  }
+
+  .featured-copy .tag {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+  }
+
+  .featured-copy h2 {
+    color: #fff;
+    margin: 0.5em 0 0.3em;
+    font-size: clamp(1.3rem, 1.1rem + 1.2vw, 2rem);
+  }
+
+  .featured-copy p {
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .featured-main {
+    min-height: 420px;
+  }
+
+  .featured-side {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .featured-side-item {
+    flex: 1;
+    min-height: 200px;
+  }
+
+  .featured-copy-sm {
+    padding: 1.1rem;
+  }
+
+  .featured-copy-sm h3 {
+    color: #fff;
+    margin: 0.4em 0 0;
+    font-size: 1rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  @media (max-width: 640px) {
+    .featured-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .featured-main {
+      min-height: 260px;
+    }
+
+    .featured-side-item {
+      min-height: 220px;
+    }
+  }
+</style>
