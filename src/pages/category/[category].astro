@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ArticleCard from '../../components/ArticleCard.astro';
+import NewsletterBox from '../../components/NewsletterBox.astro';
 import { CATEGORIES, toCategorySlug, type CategoryLabel } from '../../lib/categories';
 
 export async function getStaticPaths() {
@@ -35,6 +36,10 @@ const articles = allArticles.sort((a, b) => b.data.pubDate.valueOf() - a.data.pu
       <p>No articles in this category yet — check back soon.</p>
     )}
   </section>
+
+  <div class="section container">
+    <NewsletterBox id={`inline-newsletter-email-category-${toCategorySlug(category)}`} />
+  </div>
 </BaseLayout>
 
 <style>

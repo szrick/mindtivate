@@ -25,7 +25,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   .search-result {
     display: block;
-    padding: 1.4rem;
     color: inherit;
   }
 
@@ -33,17 +32,38 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     text-decoration: none;
   }
 
-  .search-result h3 {
+  .search-result img {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    border-radius: 0;
+  }
+
+  .search-result-body {
+    padding: 1.4rem;
+  }
+
+  .search-result-body h3 {
     margin: 0.6em 0 0.3em;
   }
 
-  .search-result p {
+  .search-result-body p {
     font-size: 0.92rem;
     margin: 0;
   }
 </style>
 
 <script>
+  interface SearchIndexEntry {
+    slug: string;
+    title: string;
+    description: string;
+    category: string;
+    searchText: string;
+    heroImage: string | null;
+    heroImageAlt: string;
+  }
+
   const base = import.meta.env.BASE_URL.replace(/\/$/, '');
   const heading = document.getElementById('search-heading');
   const status = document.getElementById('search-status');
@@ -55,12 +75,43 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     heading.textContent = query ? `Results for "${query}"` : 'Search results';
   }
 
+  function renderResult(a: SearchIndexEntry) {
+    const link = document.createElement('a');
+    link.className = 'search-result card';
+    link.href = `${base}/articles/${a.slug}/`;
+
+    if (a.heroImage) {
+      const img = document.createElement('img');
+      img.src = a.heroImage;
+      img.alt = a.heroImageAlt;
+      img.loading = 'lazy';
+      link.append(img);
+    }
+
+    const body = document.createElement('div');
+    body.className = 'search-result-body';
+
+    const tag = document.createElement('span');
+    tag.className = 'tag';
+    tag.textContent = a.category;
+
+    const h3 = document.createElement('h3');
+    h3.textContent = a.title;
+
+    const p = document.createElement('p');
+    p.textContent = a.description;
+
+    body.append(tag, h3, p);
+    link.append(body);
+    results?.append(link);
+  }
+
   if (!query) {
     if (status) status.textContent = 'Use the search icon in the header to look up a topic.';
   } else {
     fetch(`${base}/search-index.json`)
       .then((res) => res.json())
-      .then((articles: { slug: string; title: string; description: string; category: string; searchText: string }[]) => {
+      .then((articles: SearchIndexEntry[]) => {
         const q = query.toLowerCase();
         const matches = articles.filter((a) => a.searchText.includes(q));
 
@@ -73,24 +124,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           status.textContent = `${matches.length} article${matches.length === 1 ? '' : 's'} found.`;
         }
 
-        matches.forEach((a) => {
-          const link = document.createElement('a');
-          link.className = 'search-result card';
-          link.href = `${base}/articles/${a.slug}/`;
-
-          const tag = document.createElement('span');
-          tag.className = 'tag';
-          tag.textContent = a.category;
-
-          const h3 = document.createElement('h3');
-          h3.textContent = a.title;
-
-          const p = document.createElement('p');
-          p.textContent = a.description;
-
-          link.append(tag, h3, p);
-          results?.append(link);
-        });
+        matches.forEach(renderResult);
       })
       .catch(() => {
         if (status) status.textContent = 'Something went wrong loading search results.';

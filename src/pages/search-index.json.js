@@ -9,9 +9,17 @@ export async function GET() {
   const articles = await getCollection('articles', ({ data }) => data.status === 'published' && !data.draft);
 
   const index = articles.map((article) => {
-    const { title, description, category, tags } = article.data;
+    const { title, description, category, tags, heroImage, heroImageAlt } = article.data;
     const searchText = [title, description, category, ...(tags ?? [])].join(' ').toLowerCase();
-    return { slug: article.slug, title, description, category, searchText };
+    return {
+      slug: article.slug,
+      title,
+      description,
+      category,
+      searchText,
+      heroImage: heroImage?.src ?? null,
+      heroImageAlt: heroImageAlt ?? title,
+    };
   });
 
   return new Response(JSON.stringify(index), {
