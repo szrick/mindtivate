@@ -6,6 +6,7 @@ import ProductCallout from '../components/ProductCallout.astro';
 import NewsletterBox from '../components/NewsletterBox.astro';
 import InlineNewsletter from '../components/InlineNewsletter.astro';
 import RelatedArticles from '../components/RelatedArticles.astro';
+import ShareButtons from '../components/ShareButtons.astro';
 import { getEntries, getEntry } from 'astro:content';
 import { toCategorySlug } from '../lib/categories';
 import { withBase } from '../lib/url';
@@ -23,6 +24,9 @@ const products = featuredProducts?.length ? await getEntries(featuredProducts) :
 
 const formattedDate = pubDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
 const categorySlug = toCategorySlug(category);
+
+const articleUrl = new URL(withBase(`/articles/${article.slug}/`), Astro.site).toString();
+const shareImageUrl = heroImage ? new URL(heroImage.src, Astro.site).toString() : undefined;
 ---
 
 <BaseLayout title={title} description={description} image={heroImage?.src} article>
@@ -55,6 +59,8 @@ const categorySlug = toCategorySlug(category);
         {products.map((product) => <ProductCallout product={product} />)}
       </section>
     )}
+
+    <ShareButtons title={title} url={articleUrl} imageUrl={shareImageUrl} />
   </article>
 
   <RelatedArticles article={article} />
