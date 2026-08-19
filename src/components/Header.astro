@@ -30,7 +30,7 @@ const navCategories = CATEGORIES;
 
       <a href={withBase('/')} class="logo" aria-label="Mindtivate home">
         <img src={withBase('/logo-icon.png')} alt="" class="logo-icon" width="32" height="28" />
-        Mindtivate<span class="logo-dot">.</span>
+        <span class="logo-text">Mindtivate<span class="logo-dot">.</span></span>
       </a>
     </div>
 
@@ -47,7 +47,6 @@ const navCategories = CATEGORIES;
       </ul>
     </nav>
 
-    <a href={withBase('/#newsletter')} class="btn btn-primary header-cta">Join the newsletter</a>
   </div>
 
   <nav id="mobile-menu" class="mobile-menu" data-mobile-menu aria-label="Categories" hidden>
@@ -159,12 +158,6 @@ const navCategories = CATEGORIES;
     color: var(--color-terracotta-dark);
   }
 
-  .header-cta {
-    padding: 0.6em 1.3em;
-    font-size: 0.88rem;
-    white-space: nowrap;
-  }
-
   .mobile-menu {
     background: var(--color-cream);
     border-top: 1px solid var(--color-border);
@@ -213,12 +206,6 @@ const navCategories = CATEGORIES;
   @media (min-width: 861px) {
     .mobile-menu {
       display: none !important;
-    }
-  }
-
-  @media (max-width: 640px) {
-    .header-cta {
-      display: none;
     }
   }
 </style>
