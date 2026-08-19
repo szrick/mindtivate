@@ -2,6 +2,12 @@
 // Plain share-intent links — no SDKs, no API keys, works on a static
 // site with no backend. Each platform's share URL just takes the page
 // URL (and sometimes title/image) as query params.
+//
+// Deliberately avoids generic class names like "share-buttons"/"share-btn"
+// — those are common targets in ad-blocker filter lists (EasyList/
+// EasyPrivacy, used by Brave Shields and most ad blockers), which can
+// hide the whole thing even though it's just plain links with no
+// tracking. "article-share*" is far less likely to collide.
 interface Props {
   title: string;
   url: string;
@@ -23,36 +29,36 @@ const shareLinks = {
 };
 ---
 
-<div class="share-buttons">
-  <p class="share-label">Share this article</p>
-  <div class="share-row">
-    <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer" class="share-btn" aria-label="Share on Facebook">
+<div class="article-share">
+  <p class="article-share-label">Share this article</p>
+  <div class="article-share-row">
+    <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer" class="article-share-link" aria-label="Share on Facebook">
       <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
         <circle cx="12" cy="12" r="10.5" fill="none" stroke="currentColor" stroke-width="1.5" />
         <text x="12" y="16.5" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="13" fill="currentColor">f</text>
       </svg>
     </a>
-    <a href={shareLinks.x} target="_blank" rel="noopener noreferrer" class="share-btn" aria-label="Share on X">
+    <a href={shareLinks.x} target="_blank" rel="noopener noreferrer" class="article-share-link" aria-label="Share on X">
       <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
         <circle cx="12" cy="12" r="10.5" fill="none" stroke="currentColor" stroke-width="1.5" />
         <line x1="7.8" y1="7.8" x2="16.2" y2="16.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
         <line x1="16.2" y1="7.8" x2="7.8" y2="16.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
       </svg>
     </a>
-    <a href={shareLinks.pinterest} target="_blank" rel="noopener noreferrer" class="share-btn" aria-label="Share on Pinterest">
+    <a href={shareLinks.pinterest} target="_blank" rel="noopener noreferrer" class="article-share-link" aria-label="Share on Pinterest">
       <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
         <circle cx="12" cy="12" r="10.5" fill="none" stroke="currentColor" stroke-width="1.5" />
         <text x="12" y="16.5" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="13" fill="currentColor">P</text>
       </svg>
     </a>
-    <a href={shareLinks.email} class="share-btn" aria-label="Share via email">
+    <a href={shareLinks.email} class="article-share-link" aria-label="Share via email">
       <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
         <circle cx="12" cy="12" r="10.5" fill="none" stroke="currentColor" stroke-width="1.5" />
         <rect x="6.5" y="8.5" width="11" height="8" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.4" />
         <path d="M7 9.2l5 4 5-4" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
       </svg>
     </a>
-    <button type="button" class="share-btn" data-copy-link data-url={url} aria-label="Copy link">
+    <button type="button" class="article-share-link" data-copy-link data-url={url} aria-label="Copy link">
       <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
         <circle cx="12" cy="12" r="10.5" fill="none" stroke="currentColor" stroke-width="1.5" />
         <rect x="8" y="8" width="8" height="9" rx="1.3" fill="none" stroke="currentColor" stroke-width="1.4" />
@@ -67,17 +73,17 @@ const shareLinks = {
       </svg>
     </button>
   </div>
-  <p class="copy-feedback" data-copy-feedback aria-live="polite"></p>
+  <p class="article-share-feedback" data-copy-feedback aria-live="polite"></p>
 </div>
 
 <style>
-  .share-buttons {
+  .article-share {
     margin: 2.5rem 0;
     padding-top: 2rem;
     border-top: 1px solid var(--color-border);
   }
 
-  .share-label {
+  .article-share-label {
     font-family: var(--font-body);
     font-weight: 600;
     font-size: 0.85rem;
@@ -87,12 +93,12 @@ const shareLinks = {
     margin: 0 0 0.9em;
   }
 
-  .share-row {
+  .article-share-row {
     display: flex;
     gap: 0.6rem;
   }
 
-  .share-btn {
+  .article-share-link {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -106,13 +112,13 @@ const shareLinks = {
     transition: background 0.15s ease, color 0.15s ease;
   }
 
-  .share-btn:hover {
+  .article-share-link:hover {
     background: var(--color-terracotta);
     color: #fff;
     text-decoration: none;
   }
 
-  .copy-feedback {
+  .article-share-feedback {
     margin: 0.6em 0 0;
     font-size: 0.82rem;
     color: var(--color-sage-dark);
