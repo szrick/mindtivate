@@ -23,6 +23,16 @@ const moreInCategory = featuredArticle
       .filter((a) => a.data.category === featuredArticle.data.category && a.slug !== featuredArticle.slug)
       .slice(0, 6)
   : [];
+
+// One tile per category in "Explore by topic", showing that category's
+// most recent article. Categories without a published article yet fall
+// back to the plain icon/blurb card further down.
+const latestByCategory = new Map<string, (typeof sortedArticles)[number]>();
+for (const article of sortedArticles) {
+  if (!latestByCategory.has(article.data.category)) {
+    latestByCategory.set(article.data.category, article);
+  }
+}
 ---
 
 <BaseLayout
@@ -62,13 +72,18 @@ const moreInCategory = featuredArticle
     <p class="eyebrow">Explore by topic</p>
     <h2>Find what you're working on</h2>
     <div class="category-grid">
-      {CATEGORIES.map((c) => (
-        <a href={withBase(`/category/${toCategorySlug(c.label)}`)} class="category-card card">
-          <CategoryIcon label={c.label} color="var(--color-terracotta-dark)" />
-          <h3>{c.label}</h3>
-          <p>{c.blurb}</p>
-        </a>
-      ))}
+      {CATEGORIES.map((c) => {
+        const featured = latestByCategory.get(c.label);
+        return featured ? (
+          <ArticleCard article={featured} />
+        ) : (
+          <a href={withBase(`/category/${toCategorySlug(c.label)}`)} class="category-card card">
+            <CategoryIcon label={c.label} color="var(--color-terracotta-dark)" />
+            <h3>{c.label}</h3>
+            <p>{c.blurb}</p>
+          </a>
+        );
+      })}
     </div>
   </section>
 
@@ -130,8 +145,8 @@ const moreInCategory = featuredArticle
 
   .category-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
     margin-top: 1.5rem;
   }
 

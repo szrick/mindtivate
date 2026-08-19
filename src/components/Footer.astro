@@ -1,6 +1,5 @@
 ---
 import { withBase } from '../lib/url';
-import { CATEGORIES, toCategorySlug } from '../lib/categories';
 
 const year = new Date().getFullYear();
 ---
@@ -8,33 +7,51 @@ const year = new Date().getFullYear();
 <footer class="site-footer">
   <div class="container footer-inner">
     <div class="footer-brand">
-      <p class="logo">Mindtivate<span class="logo-dot">.</span></p>
-      <p class="tagline">
-        Evidence-checked health and wellness guidance for women —
-        sourced from the questions real communities are actually
-        asking.
-      </p>
-      <a href="https://www.pinterest.com/mindtivate/" target="_blank" rel="noopener noreferrer" class="social-link">
-        Follow on Pinterest
+      <a href={withBase('/')} class="footer-logo" aria-label="Mindtivate home">
+        <img src={withBase('/logo-icon.png')} alt="" class="footer-logo-icon" width="32" height="28" />
+        <span class="footer-logo-text">Mindtivate<span class="logo-dot">.</span></span>
       </a>
+      <p class="tagline">
+        Empowering you with the knowledge and practical tips to navigate
+        every part of life — and become the best version of yourself.
+      </p>
+      <div class="social-links">
+        <a
+          href="https://www.pinterest.com/mindtivate/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="social-link"
+          aria-label="Mindtivate on Pinterest"
+        >
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <circle cx="12" cy="12" r="10.5" fill="none" stroke="currentColor" stroke-width="1.5" />
+            <text x="12" y="16.5" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="13" fill="currentColor">P</text>
+          </svg>
+        </a>
+        <a
+          href="https://x.com/mindtivate"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="social-link"
+          aria-label="Mindtivate on X"
+        >
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+            <circle cx="12" cy="12" r="10.5" fill="none" stroke="currentColor" stroke-width="1.5" />
+            <line x1="7.8" y1="7.8" x2="16.2" y2="16.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+            <line x1="16.2" y1="7.8" x2="7.8" y2="16.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+          </svg>
+        </a>
+      </div>
     </div>
 
     <div class="footer-col">
-      <h4>Explore</h4>
+      <h4>More about us</h4>
       <ul>
-        <li><a href={withBase('/articles')}>All articles</a></li>
-        {CATEGORIES.map((c) => (
-          <li><a href={withBase(`/category/${toCategorySlug(c.label)}`)}>{c.label}</a></li>
-        ))}
-      </ul>
-    </div>
-
-    <div class="footer-col">
-      <h4>About</h4>
-      <ul>
+        <li><a href={withBase('/about-us')}>About us</a></li>
         <li><a href={withBase('/about')}>Our approach</a></li>
-        <li><a href={withBase('/contact')}>Contact</a></li>
         <li><a href={withBase('/affiliate-disclosure')}>Affiliate disclosure</a></li>
+        <li><a href={withBase('/contact')}>Contact</a></li>
+        <li><a href={withBase('/terms-and-conditions')}>Terms and conditions</a></li>
         <li><a href={withBase('/privacy-policy')}>Privacy policy</a></li>
       </ul>
     </div>
@@ -59,18 +76,34 @@ const year = new Date().getFullYear();
 
   .footer-inner {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-columns: 2fr 1fr;
     gap: 2.5rem;
     padding-top: 3.5rem;
     padding-bottom: 2.5rem;
   }
 
-  .footer-brand .logo {
+  .footer-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0 0 0.8em;
+  }
+
+  .footer-logo:hover {
+    text-decoration: none;
+  }
+
+  .footer-logo-icon {
+    display: block;
+    width: 2rem;
+    height: auto;
+  }
+
+  .footer-logo-text {
     font-family: var(--font-heading);
     font-size: 1.3rem;
     font-weight: 700;
     color: #fff;
-    margin: 0 0 0.8em;
   }
 
   .logo-dot {
@@ -82,10 +115,26 @@ const year = new Date().getFullYear();
     max-width: 36ch;
   }
 
+  .social-links {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 0.4rem;
+  }
+
   .social-link {
-    color: #f2c9bb;
-    font-weight: 600;
-    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    color: #cfc9d6;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .social-link:hover {
+    color: #fff;
+    text-decoration: none;
   }
 
   .footer-col h4 {
@@ -132,10 +181,7 @@ const year = new Date().getFullYear();
 
   @media (max-width: 720px) {
     .footer-inner {
-      grid-template-columns: 1fr 1fr;
-    }
-    .footer-brand {
-      grid-column: 1 / -1;
+      grid-template-columns: 1fr;
     }
   }
 </style>

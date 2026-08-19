@@ -1,5 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getEntry } from 'astro:content';
+
+const settings = await getEntry('settings', 'site');
+const formAction = settings?.data.contactFormAction ?? '#';
+const recaptchaSiteKey = settings?.data.recaptchaSiteKey?.trim();
+const hasRecaptcha = Boolean(recaptchaSiteKey);
 ---
 
 <BaseLayout title="Contact" description="Get in touch with the Mindtivate team.">
@@ -8,20 +14,116 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <h1>Get in touch</h1>
     <p>
       Questions, corrections, partnership inquiries, or a topic you'd like
-      us to research? Email us and we'll get back to you.
-    </p>
-    <p>
-      <a href="mailto:hello@mindtivate.com" class="btn btn-primary">hello@mindtivate.com</a>
-    </p>
-    <p>
+      us to research? Send us a message below and we'll get back to you.
       Found something inaccurate in an article? Please include the article
-      URL — we take corrections seriously and will review promptly.
+      URL — we take corrections seriously and review them promptly.
     </p>
+
+    <!--
+      This is a static site with no backend of its own, so submissions need
+      a hosted form-handling service. Configure `contactFormAction` in
+      src/content/settings/site.yml (or via Pages CMS → Site settings) with
+      that service's submit URL — e.g. a Formspree endpoint, a Sender.net
+      form, or a Netlify Forms endpoint.
+
+      The hidden "company" field below is a honeypot: real visitors never
+      fill it in (it's visually hidden), so most simple bots that
+      auto-fill every field can be filtered server-side by rejecting any
+      submission where it's non-empty. That's a first line of defense —
+      pair it with the reCAPTCHA widget below for stronger protection.
+      Get a free reCAPTCHA v2 site key at
+      https://www.google.com/recaptcha/admin and set `recaptchaSiteKey`
+      in site.yml; the widget only renders once a key is configured.
+    -->
+    <form class="contact-form" action={formAction} method="post">
+      <div class="form-field honeypot" aria-hidden="true">
+        <label for="company">Company</label>
+        <input id="company" name="company" type="text" tabindex="-1" autocomplete="off" />
+      </div>
+
+      <div class="form-field">
+        <label for="name">Name</label>
+        <input id="name" name="name" type="text" required autocomplete="name" />
+      </div>
+
+      <div class="form-field">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" required autocomplete="email" />
+      </div>
+
+      <div class="form-field">
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="6" required></textarea>
+      </div>
+
+      {hasRecaptcha && (
+        <div class="form-field">
+          <div class="g-recaptcha" data-sitekey={recaptchaSiteKey}></div>
+        </div>
+      )}
+
+      <button type="submit" class="btn btn-primary">Send message</button>
+    </form>
+
+    {hasRecaptcha && <script src="https://www.google.com/recaptcha/api.js" async defer></script>}
   </section>
 </BaseLayout>
 
 <style>
   .prose-page {
     max-width: 640px;
+  }
+
+  .contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .form-field label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--color-plum);
+  }
+
+  .form-field input,
+  .form-field textarea {
+    padding: 0.75em 1em;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-border);
+    background: var(--color-white);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--color-plum);
+  }
+
+  .form-field textarea {
+    resize: vertical;
+  }
+
+  .form-field input:focus-visible,
+  .form-field textarea:focus-visible {
+    outline: 3px solid var(--color-terracotta);
+    outline-offset: 1px;
+  }
+
+  .contact-form .btn {
+    align-self: flex-start;
+  }
+
+  .honeypot {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
   }
 </style>

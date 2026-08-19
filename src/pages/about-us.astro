@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../lib/url';
+---
+
+<BaseLayout
+  title="About Us"
+  description="Mindtivate exists to help women navigate their health, relationships, and everyday life with real, evidence-checked information."
+>
+  <section class="section container prose-page">
+    <p class="eyebrow">About Us</p>
+    <h1>Knowledge you can actually use</h1>
+    <p>
+      Mindtivate exists to help women navigate every part of life — body,
+      food, mind, hormones, relationships, beauty, sleep, and the stages in
+      between — with information that's actually useful, not just
+      well-marketed. We're not here to sell you a transformation. We're
+      here to answer the question you actually typed into a search bar or
+      asked in a community thread at 11pm.
+    </p>
+
+    <h2>Why we exist</h2>
+    <p>
+      So much health and wellness content online is written to sell
+      something first and inform second. It's optimized for clicks, not
+      for whether the advice actually holds up. Mindtivate is built the
+      other way around: we start with the real questions women are asking
+      in communities across the internet, and we do the research before we
+      write a word.
+    </p>
+
+    <h2>What we cover</h2>
+    <p>
+      Our content spans eight areas of everyday life — Body, Food, Mind,
+      Hormones, Love, Beauty, Sleep, and Life Stages — because health
+      doesn't live in one category. A hormone shift affects your sleep. A
+      bad night's sleep affects your relationships. We try to write about
+      that whole picture, not just the fitness-magazine slice of it.
+    </p>
+
+    <h2>What we believe</h2>
+    <ul>
+      <li>Practical, specific advice beats vague inspiration.</li>
+      <li>Evidence-checked information beats trends and quick fixes.</li>
+      <li>You don't need a total life overhaul — small, sustainable changes compound.</li>
+      <li>Nothing here replaces a conversation with a qualified provider about your own body.</li>
+    </ul>
+
+    <p>
+      If you want the specifics of how an article actually gets made, see
+      our <a href={withBase('/about')}>approach</a>. If you want to reach
+      us directly, <a href={withBase('/contact')}>get in touch</a>.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .prose-page {
+    max-width: 720px;
+  }
+</style>
