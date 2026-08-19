@@ -87,7 +87,7 @@ const [main, ...side] = articles;
   .featured-scrim {
     position: absolute;
     inset: 0;
-    background: linear-gradient(0deg, rgba(47, 42, 51, 0.82) 0%, rgba(47, 42, 51, 0.15) 55%, rgba(47, 42, 51, 0) 100%);
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0.15) 55%, rgba(0, 0, 0, 0) 100%);
   }
 
   .featured-copy {
@@ -96,6 +96,10 @@ const [main, ...side] = articles;
     right: 0;
     bottom: 0;
     padding: clamp(1.25rem, 3vw, 2.5rem);
+    /* A dedicated translucent-black backdrop directly behind the title,
+       on top of the wider image-level scrim above, so the title stays
+       readable regardless of how light or busy the hero image is. */
+    background: rgba(0, 0, 0, 0.45);
   }
 
   .featured-copy .tag {
