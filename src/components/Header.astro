@@ -14,10 +14,25 @@ const navCategories = CATEGORIES;
 
 <header class="site-header">
   <div class="container header-inner">
-    <a href={withBase('/')} class="logo" aria-label="Mindtivate home">
-      <img src={withBase('/logo-icon.png')} alt="" class="logo-icon" width="32" height="28" />
-      Mindtivate<span class="logo-dot">.</span>
-    </a>
+    <div class="header-left">
+      <button
+        type="button"
+        class="menu-toggle"
+        data-menu-toggle
+        aria-label="Open menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+
+      <a href={withBase('/')} class="logo" aria-label="Mindtivate home">
+        <img src={withBase('/logo-icon.png')} alt="" class="logo-icon" width="32" height="28" />
+        Mindtivate<span class="logo-dot">.</span>
+      </a>
+    </div>
 
     <nav class="primary-nav" aria-label="Primary">
       <ul>
@@ -34,6 +49,19 @@ const navCategories = CATEGORIES;
 
     <a href={withBase('/#newsletter')} class="btn btn-primary header-cta">Join the newsletter</a>
   </div>
+
+  <nav id="mobile-menu" class="mobile-menu" data-mobile-menu aria-label="Categories" hidden>
+    <ul>
+      {navCategories.map((c) => (
+        <li>
+          <a href={withBase(`/category/${toCategorySlug(c.label)}`)}>
+            <CategoryIcon label={c.label} size="1.15rem" />
+            {c.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
 </header>
 
 <style>
@@ -52,6 +80,36 @@ const navCategories = CATEGORIES;
     gap: 2.5rem;
     padding-top: 1rem;
     padding-bottom: 1rem;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .menu-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 2.4rem;
+    height: 2.4rem;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .menu-toggle .bar {
+    display: block;
+    width: 1.4rem;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--color-plum);
   }
 
   .logo {
@@ -107,9 +165,54 @@ const navCategories = CATEGORIES;
     white-space: nowrap;
   }
 
+  .mobile-menu {
+    background: var(--color-cream);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .mobile-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0.5rem 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-menu li {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .mobile-menu li:last-child {
+    border-bottom: none;
+  }
+
+  .mobile-menu a {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.85rem 0.25rem;
+    color: var(--color-plum-soft);
+    font-weight: 500;
+  }
+
+  .mobile-menu a:hover {
+    color: var(--color-terracotta-dark);
+    text-decoration: none;
+  }
+
   @media (max-width: 860px) {
     .primary-nav {
       display: none;
+    }
+
+    .menu-toggle {
+      display: flex;
+    }
+  }
+
+  @media (min-width: 861px) {
+    .mobile-menu {
+      display: none !important;
     }
   }
 
@@ -119,3 +222,42 @@ const navCategories = CATEGORIES;
     }
   }
 </style>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const menu = document.querySelector<HTMLElement>('[data-mobile-menu]');
+
+  if (toggle && menu) {
+    function closeMenu() {
+      menu!.hidden = true;
+      toggle!.setAttribute('aria-expanded', 'false');
+      toggle!.setAttribute('aria-label', 'Open menu');
+    }
+
+    function openMenu() {
+      menu!.hidden = false;
+      toggle!.setAttribute('aria-expanded', 'true');
+      toggle!.setAttribute('aria-label', 'Close menu');
+    }
+
+    toggle.addEventListener('click', () => {
+      if (menu!.hidden) openMenu();
+      else closeMenu();
+    });
+
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !menu!.hidden) {
+        closeMenu();
+        toggle!.focus();
+      }
+    });
+
+    document.addEventListener('click', (e: MouseEvent) => {
+      if (menu!.hidden) return;
+      const target = e.target as Node;
+      if (!menu!.contains(target) && !toggle!.contains(target)) {
+        closeMenu();
+      }
+    });
+  }
+</script>
