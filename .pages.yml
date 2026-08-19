@@ -172,3 +172,9 @@ content:
       - name: senderFormAction
         label: Sender.net form action URL
         type: string
+      - name: contactFormAction
+        label: Contact form action URL (Formspree, Sender.net, Netlify Forms, etc.)
+        type: string
+      - name: recaptchaSiteKey
+        label: Google reCAPTCHA v2 site key (blank = no CAPTCHA widget)
+        type: string

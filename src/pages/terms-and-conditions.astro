@@ -1,0 +1,93 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../lib/url';
+---
+
+<BaseLayout
+  title="Terms and Conditions"
+  description="The terms that govern your use of Mindtivate."
+>
+  <section class="section container prose-page">
+    <p class="eyebrow">Legal</p>
+    <h1>Terms and conditions</h1>
+    <p><em>Last updated: August 2026.</em></p>
+
+    <p>
+      These terms govern your use of Mindtivate (this website). By using
+      the site, you agree to them. If you don't agree, please don't use
+      the site.
+    </p>
+
+    <h2>Not medical advice</h2>
+    <p>
+      Mindtivate publishes general health, fitness, and wellness
+      information for educational purposes only. It is not medical advice,
+      and it isn't a substitute for a diagnosis, treatment, or guidance
+      from a qualified healthcare provider. Always talk to a doctor or
+      other qualified provider before making changes based on anything you
+      read here, especially if you have an existing condition or are
+      pregnant, nursing, or managing a diagnosis.
+    </p>
+
+    <h2>Use of the site</h2>
+    <p>
+      You agree to use Mindtivate only for lawful purposes and not to
+      misuse the site — for example, by attempting to disrupt it, scrape
+      it at a harmful scale, submit spam through our forms, or interfere
+      with other visitors' use of it.
+    </p>
+
+    <h2>Content and intellectual property</h2>
+    <p>
+      Articles, graphics, and other content on Mindtivate belong to
+      Mindtivate or are used with permission, unless otherwise noted.
+      You're welcome to link to our articles and quote brief excerpts with
+      attribution and a link back to the original page. Republishing full
+      articles or substantial portions without permission isn't allowed.
+    </p>
+
+    <h2>Affiliate links and third-party sites</h2>
+    <p>
+      Some links on Mindtivate are affiliate links, meaning we may earn a
+      commission if you click through and make a purchase, at no extra
+      cost to you — see our <a href={withBase('/affiliate-disclosure')}>affiliate disclosure</a> for details.
+      Mindtivate isn't responsible for the content, accuracy, products, or
+      privacy practices of any third-party site you reach through a link
+      on this site.
+    </p>
+
+    <h2>No guarantees</h2>
+    <p>
+      We do our best to research and fact-check what we publish, but
+      health research evolves, and we can't guarantee that every piece of
+      content is complete, current, or error-free. The site and its
+      content are provided "as is," without warranties of any kind.
+    </p>
+
+    <h2>Limitation of liability</h2>
+    <p>
+      To the fullest extent permitted by law, Mindtivate isn't liable for
+      any damages or losses arising from your use of — or inability to
+      use — this site or its content, including decisions you make based
+      on it.
+    </p>
+
+    <h2>Changes to these terms</h2>
+    <p>
+      We may update these terms from time to time. Material changes will
+      be reflected by updating the date at the top of this page. Continued
+      use of the site after a change means you accept the updated terms.
+    </p>
+
+    <h2>Questions</h2>
+    <p>
+      If you have questions about these terms, <a href={withBase('/contact')}>contact us</a>.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .prose-page {
+    max-width: 720px;
+  }
+</style>

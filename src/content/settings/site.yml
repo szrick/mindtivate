@@ -1,3 +1,11 @@
 newsletterHeadline: "Mindtivate Insights"
 newsletterSubtext: "Health, fitness, beauty, hormones, relationships, and practical tips for living well, delivered to your inbox free."
 senderFormAction: "https://stats.sender.net/forms/REPLACE_WITH_FORM_ID/subscribe"
+# Contact form endpoint. This is a static site with no backend of its own,
+# so the contact form needs a hosted form-handling service (Formspree,
+# Sender.net, Netlify Forms, etc.) — set its submit URL here.
+contactFormAction: "REPLACE_WITH_CONTACT_FORM_ACTION_URL"
+# Google reCAPTCHA v2 ("I'm not a robot" checkbox) site key. Get one free at
+# https://www.google.com/recaptcha/admin for this domain. Leave blank to
+# skip rendering the CAPTCHA widget (the honeypot field still applies).
+recaptchaSiteKey: ""
