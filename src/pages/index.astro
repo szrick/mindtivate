@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HeroSlider from '../components/HeroSlider.astro';
+import ArticleCard from '../components/ArticleCard.astro';
 import NewsletterSignup from '../components/NewsletterSignup.astro';
 import CategoryIcon from '../components/CategoryIcon.astro';
 import { CATEGORIES, toCategorySlug } from '../lib/categories';
@@ -11,18 +12,47 @@ const allArticles = await getCollection(
   'articles',
   ({ data }) => data.status === 'published' && !data.draft && Boolean(data.heroImage),
 );
-const sliderArticles = allArticles
-  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
-  .slice(0, 5);
+const sortedArticles = allArticles.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const sliderArticles = sortedArticles.slice(0, 5);
+
+// Mobile shows a single featured article instead of the slider, plus a
+// list of other articles from that same category underneath it.
+const featuredArticle = sortedArticles[0];
+const moreInCategory = featuredArticle
+  ? sortedArticles
+      .filter((a) => a.data.category === featuredArticle.data.category && a.slug !== featuredArticle.slug)
+      .slice(0, 6)
+  : [];
 ---
 
 <BaseLayout
   title="Mindtivate — Evidence-Based Wellness for Women"
   description="Evidence-checked health and wellness guidance for women — sourced from the questions real communities are actually asking."
 >
-  <section class="section container slider-section">
+  <section class="section container slider-section desktop-slider">
     {sliderArticles.length > 0 ? (
       <HeroSlider articles={sliderArticles} />
+    ) : (
+      <p class="empty-state">New articles are in research right now — check back soon.</p>
+    )}
+  </section>
+
+  <section class="section container mobile-featured">
+    {featuredArticle ? (
+      <>
+        <ArticleCard article={featuredArticle} />
+        {moreInCategory.length > 0 && (
+          <div class="more-in-category">
+            <a href={withBase(`/category/${toCategorySlug(featuredArticle.data.category)}`)} class="more-in-category-heading">
+              <CategoryIcon label={featuredArticle.data.category} color="var(--color-terracotta-dark)" size="1.4rem" />
+              <h2>More in {featuredArticle.data.category}</h2>
+            </a>
+            <div class="more-in-category-grid">
+              {moreInCategory.map((article) => <ArticleCard article={article} />)}
+            </div>
+          </div>
+        )}
+      </>
     ) : (
       <p class="empty-state">New articles are in research right now — check back soon.</p>
     )}
@@ -52,9 +82,50 @@ const sliderArticles = allArticles
     padding-top: clamp(1.5rem, 3vw, 3rem);
   }
 
+  .mobile-featured {
+    display: none;
+  }
+
+  @media (max-width: 640px) {
+    .desktop-slider {
+      display: none;
+    }
+
+    .mobile-featured {
+      display: block;
+    }
+  }
+
   .empty-state {
     margin: 0;
     color: var(--color-plum-soft);
+  }
+
+  .more-in-category {
+    margin-top: 2rem;
+  }
+
+  .more-in-category-heading {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: inherit;
+  }
+
+  .more-in-category-heading:hover {
+    text-decoration: none;
+  }
+
+  .more-in-category-heading h2 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--color-terracotta-dark);
+  }
+
+  .more-in-category-grid {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 1rem;
   }
 
   .category-grid {
