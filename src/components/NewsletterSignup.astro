@@ -1,39 +1,46 @@
 ---
 import { getEntry } from 'astro:content';
+import { withBase } from '../lib/url';
 
 const settings = await getEntry('settings', 'site');
-const headline = settings?.data.newsletterHeadline ?? 'Get one useful thing in your inbox each week';
-const subtext = settings?.data.newsletterSubtext ?? 'Real research, no fads. Unsubscribe anytime.';
+const headline = settings?.data.newsletterHeadline ?? 'Mindtivate Insights';
+const subtext =
+  settings?.data.newsletterSubtext ??
+  'Health, fitness, beauty, hormones, relationships, and practical tips for living well, delivered to your inbox free.';
 const formAction = settings?.data.senderFormAction ?? '#';
 ---
 
 <section id="newsletter" class="newsletter">
   <div class="container newsletter-inner">
     <div class="newsletter-copy">
-      <p class="eyebrow">Newsletter</p>
       <h2>{headline}</h2>
       <p>{subtext}</p>
     </div>
 
-    <!--
-      Sender.net hosted-form endpoint. Configure `senderFormAction` in
-      src/content/settings/site.yml (or via Pages CMS → Site settings) with
-      the form's subscribe URL from your Sender account. Sender then owns
-      double opt-in, tagging, and the automation sequence — see
-      docs/CONTENT_PIPELINE.md.
-    -->
-    <form class="newsletter-form" action={formAction} method="post" target="_blank">
-      <label for="newsletter-email" class="visually-hidden">Email address</label>
-      <input
-        id="newsletter-email"
-        name="email"
-        type="email"
-        required
-        placeholder="you@example.com"
-        autocomplete="email"
-      />
-      <button type="submit" class="btn btn-primary">Subscribe</button>
-    </form>
+    <div class="newsletter-form-wrap">
+      <!--
+        Sender.net hosted-form endpoint. Configure `senderFormAction` in
+        src/content/settings/site.yml (or via Pages CMS → Site settings) with
+        the form's subscribe URL from your Sender account. Sender then owns
+        double opt-in, tagging, and the automation sequence — see
+        docs/CONTENT_PIPELINE.md.
+      -->
+      <form class="newsletter-form" action={formAction} method="post" target="_blank">
+        <label for="newsletter-email" class="visually-hidden">Email address</label>
+        <input
+          id="newsletter-email"
+          name="email"
+          type="email"
+          required
+          placeholder="you@example.com"
+          autocomplete="email"
+        />
+        <button type="submit" class="btn btn-primary">Sign up</button>
+      </form>
+      <p class="newsletter-consent">
+        By signing up, you agree to our <a href={withBase('/privacy-policy')}>privacy policy</a>.
+      </p>
+    </div>
   </div>
 </section>
 
@@ -65,7 +72,7 @@ const formAction = settings?.data.senderFormAction ?? '#';
     color: #fff;
   }
 
-  .newsletter-copy p:not(.eyebrow) {
+  .newsletter-copy p {
     color: #cfc9d6;
   }
 
@@ -86,5 +93,15 @@ const formAction = settings?.data.senderFormAction ?? '#';
 
   .newsletter-form input:focus-visible {
     outline: 3px solid var(--color-terracotta);
+  }
+
+  .newsletter-consent {
+    margin: 0.6em 0 0;
+    font-size: 0.78rem;
+    color: #cfc9d6;
+  }
+
+  .newsletter-consent a {
+    color: #fff;
   }
 </style>
