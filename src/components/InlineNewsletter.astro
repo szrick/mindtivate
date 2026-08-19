@@ -1,8 +1,8 @@
 ---
-// Two of these are inserted client-side into the middle third of an
-// article's body (see the <script> below) — one editorial pattern
-// borrowed from SELF.com's inline newsletter boxes, shortened and
-// adapted to Mindtivate's broader (not single-topic) newsletter.
+// Inserted client-side into the middle of an article's body (see the
+// <script> below) — one editorial pattern borrowed from SELF.com's inline
+// newsletter boxes, shortened and reworded for Mindtivate's broader
+// (not single-topic) newsletter.
 import { getEntry } from 'astro:content';
 import { withBase } from '../lib/url';
 
@@ -12,14 +12,21 @@ const formAction = settings?.data.senderFormAction ?? '#';
 
 <template data-inline-newsletter-template>
   <aside class="inline-newsletter" aria-label="Newsletter signup">
-    <p class="inline-newsletter-eyebrow">Mindtivate Weekly</p>
+    <p class="inline-newsletter-eyebrow">Mindtivate Insights</p>
     <p class="inline-newsletter-copy">
-      Not just eating healthy — tips on fitness, hormones, beauty, relationships,
-      and everything else on the site, delivered to your inbox each week.
+      Health, fitness, beauty, hormones, relationships, and practical tips
+      for living well, delivered to your inbox free.
     </p>
     <form class="inline-newsletter-form" action={formAction} method="post" target="_blank">
-      <label class="visually-hidden">Email address</label>
-      <input type="email" name="email" required placeholder="you@example.com" autocomplete="email" />
+      <label for="inline-newsletter-email" class="visually-hidden">Email address</label>
+      <input
+        id="inline-newsletter-email"
+        type="email"
+        name="email"
+        required
+        placeholder="you@example.com"
+        autocomplete="email"
+      />
       <button type="submit" class="btn btn-primary">Sign up</button>
     </form>
     <p class="inline-newsletter-consent">
@@ -91,47 +98,33 @@ const formAction = settings?.data.senderFormAction ?? '#';
 </style>
 
 <script>
-  function pickAnchor(blocks: Element[], targetIndex: number, taken: Set<Element>): Element | null {
+  function pickAnchor(blocks: Element[], targetIndex: number): Element | null {
     for (let i = targetIndex; i < blocks.length; i++) {
       const el = blocks[i];
-      if (taken.has(el)) continue;
       if (['P', 'UL', 'OL', 'BLOCKQUOTE'].includes(el.tagName)) return el;
     }
-    return blocks.find((el) => !taken.has(el)) ?? null;
+    return blocks[targetIndex] ?? null;
   }
 
-  function insertInlineNewsletters() {
+  function insertInlineNewsletter() {
     const template = document.querySelector<HTMLTemplateElement>('[data-inline-newsletter-template]');
     const prose = document.querySelector<HTMLElement>('.prose');
     if (!template || !prose) return;
 
     const blocks = Array.from(prose.children) as Element[];
-    // Skip short articles — not enough content to justify interrupting twice.
-    if (blocks.length < 6) return;
+    // Skip short articles — not enough content on either side to justify a break.
+    if (blocks.length < 4) return;
 
-    const targets = [Math.floor(blocks.length / 3), Math.floor((blocks.length * 2) / 3)];
-    const taken = new Set<Element>();
+    const anchor = pickAnchor(blocks, Math.floor(blocks.length / 2));
+    if (!anchor) return;
 
-    targets.forEach((targetIndex, i) => {
-      const anchor = pickAnchor(blocks, targetIndex, taken);
-      if (!anchor) return;
-      taken.add(anchor);
-
-      const clone = template.content.cloneNode(true) as DocumentFragment;
-      const input = clone.querySelector('input');
-      const label = clone.querySelector('label');
-      if (input && label) {
-        const id = `inline-newsletter-email-${i}`;
-        input.id = id;
-        label.setAttribute('for', id);
-      }
-      anchor.after(clone);
-    });
+    const clone = template.content.cloneNode(true) as DocumentFragment;
+    anchor.after(clone);
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', insertInlineNewsletters);
+    document.addEventListener('DOMContentLoaded', insertInlineNewsletter);
   } else {
-    insertInlineNewsletters();
+    insertInlineNewsletter();
   }
 </script>

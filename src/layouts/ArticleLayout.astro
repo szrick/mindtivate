@@ -5,6 +5,7 @@ import AffiliateDisclosure from '../components/AffiliateDisclosure.astro';
 import ProductCallout from '../components/ProductCallout.astro';
 import NewsletterSignup from '../components/NewsletterSignup.astro';
 import InlineNewsletter from '../components/InlineNewsletter.astro';
+import RelatedArticles from '../components/RelatedArticles.astro';
 import { getEntries, getEntry } from 'astro:content';
 import { toCategorySlug } from '../lib/categories';
 import { withBase } from '../lib/url';
@@ -55,6 +56,8 @@ const categorySlug = toCategorySlug(category);
       </section>
     )}
   </article>
+
+  <RelatedArticles article={article} />
 
   <div class="section container">
     <NewsletterSignup />
