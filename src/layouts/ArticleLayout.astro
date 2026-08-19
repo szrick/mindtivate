@@ -3,7 +3,7 @@ import type { CollectionEntry } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
 import AffiliateDisclosure from '../components/AffiliateDisclosure.astro';
 import ProductCallout from '../components/ProductCallout.astro';
-import NewsletterSignup from '../components/NewsletterSignup.astro';
+import NewsletterBox from '../components/NewsletterBox.astro';
 import InlineNewsletter from '../components/InlineNewsletter.astro';
 import RelatedArticles from '../components/RelatedArticles.astro';
 import { getEntries, getEntry } from 'astro:content';
@@ -60,7 +60,7 @@ const categorySlug = toCategorySlug(category);
   <RelatedArticles article={article} />
 
   <div class="section container">
-    <NewsletterSignup />
+    <NewsletterBox id="inline-newsletter-email-bottom" />
   </div>
 </BaseLayout>
 
