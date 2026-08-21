@@ -39,7 +39,18 @@ for (const article of sortedArticles) {
     )}
   </section>
 
-  {CATEGORIES.map((c) => {
+  {CATEGORIES.slice(0, 4).map((c) => {
+    const articles = articlesByCategory.get(c.label);
+    return articles && articles.length > 0 ? (
+      <CategoryShowcase label={c.label} articles={articles} />
+    ) : null;
+  })}
+
+  <div class="section container">
+    <NewsletterSignup id="newsletter-mid" />
+  </div>
+
+  {CATEGORIES.slice(4).map((c) => {
     const articles = articlesByCategory.get(c.label);
     return articles && articles.length > 0 ? (
       <CategoryShowcase label={c.label} articles={articles} />

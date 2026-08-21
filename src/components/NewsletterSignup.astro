@@ -2,6 +2,17 @@
 import { getEntry } from 'astro:content';
 import { withBase } from '../lib/url';
 
+interface Props {
+  id?: string;
+}
+
+// Defaults to "newsletter" so existing #newsletter anchor links (e.g.
+// /newsletter/confirm-error.astro's "sign up again" link) keep working
+// unchanged. Pass a different id when rendering more than one instance
+// on the same page — duplicate ids on the section and its inputs would
+// otherwise be invalid HTML and break label/input association.
+const { id = 'newsletter' } = Astro.props;
+
 const settings = await getEntry('settings', 'site');
 const headline = settings?.data.newsletterHeadline ?? 'Mindtivate Insights';
 const subtext =
@@ -9,7 +20,7 @@ const subtext =
   'Health, fitness, beauty, hormones, relationships, and practical tips for living well, delivered to your inbox free.';
 ---
 
-<section id="newsletter" class="newsletter">
+<section id={id} class="newsletter">
   <div class="container newsletter-inner">
     <div class="newsletter-copy">
       <h2>{headline}</h2>
@@ -27,12 +38,12 @@ const subtext =
       -->
       <form class="newsletter-form" data-newsletter-form method="post" action={withBase('/api/subscribe')} novalidate>
         <div class="honeypot" aria-hidden="true">
-          <label for="newsletter-company">Company</label>
-          <input id="newsletter-company" name="company" type="text" tabindex="-1" autocomplete="off" />
+          <label for={`${id}-company`}>Company</label>
+          <input id={`${id}-company`} name="company" type="text" tabindex="-1" autocomplete="off" />
         </div>
-        <label for="newsletter-email" class="visually-hidden">Email address</label>
+        <label for={`${id}-email`} class="visually-hidden">Email address</label>
         <input
-          id="newsletter-email"
+          id={`${id}-email`}
           name="email"
           type="email"
           required
