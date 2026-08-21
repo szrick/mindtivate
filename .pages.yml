@@ -169,9 +169,6 @@ content:
       - name: newsletterSubtext
         label: Newsletter subtext
         type: string
-      - name: senderFormAction
-        label: Sender.net form action URL
-        type: string
       - name: contactFormAction
         label: Contact form action URL (Formspree, Sender.net, Netlify Forms, etc.)
         type: string

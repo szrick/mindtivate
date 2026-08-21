@@ -143,19 +143,34 @@ program, etc.). Once approved:
    generate an access token with `pins:write` and `boards:read` scopes.
 3. Add `PINTEREST_ACCESS_TOKEN` and `PINTEREST_BOARD_ID` to `.env`.
 
-## 7. Sender.net — newsletter
+## 7. Resend — newsletter signup
 
-1. Create a Sender.net account and a subscriber group for the newsletter.
-2. Create a hosted signup form, copy its subscribe URL, and set it as
-   `senderFormAction` in `src/content/settings/site.yml` (or via Pages CMS
-   → Site settings).
-3. Create an **RSS-to-email automation** in Sender pointed at
-   `https://mindtivate.com/rss.xml`, triggered on new items, sent to the
-   subscriber group above. This is what actually emails people when you
-   publish — no API credentials needed for this part.
-4. Only set `SENDER_API_TOKEN` / `SENDER_GROUP_ID` in `.env` if you plan to
-   use `scripts/lib/sender.mjs`'s `addSubscriberToGroup` for a specific
-   integration (e.g. adding subscribers from another source).
+The signup boxes on the site (`NewsletterSignup.astro`, `NewsletterBox.astro`)
+post to `/api/subscribe`, a route handled by the Cloudflare Worker itself
+(`worker/index.ts` — see `wrangler.jsonc`'s `main`), which adds the contact
+via Resend's Contacts API. There's no third-party hosted form or iframe.
+
+1. Create a Resend account and an API key at
+   [resend.com/api-keys](https://resend.com/api-keys).
+2. Set it as a **secret** on the deployed Worker (not `.env` — that file is
+   only read by local pipeline scripts, not by the live Worker): in the
+   Cloudflare dashboard, go to Workers & Pages → mindtivate → Settings →
+   Variables and Secrets, and add `RESEND_API_KEY`. (Or run
+   `wrangler secret put RESEND_API_KEY` from a machine with Cloudflare CLI
+   access.)
+3. That's it — no audience/list ID needed; contacts are created globally
+   in Resend (`audience_id` is optional/deprecated in their current API).
+
+**Gap to be aware of**: this repo previously used Sender.net's
+**RSS-to-email automation** (poll `rss.xml`, auto-email a subscriber group
+on new posts) as the "notify people when an article publishes" mechanism —
+see git history for `scripts/lib/sender.mjs` and the removed
+`senderFormAction` setting. That automation emailed *Sender's* subscriber
+list, which is now a different, disconnected list from the Resend contacts
+this signup flow creates. If automatic "new post" emails still matter,
+that needs a new implementation against Resend (e.g. a scheduled Worker
+that checks the feed and sends a Resend Broadcast) — nothing in this repo
+does that yet.
 
 ## 8. Verify
 
