@@ -18,6 +18,14 @@
 // be forged. Clicking the link (GET /api/confirm) verifies the signature
 // and flips the same contact's unsubscribed to false. No KV/D1 needed.
 
+// Minimal local shape for what the Workers runtime actually passes in —
+// avoids a dependency on @cloudflare/workers-types just for this one
+// method. Used to defer the welcome sequence's sends past the response
+// handleConfirm already returned (see sendWelcomeSequence).
+interface ExecutionContext {
+  waitUntil(promise: Promise<unknown>): void;
+}
+
 export interface Env {
   ASSETS: { fetch(request: Request): Promise<Response> };
   RESEND_API_KEY: string;
@@ -38,7 +46,12 @@ export interface Env {
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const TOKEN_TTL_MS = 1000 * 60 * 60 * 48; // 48 hours
+const CONFIRM_TOKEN_TTL_MS = 1000 * 60 * 60 * 48; // 48 hours
+// Unsubscribe links go out in every welcome-sequence email and need to
+// keep working no matter how long someone leaves an email sitting in
+// their inbox before acting on it — years, realistically — unlike a
+// confirmation link, which is fine to expire quickly.
+const UNSUBSCRIBE_TOKEN_TTL_MS = 1000 * 60 * 60 * 24 * 365 * 5; // 5 years
 
 // --- base64url + HMAC helpers (Web Crypto, available in the Workers runtime) ---
 
@@ -77,13 +90,24 @@ function timingSafeEqual(a: string, b: string): boolean {
   return mismatch === 0;
 }
 
-async function createConfirmToken(email: string, secret: string): Promise<string> {
-  const payload = base64UrlEncodeString(JSON.stringify({ email, exp: Date.now() + TOKEN_TTL_MS }));
+// Shared by both link types below — a token is just a signed, self-expiring
+// {email, exp} pair, so creating one only needs a TTL, and verifying one
+// doesn't need to know (or care) which kind it originally was.
+async function createSignedToken(email: string, secret: string, ttlMs: number): Promise<string> {
+  const payload = base64UrlEncodeString(JSON.stringify({ email, exp: Date.now() + ttlMs }));
   const signature = await hmacSign(payload, secret);
   return `${payload}.${signature}`;
 }
 
-async function verifyConfirmToken(token: string, secret: string): Promise<string | null> {
+function createConfirmToken(email: string, secret: string): Promise<string> {
+  return createSignedToken(email, secret, CONFIRM_TOKEN_TTL_MS);
+}
+
+function createUnsubscribeToken(email: string, secret: string): Promise<string> {
+  return createSignedToken(email, secret, UNSUBSCRIBE_TOKEN_TTL_MS);
+}
+
+async function verifySignedToken(token: string, secret: string): Promise<string | null> {
   const [payload, signature] = token.split('.');
   if (!payload || !signature) return null;
   const expectedSignature = await hmacSign(payload, secret);
@@ -120,6 +144,20 @@ async function resendConfirmContact(email: string, env: Env): Promise<Response> 
   });
 }
 
+async function resendGetContact(email: string, env: Env): Promise<Response> {
+  return fetch(`https://api.resend.com/contacts/${encodeURIComponent(email)}`, {
+    headers: { Authorization: `Bearer ${env.RESEND_API_KEY}` },
+  });
+}
+
+async function resendUnsubscribeContact(email: string, env: Env): Promise<Response> {
+  return fetch(`https://api.resend.com/contacts/${encodeURIComponent(email)}`, {
+    method: 'PATCH',
+    headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ unsubscribed: true }),
+  });
+}
+
 async function resendSendConfirmationEmail(email: string, confirmUrl: string, env: Env): Promise<Response> {
   const html = `<!doctype html>
 <html><body style="margin:0;padding:32px 24px;background:#fbf6ef;font-family:Georgia,serif;">
@@ -146,6 +184,120 @@ async function resendSendConfirmationEmail(email: string, confirmUrl: string, en
       text,
     }),
   });
+}
+
+// --- Welcome sequence (Day 0 / 3 / 7), sent once a contact confirms ---
+
+// Shared visual shell for every welcome-sequence email — same palette as
+// resendSendConfirmationEmail's HTML above, plus a CTA button and an
+// unsubscribe footer (the confirmation email skips the footer since
+// nobody's opted in yet at that point).
+function renderWelcomeEmailHtml(opts: {
+  heading: string;
+  bodyHtml: string;
+  ctaText: string;
+  ctaUrl: string;
+  unsubscribeUrl: string;
+}): string {
+  return `<!doctype html>
+<html><body style="margin:0;padding:32px 24px;background:#fbf6ef;font-family:Georgia,serif;">
+  <div style="max-width:480px;margin:0 auto;">
+    <p style="margin:0 0 1.5em;font-size:13px;letter-spacing:0.04em;text-transform:uppercase;color:#5f7457;font-family:Arial,sans-serif;">Mindtivate Insights</p>
+    <h1 style="margin:0 0 0.6em;font-size:22px;line-height:1.3;color:#2f2a33;">${opts.heading}</h1>
+    ${opts.bodyHtml}
+    <p style="margin:1.5em 0 0;">
+      <a href="${opts.ctaUrl}" style="display:inline-block;padding:0.85em 1.6em;border-radius:999px;background:#d97a5f;color:#ffffff;text-decoration:none;font-family:Arial,sans-serif;font-weight:bold;font-size:15px;">${opts.ctaText}</a>
+    </p>
+    <p style="margin:2em 0 0;font-size:12px;color:#8a8390;font-family:Arial,sans-serif;">You're getting this because you confirmed your subscription to Mindtivate Insights. <a href="${opts.unsubscribeUrl}" style="color:#8a8390;">Unsubscribe</a></p>
+  </div>
+</body></html>`;
+}
+
+interface WelcomeSequenceStep {
+  delayDays: number; // 0 = send right away, alongside the /newsletter/confirmed redirect
+  subject: string;
+  heading: string;
+  bodyHtml: string;
+  bodyText: string;
+  ctaText: string;
+  ctaPath: string;
+}
+
+const WELCOME_SEQUENCE: WelcomeSequenceStep[] = [
+  {
+    delayDays: 0,
+    subject: "You're in — welcome to Mindtivate Insights",
+    heading: "Welcome — glad you're here",
+    bodyHtml: `<p style="margin:0 0 1.3em;font-size:16px;line-height:1.6;color:#2f2a33;">You'll hear from us with practical, evidence-checked guidance on body, food, mind, and hormones — sourced from what women are actually asking, not what's trending. No overwhelm, no guilt, nothing to sell you.</p>`,
+    bodyText:
+      "You'll hear from us with practical, evidence-checked guidance on body, food, mind, and hormones — sourced from what women are actually asking, not what's trending. No overwhelm, no guilt, nothing to sell you.",
+    ctaText: 'Browse the site',
+    ctaPath: '/articles',
+  },
+  {
+    delayDays: 3,
+    subject: 'Where should you start?',
+    heading: 'Eight places to start',
+    bodyHtml: `<p style="margin:0 0 1.3em;font-size:16px;line-height:1.6;color:#2f2a33;">Everything on Mindtivate falls under one of eight topics — Body, Food, Mind, Hormones, Love, Beauty, Sleep, and Life Stages. If you're not sure where to look first, that's the fastest way in.</p>`,
+    bodyText:
+      "Everything on Mindtivate falls under one of eight topics — Body, Food, Mind, Hormones, Love, Beauty, Sleep, and Life Stages. If you're not sure where to look first, that's the fastest way in.",
+    ctaText: 'Explore topics',
+    ctaPath: '/#newsletter',
+  },
+  {
+    delayDays: 7,
+    subject: 'The one thing we want you to remember',
+    heading: "It's not about doing more",
+    bodyHtml: `<p style="margin:0 0 1.3em;font-size:16px;line-height:1.6;color:#2f2a33;">Every article we publish gets checked against the actual evidence before it goes up — not rewritten trend pieces. If something here is ever wrong or worth pushing back on, just reply to this email and tell us.</p>`,
+    bodyText:
+      "Every article we publish gets checked against the actual evidence before it goes up — not rewritten trend pieces. If something here is ever wrong or worth pushing back on, just reply to this email and tell us.",
+    ctaText: 'Read the latest',
+    ctaPath: '/articles',
+  },
+];
+
+// Runs from ctx.waitUntil after handleConfirm has already redirected the
+// visitor — nobody is waiting on these requests, so a slow or failed send
+// here (logged, not thrown) never delays or breaks the confirm flow.
+async function sendWelcomeSequence(email: string, request: Request, env: Env): Promise<void> {
+  const unsubscribeUrl = new URL(
+    `/api/unsubscribe?token=${await createUnsubscribeToken(email, env.CONFIRM_SECRET)}`,
+    request.url,
+  ).toString();
+
+  await Promise.all(
+    WELCOME_SEQUENCE.map(async (step) => {
+      const ctaUrl = new URL(step.ctaPath, request.url).toString();
+      const html = renderWelcomeEmailHtml({
+        heading: step.heading,
+        bodyHtml: step.bodyHtml,
+        ctaText: step.ctaText,
+        ctaUrl,
+        unsubscribeUrl,
+      });
+      const text = `${step.bodyText}\n\n${step.ctaText}: ${ctaUrl}\n\nUnsubscribe: ${unsubscribeUrl}`;
+
+      const res = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          from: env.RESEND_FROM_EMAIL,
+          to: email,
+          subject: step.subject,
+          html,
+          text,
+          // Omit scheduled_at for the immediate (Day 0) email — Resend
+          // rejects a scheduled_at that isn't meaningfully in the future.
+          ...(step.delayDays > 0
+            ? { scheduled_at: new Date(Date.now() + step.delayDays * 24 * 60 * 60 * 1000).toISOString() }
+            : {}),
+        }),
+      });
+      if (!res.ok) {
+        console.error(`Welcome sequence send failed (day ${step.delayDays})`, res.status, await res.text());
+      }
+    }),
+  );
 }
 
 // --- HTTP plumbing ---
@@ -235,16 +387,26 @@ async function handleSubscribe(request: Request, env: Env): Promise<Response> {
   return succeed();
 }
 
-async function handleConfirm(request: Request, env: Env): Promise<Response> {
+async function handleConfirm(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
   const token = new URL(request.url).searchParams.get('token');
   if (!token || !env.CONFIRM_SECRET) {
     return redirectResponse(request, '/newsletter/confirm-error');
   }
 
-  const email = await verifyConfirmToken(token, env.CONFIRM_SECRET);
+  const email = await verifySignedToken(token, env.CONFIRM_SECRET);
   if (!email) {
     return redirectResponse(request, '/newsletter/confirm-error');
   }
+
+  // Checked before confirming, not after: some corporate email scanners
+  // auto-follow links in incoming mail before a human ever opens it, and a
+  // real subscriber can also just click an old confirmation email a
+  // second time. Either way, only a contact that's actually transitioning
+  // from pending to confirmed here should kick off the welcome sequence —
+  // otherwise a repeat hit on this route would re-send it from scratch.
+  const existing = await resendGetContact(email, env);
+  const alreadyConfirmed =
+    existing.ok && ((await existing.json()) as { unsubscribed?: boolean }).unsubscribed === false;
 
   const res = await resendConfirmContact(email, env);
   if (!res.ok) {
@@ -252,17 +414,44 @@ async function handleConfirm(request: Request, env: Env): Promise<Response> {
     return redirectResponse(request, '/newsletter/confirm-error');
   }
 
+  if (!alreadyConfirmed) {
+    ctx.waitUntil(sendWelcomeSequence(email, request, env));
+  }
+
   return redirectResponse(request, '/newsletter/confirmed');
 }
 
+async function handleUnsubscribe(request: Request, env: Env): Promise<Response> {
+  const token = new URL(request.url).searchParams.get('token');
+  if (!token || !env.CONFIRM_SECRET) {
+    return redirectResponse(request, '/newsletter/unsubscribe-error');
+  }
+
+  const email = await verifySignedToken(token, env.CONFIRM_SECRET);
+  if (!email) {
+    return redirectResponse(request, '/newsletter/unsubscribe-error');
+  }
+
+  const res = await resendUnsubscribeContact(email, env);
+  if (!res.ok) {
+    console.error('Resend contact unsubscribe failed', res.status, await res.text());
+    return redirectResponse(request, '/newsletter/unsubscribe-error');
+  }
+
+  return redirectResponse(request, '/newsletter/unsubscribed');
+}
+
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
     if (url.pathname === '/api/subscribe') {
       return handleSubscribe(request, env);
     }
     if (url.pathname === '/api/confirm') {
-      return handleConfirm(request, env);
+      return handleConfirm(request, env, ctx);
+    }
+    if (url.pathname === '/api/unsubscribe') {
+      return handleUnsubscribe(request, env);
     }
     return env.ASSETS.fetch(request);
   },
