@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
 import AffiliateDisclosure from '../components/AffiliateDisclosure.astro';
+import BookmarkButton from '../components/BookmarkButton.astro';
 import ProductCallout from '../components/ProductCallout.astro';
 import NewsletterBox from '../components/NewsletterBox.astro';
 import InlineNewsletter from '../components/InlineNewsletter.astro';
@@ -45,7 +46,15 @@ const shareImageUrl = heroImage ? new URL(heroImage.src, Astro.site).toString() 
       <img src={heroImage.src} alt={heroImageAlt ?? title} class="article-hero" width="1200" height="675" />
     )}
 
-    <AffiliateDisclosure />
+    <BookmarkButton
+      slug={article.slug}
+      title={title}
+      category={category}
+      heroImage={heroImage?.src}
+      pubDate={pubDate.toISOString()}
+    />
+
+    {products.length > 0 && <AffiliateDisclosure />}
 
     <div class="prose">
       <slot />

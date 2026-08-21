@@ -1,5 +1,7 @@
 ---
 import { withBase } from '../lib/url';
+import { CATEGORIES, toCategorySlug } from '../lib/categories';
+import CategoryIcon from './CategoryIcon.astro';
 
 const year = new Date().getFullYear();
 ---
@@ -12,8 +14,8 @@ const year = new Date().getFullYear();
         <span class="footer-logo-text">Mindtivate<span class="logo-dot">.</span></span>
       </a>
       <p class="tagline">
-        Empowering you with the knowledge and practical tips to navigate
-        every part of life — and become the best version of yourself.
+        Evidence-checked guidance on body, food, mind, and hormones —
+        sourced from what women are actually asking, not what's trending.
       </p>
       <div class="social-links">
         <a
@@ -45,6 +47,20 @@ const year = new Date().getFullYear();
     </div>
 
     <div class="footer-col">
+      <h4>Categories</h4>
+      <ul class="footer-categories">
+        {CATEGORIES.map((c) => (
+          <li>
+            <a href={withBase(`/category/${toCategorySlug(c.label)}`)}>
+              <CategoryIcon label={c.label} size="1rem" />
+              {c.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="footer-col">
       <h4>More about us</h4>
       <ul>
         <li><a href={withBase('/about-us')}>About us</a></li>
@@ -53,6 +69,7 @@ const year = new Date().getFullYear();
         <li><a href={withBase('/contact')}>Contact</a></li>
         <li><a href={withBase('/terms-and-conditions')}>Terms and conditions</a></li>
         <li><a href={withBase('/privacy-policy')}>Privacy policy</a></li>
+        <li><a href={withBase('/sitemap')}>Sitemap</a></li>
       </ul>
     </div>
   </div>
@@ -76,7 +93,7 @@ const year = new Date().getFullYear();
 
   .footer-inner {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1.6fr 1fr 1fr;
     gap: 2.5rem;
     padding-top: 3.5rem;
     padding-bottom: 2.5rem;
@@ -162,6 +179,22 @@ const year = new Date().getFullYear();
 
   .footer-col a:hover {
     color: #fff;
+  }
+
+  .footer-categories a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .footer-categories :global(.category-icon) {
+    flex-shrink: 0;
+    color: #9a93a6;
+    transition: color 0.15s ease;
+  }
+
+  .footer-categories a:hover :global(.category-icon) {
+    color: var(--color-terracotta);
   }
 
   .footer-legal {

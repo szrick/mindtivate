@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CategoryIcon from '../components/CategoryIcon.astro';
+import { CATEGORIES, toCategorySlug } from '../lib/categories';
+import { withBase } from '../lib/url';
+---
+
+<BaseLayout title="Sitemap" description="Every page on Mindtivate, organized by section.">
+  <section class="section container prose-page">
+    <p class="eyebrow">Sitemap</p>
+    <h1>Every page on Mindtivate</h1>
+
+    <h2>Main</h2>
+    <ul class="link-list">
+      <li><a href={withBase('/')}>Home</a></li>
+      <li><a href={withBase('/articles')}>All articles</a></li>
+      <li><a href={withBase('/search')}>Search</a></li>
+      <li><a href={withBase('/saved')}>Saved articles</a></li>
+    </ul>
+
+    <h2>Categories</h2>
+    <ul class="link-list category-list">
+      {CATEGORIES.map((c) => (
+        <li>
+          <a href={withBase(`/category/${toCategorySlug(c.label)}`)}>
+            <CategoryIcon label={c.label} size="1.1rem" color="var(--color-terracotta-dark)" />
+            {c.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <h2>Company</h2>
+    <ul class="link-list">
+      <li><a href={withBase('/about-us')}>About us</a></li>
+      <li><a href={withBase('/about')}>Our approach</a></li>
+      <li><a href={withBase('/contact')}>Contact</a></li>
+      <li><a href={withBase('/affiliate-disclosure')}>Affiliate disclosure</a></li>
+      <li><a href={withBase('/terms-and-conditions')}>Terms and conditions</a></li>
+      <li><a href={withBase('/privacy-policy')}>Privacy policy</a></li>
+    </ul>
+
+    <p class="xml-note">
+      Looking for the machine-readable version for search engines?
+      See <a href={withBase('/sitemap-index.xml')}>sitemap-index.xml</a>.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .prose-page {
+    max-width: 720px;
+  }
+
+  .link-list {
+    list-style: none;
+    margin: 0 0 1.5em;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6em;
+  }
+
+  .category-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.7em 1.5rem;
+  }
+
+  .category-list a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .xml-note {
+    font-size: 0.88rem;
+    color: var(--color-plum-soft);
+  }
+
+  @media (max-width: 480px) {
+    .category-list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

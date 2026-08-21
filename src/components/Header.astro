@@ -47,6 +47,19 @@ const navCategories = CATEGORIES;
       </ul>
     </nav>
 
+    <a href={withBase('/saved')} class="bookmark-link" data-bookmark-link aria-label="Saved articles">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+        <path
+          d="M6 3.5h12a1 1 0 0 1 1 1V21l-7-4-7 4V4.5a1 1 0 0 1 1-1Z"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linejoin="round"
+        />
+      </svg>
+      <span class="bookmark-count" data-bookmark-count hidden></span>
+    </a>
+
     <button
       type="button"
       class="search-toggle"
@@ -210,6 +223,49 @@ const navCategories = CATEGORIES;
     color: var(--color-terracotta-dark);
   }
 
+  .bookmark-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    color: var(--color-plum);
+    flex-shrink: 0;
+  }
+
+  .bookmark-link:hover {
+    color: var(--color-terracotta-dark);
+    text-decoration: none;
+  }
+
+  .bookmark-count {
+    position: absolute;
+    top: 0.05rem;
+    right: 0.05rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.1rem;
+    height: 1.1rem;
+    padding: 0 0.25rem;
+    border-radius: 999px;
+    background: var(--color-terracotta);
+    color: var(--color-white);
+    font-size: 0.65rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  /* Without this, the class rule above (author-origin, normal weight)
+     outranks the UA stylesheet's `[hidden] { display: none }` (also
+     author-normal-beats-UA regardless of selector specificity), so toggling
+     the `hidden` attribute from JS would otherwise be silently ignored. */
+  .bookmark-count[hidden] {
+    display: none;
+  }
+
   .header-search-bar {
     border-top: 1px solid var(--color-border);
     background: var(--color-cream);
@@ -302,6 +358,19 @@ const navCategories = CATEGORIES;
 </style>
 
 <script>
+  import { getBookmarks, onBookmarksChange } from '../lib/bookmarks';
+
+  const bookmarkCount = document.querySelector<HTMLElement>('[data-bookmark-count]');
+  if (bookmarkCount) {
+    function updateBookmarkCount() {
+      const count = getBookmarks().length;
+      bookmarkCount!.hidden = count === 0;
+      bookmarkCount!.textContent = String(count);
+    }
+    updateBookmarkCount();
+    onBookmarksChange(updateBookmarkCount);
+  }
+
   const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
   const menu = document.querySelector<HTMLElement>('[data-mobile-menu]');
 
