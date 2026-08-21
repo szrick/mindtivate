@@ -85,6 +85,20 @@ const subtext =
     max-width: 480px;
   }
 
+  /* Without an explicit width, this column's size is driven entirely by
+     its children's preferred widths. The status message's unwrapped
+     preferred width can exceed the space remaining next to
+     .newsletter-copy, which pushes the whole column onto its own line via
+     flex-wrap instead of just wrapping its own text within the space it
+     had. Constraining the column's width keeps it in place — sized to fit
+     the input+button row (which grows slightly once the button's label
+     changes to "Submitted") with the status/consent text wrapping under
+     it. */
+  .newsletter-form-wrap {
+    flex: 1 1 340px;
+    max-width: 420px;
+  }
+
   .newsletter-copy h2 {
     color: var(--color-plum);
   }

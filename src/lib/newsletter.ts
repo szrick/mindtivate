@@ -40,7 +40,9 @@ export function initNewsletterForms(): void {
       const data = (await res.json().catch(() => ({}))) as { ok?: boolean; error?: string };
 
       if (res.ok && data.ok) {
-        form.hidden = true;
+        const emailInput = form.querySelector<HTMLInputElement>('input[type="email"]');
+        if (emailInput) emailInput.disabled = true;
+        if (submitBtn) submitBtn.textContent = 'Submitted';
         if (statusEl) statusEl.textContent = 'Almost there — check your inbox and click the link to confirm.';
       } else {
         if (statusEl) statusEl.textContent = data.error || 'Something went wrong — please try again.';
