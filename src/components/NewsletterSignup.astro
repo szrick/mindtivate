@@ -20,20 +20,21 @@ const formAction = settings?.data.senderFormAction ?? '#';
     <div class="newsletter-form-wrap">
       <!--
         Sender.net's forms on this account are hosted pages (a URL + QR
-        code from the dashboard), not a POST endpoint you can submit an
-        inline <form> to — so this links out to that hosted page rather
-        than collecting the email on-site. Configure `senderFormAction` in
-        src/content/settings/site.yml (or via Pages CMS → Site settings)
-        with that form's URL from your Sender account. Sender then owns
-        double opt-in, tagging, and the automation sequence — see
-        docs/CONTENT_PIPELINE.md.
+        code from the dashboard), not a POST endpoint an inline <form> can
+        submit to — so this frames that hosted page instead. Sender may
+        block being framed on another domain (X-Frame-Options/CSP); if the
+        iframe below renders blank, that's the sign, and the fallback link
+        underneath is the way to sign up until that's resolved. Configure
+        `senderFormAction` in src/content/settings/site.yml (or via Pages
+        CMS → Site settings) with the form's URL from your Sender account.
+        Sender then owns double opt-in, tagging, and the automation
+        sequence — see docs/CONTENT_PIPELINE.md.
       -->
-      <a href={formAction} target="_blank" rel="noopener noreferrer" class="btn btn-primary newsletter-cta">
-        Sign up free
-      </a>
+      <iframe src={formAction} title={`Subscribe to ${headline}`} class="newsletter-iframe" loading="lazy"></iframe>
       <p class="newsletter-consent">
-        Opens Sender's signup page in a new tab. By signing up, you agree to our
-        <a href={withBase('/privacy-policy')}>privacy policy</a>.
+        Trouble loading the form?
+        <a href={formAction} target="_blank" rel="noopener noreferrer">Open it in a new tab</a>
+        instead. By signing up, you agree to our <a href={withBase('/privacy-policy')}>privacy policy</a>.
       </p>
     </div>
   </div>
@@ -72,8 +73,18 @@ const formAction = settings?.data.senderFormAction ?? '#';
     color: var(--color-plum-soft);
   }
 
-  .newsletter-cta {
-    white-space: nowrap;
+  .newsletter-form-wrap {
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .newsletter-iframe {
+    display: block;
+    width: 100%;
+    height: 540px;
+    border: none;
+    border-radius: var(--radius-md);
+    background: var(--color-white);
   }
 
   .newsletter-consent {

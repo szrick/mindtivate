@@ -18,12 +18,11 @@ const formAction = settings?.data.senderFormAction ?? '#';
     Health, fitness, beauty, hormones, relationships, and practical tips
     for living well, delivered to your inbox free.
   </p>
-  <a href={formAction} target="_blank" rel="noopener noreferrer" class="btn btn-primary inline-newsletter-cta">
-    Sign up free
-  </a>
+  <iframe src={formAction} title="Subscribe to Mindtivate Insights" class="inline-newsletter-iframe" loading="lazy"></iframe>
   <p class="inline-newsletter-consent">
-    Opens Sender's signup page in a new tab. By signing up, you agree to our
-    <a href={withBase('/privacy-policy')}>privacy policy</a>.
+    Trouble loading the form?
+    <a href={formAction} target="_blank" rel="noopener noreferrer">Open it in a new tab</a>
+    instead. By signing up, you agree to our <a href={withBase('/privacy-policy')}>privacy policy</a>.
   </p>
 </aside>
 
@@ -51,34 +50,15 @@ const formAction = settings?.data.senderFormAction ?? '#';
     margin: 0 0 1.1em;
   }
 
-  .inline-newsletter-form {
-    display: flex;
-    gap: 0.6rem;
-    flex-wrap: wrap;
+  .inline-newsletter-iframe {
+    display: block;
+    width: 100%;
+    max-width: 420px;
+    height: 540px;
     margin: 0 0 0.8em;
-  }
-
-  .inline-newsletter-form input {
-    flex: 1 1 200px;
-    -webkit-appearance: none;
-    appearance: none;
-    padding: 0.75em 1.1em;
-    border-radius: 999px;
-    border: 1px solid var(--color-border);
+    border: none;
+    border-radius: var(--radius-md);
     background: var(--color-white);
-    font-family: var(--font-body);
-    font-size: 0.92rem;
-  }
-
-  .inline-newsletter-form input:focus-visible {
-    outline: 3px solid var(--color-terracotta);
-  }
-
-  .inline-newsletter-form .btn {
-    padding: 0.7em 1.4em;
-    font-size: 0.8rem;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
   }
 
   .inline-newsletter-consent {
