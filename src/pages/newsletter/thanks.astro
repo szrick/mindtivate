@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { withBase } from '../../lib/url';
+---
+
+<BaseLayout title="You're signed up" description="You've been added to the Mindtivate Insights newsletter.">
+  <section class="section container prose-page">
+    <p class="eyebrow">Mindtivate Insights</p>
+    <h1>You're in!</h1>
+    <p>
+      Thanks for signing up — you'll start getting Mindtivate Insights in
+      your inbox. In the meantime, <a href={withBase('/articles')}>browse our latest articles</a>.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .prose-page {
+    max-width: 640px;
+  }
+</style>

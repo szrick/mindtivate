@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { withBase } from '../../lib/url';
+---
+
+<BaseLayout title="Signup didn't go through" description="There was a problem signing up for Mindtivate Insights.">
+  <section class="section container prose-page">
+    <p class="eyebrow">Mindtivate Insights</p>
+    <h1>Something went wrong</h1>
+    <p>
+      Your signup didn't go through — this is usually temporary. Please
+      <a href={`${withBase('/')}#newsletter`}>try again</a>, or
+      <a href={withBase('/contact')}>let us know</a> if it keeps happening.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .prose-page {
+    max-width: 640px;
+  }
+</style>

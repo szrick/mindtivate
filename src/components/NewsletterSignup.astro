@@ -7,7 +7,6 @@ const headline = settings?.data.newsletterHeadline ?? 'Mindtivate Insights';
 const subtext =
   settings?.data.newsletterSubtext ??
   'Health, fitness, beauty, hormones, relationships, and practical tips for living well, delivered to your inbox free.';
-const formAction = settings?.data.senderFormAction ?? '#';
 ---
 
 <section id="newsletter" class="newsletter">
@@ -19,13 +18,18 @@ const formAction = settings?.data.senderFormAction ?? '#';
 
     <div class="newsletter-form-wrap">
       <!--
-        Sender.net hosted-form endpoint. Configure `senderFormAction` in
-        src/content/settings/site.yml (or via Pages CMS → Site settings) with
-        the form's subscribe URL from your Sender account. Sender then owns
-        double opt-in, tagging, and the automation sequence — see
-        docs/CONTENT_PIPELINE.md.
+        Posts to /api/subscribe, a Cloudflare Worker route (see
+        worker/index.ts) that adds the contact via the Resend API — no
+        third-party hosted form or iframe. method="post" action="..." is
+        a real fallback for when JS is unavailable; src/lib/newsletter.ts
+        intercepts the submit normally for an inline result instead of a
+        page navigation.
       -->
-      <form class="newsletter-form" action={formAction} method="post" target="_blank">
+      <form class="newsletter-form" data-newsletter-form method="post" action={withBase('/api/subscribe')} novalidate>
+        <div class="honeypot" aria-hidden="true">
+          <label for="newsletter-company">Company</label>
+          <input id="newsletter-company" name="company" type="text" tabindex="-1" autocomplete="off" />
+        </div>
         <label for="newsletter-email" class="visually-hidden">Email address</label>
         <input
           id="newsletter-email"
@@ -37,6 +41,7 @@ const formAction = settings?.data.senderFormAction ?? '#';
         />
         <button type="submit" class="btn btn-primary">Sign up</button>
       </form>
+      <p class="newsletter-status" data-newsletter-status role="status" aria-live="polite" hidden></p>
       <p class="newsletter-consent">
         By signing up, you agree to our <a href={withBase('/privacy-policy')}>privacy policy</a>.
       </p>
@@ -100,6 +105,13 @@ const formAction = settings?.data.senderFormAction ?? '#';
     outline: 3px solid var(--color-terracotta);
   }
 
+  .newsletter-status {
+    margin: 0.6em 0 0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-sage-dark);
+  }
+
   .newsletter-consent {
     margin: 0.6em 0 0;
     font-size: 0.78rem;
@@ -109,4 +121,18 @@ const formAction = settings?.data.senderFormAction ?? '#';
   .newsletter-consent a {
     color: var(--color-plum-soft);
   }
+
+  .honeypot {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
 </style>
+
+<script>
+  import { initNewsletterForms } from '../lib/newsletter';
+  initNewsletterForms();
+</script>

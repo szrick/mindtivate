@@ -1,7 +1,16 @@
 {
   "name": "mindtivate",
   "compatibility_date": "2026-08-21",
+  "main": "worker/index.ts",
   "assets": {
-    "directory": "./dist"
+    "directory": "./dist",
+    "binding": "ASSETS"
+  },
+  "vars": {
+    // Not secret (an ID, not a credential) — see worker/index.ts's Env
+    // interface. If a RESEND_AUDIENCE_ID was also set as a dashboard
+    // Variable, remove that copy so there's one source of truth; this
+    // file's value is what actually deploys.
+    "RESEND_AUDIENCE_ID": "4bcd520b-ffcd-48d6-8910-b2fed130ee26"
   }
 }

@@ -5,17 +5,7 @@
 // browser's own forced-dark rendering, which can otherwise treat two
 // separately-styled elements differently even when their CSS colors
 // match on paper.
-import { getEntry } from 'astro:content';
 import { withBase } from '../lib/url';
-
-interface Props {
-  id?: string;
-}
-
-const { id = 'inline-newsletter-email' } = Astro.props;
-
-const settings = await getEntry('settings', 'site');
-const formAction = settings?.data.senderFormAction ?? '#';
 ---
 
 <aside class="inline-newsletter" aria-label="Newsletter signup">
@@ -24,10 +14,20 @@ const formAction = settings?.data.senderFormAction ?? '#';
     Health, fitness, beauty, hormones, relationships, and practical tips
     for living well, delivered to your inbox free.
   </p>
-  <form class="inline-newsletter-form" action={formAction} method="post" target="_blank">
-    <label for={id} class="visually-hidden">Email address</label>
+  <!--
+    Posts to /api/subscribe, a Cloudflare Worker route (see
+    worker/index.ts) that adds the contact via the Resend API — no
+    third-party hosted form or iframe. See src/lib/newsletter.ts for the
+    fetch-based submit handling (shared with NewsletterSignup.astro).
+  -->
+  <form class="inline-newsletter-form" data-newsletter-form method="post" action={withBase('/api/subscribe')} novalidate>
+    <div class="honeypot" aria-hidden="true">
+      <label for="inline-newsletter-company">Company</label>
+      <input id="inline-newsletter-company" name="company" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+    <label for="inline-newsletter-email" class="visually-hidden">Email address</label>
     <input
-      id={id}
+      id="inline-newsletter-email"
       type="email"
       name="email"
       required
@@ -36,6 +36,7 @@ const formAction = settings?.data.senderFormAction ?? '#';
     />
     <button type="submit" class="btn btn-primary">Sign up</button>
   </form>
+  <p class="inline-newsletter-status" data-newsletter-status role="status" aria-live="polite" hidden></p>
   <p class="inline-newsletter-consent">
     By signing up, you agree to our <a href={withBase('/privacy-policy')}>privacy policy</a>.
   </p>
@@ -95,6 +96,13 @@ const formAction = settings?.data.senderFormAction ?? '#';
     text-transform: uppercase;
   }
 
+  .inline-newsletter-status {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-sage-dark);
+    margin: 0 0 0.6em;
+  }
+
   .inline-newsletter-consent {
     font-size: 0.78rem;
     color: var(--color-plum-soft);
@@ -104,4 +112,18 @@ const formAction = settings?.data.senderFormAction ?? '#';
   .inline-newsletter-consent a {
     color: var(--color-plum-soft);
   }
+
+  .honeypot {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
 </style>
+
+<script>
+  import { initNewsletterForms } from '../lib/newsletter';
+  initNewsletterForms();
+</script>

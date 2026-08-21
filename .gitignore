@@ -9,6 +9,10 @@ node_modules/
 .env
 .env.local
 *.local
+.dev.vars
+
+# wrangler local state
+.wrangler/
 
 # pipeline working data (research pulls, drafts, logs)
 scripts/pipeline/.cache/

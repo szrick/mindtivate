@@ -143,19 +143,52 @@ program, etc.). Once approved:
    generate an access token with `pins:write` and `boards:read` scopes.
 3. Add `PINTEREST_ACCESS_TOKEN` and `PINTEREST_BOARD_ID` to `.env`.
 
-## 7. Sender.net — newsletter
+## 7. Resend — newsletter signup + new-article emails
 
-1. Create a Sender.net account and a subscriber group for the newsletter.
-2. Create a hosted signup form, copy its subscribe URL, and set it as
-   `senderFormAction` in `src/content/settings/site.yml` (or via Pages CMS
-   → Site settings).
-3. Create an **RSS-to-email automation** in Sender pointed at
-   `https://mindtivate.com/rss.xml`, triggered on new items, sent to the
-   subscriber group above. This is what actually emails people when you
-   publish — no API credentials needed for this part.
-4. Only set `SENDER_API_TOKEN` / `SENDER_GROUP_ID` in `.env` if you plan to
-   use `scripts/lib/sender.mjs`'s `addSubscriberToGroup` for a specific
-   integration (e.g. adding subscribers from another source).
+The signup boxes on the site (`NewsletterSignup.astro`, `NewsletterBox.astro`)
+post to `/api/subscribe`, a route handled by the Cloudflare Worker itself
+(`worker/index.ts` — see `wrangler.jsonc`'s `main`), which adds the contact
+via Resend's Contacts API. There's no third-party hosted form or iframe.
+Stage 7 of the content pipeline
+(`scripts/pipeline/7-newsletter-broadcast.mjs`) then emails that same
+audience when an article publishes — see `docs/CONTENT_PIPELINE.md`.
+
+1. Create a Resend account and an API key at
+   [resend.com/api-keys](https://resend.com/api-keys).
+2. **Create an Audience** in the Resend dashboard (Audiences → Create
+   audience) and copy its ID (`aud_...`). This is required — Resend's
+   Broadcasts API (what stage 7 uses to send) only reaches contacts that
+   belong to a specific audience; a contact created without one (an
+   earlier version of `worker/index.ts` did this) is invisible to any
+   broadcast.
+3. **Verify a sending domain**: Resend dashboard → Domains → Add Domain
+   (e.g. `mindtivate.com`, or a subdomain), then add the DNS records it
+   gives you via Cloudflare's DNS tab. Sending fails until this is
+   verified.
+4. Set the Worker's copies (Cloudflare dashboard → Workers & Pages →
+   mindtivate → Settings → Variables and Secrets):
+   - `RESEND_API_KEY` — as a **Secret**.
+   - `RESEND_AUDIENCE_ID` — as a plain **Variable** (not secret, it's an
+     ID). Add this even if `worker/index.ts` currently reads it as
+     optional — without it, new signups go back to being
+     broadcast-unreachable.
+   - (Or `wrangler secret put RESEND_API_KEY` / edit `wrangler.jsonc`'s
+     `vars` for the audience ID, from a machine with Cloudflare CLI
+     access.)
+5. Set the pipeline's own copies in `.env` (see `.env.example`):
+   `RESEND_API_KEY`, `RESEND_AUDIENCE_ID` (same values as above — the
+   Worker and the local pipeline script each need their own copy, one
+   runtime doesn't share env with the other), and `RESEND_FROM_EMAIL`
+   (e.g. `"Mindtivate Insights <insights@mindtivate.com>"`, using the
+   domain verified in step 3).
+
+This replaces Sender.net's **RSS-to-email automation**, which this repo
+used previously (see git history for `scripts/lib/sender.mjs` and the
+removed `senderFormAction` setting) — that automation emailed *Sender's*
+subscriber list, a separate system from Resend. Stage 7 is intentionally
+human-gated (draft → review → approve → send) rather than a fully
+automatic poll-and-send, matching the rest of the pipeline's approach to
+anything that goes out publicly — see `docs/COMPLIANCE.md`.
 
 ## 8. Verify
 
