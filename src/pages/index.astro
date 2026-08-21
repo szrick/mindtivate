@@ -2,12 +2,9 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import FeaturedArticles from '../components/FeaturedArticles.astro';
-import ArticleCard from '../components/ArticleCard.astro';
 import CategoryShowcase from '../components/CategoryShowcase.astro';
 import NewsletterSignup from '../components/NewsletterSignup.astro';
-import CategoryIcon from '../components/CategoryIcon.astro';
-import { CATEGORIES, toCategorySlug } from '../lib/categories';
-import { withBase } from '../lib/url';
+import { CATEGORIES } from '../lib/categories';
 
 const allArticles = await getCollection(
   'articles',
@@ -19,16 +16,6 @@ const sortedArticles = allArticles.sort((a, b) => b.data.pubDate.valueOf() - a.d
 // (1/3 width, stacked). On mobile the same 3 stack one after another —
 // see FeaturedArticles.astro.
 const featuredArticles = sortedArticles.slice(0, 3);
-
-// One tile per category in "Explore by topic", showing that category's
-// most recent article. Categories without a published article yet fall
-// back to the plain icon/blurb card further down.
-const latestByCategory = new Map<string, (typeof sortedArticles)[number]>();
-for (const article of sortedArticles) {
-  if (!latestByCategory.has(article.data.category)) {
-    latestByCategory.set(article.data.category, article);
-  }
-}
 
 // A scrollable row per category (SELF.com-style topic rows), each showing
 // every published article in that category, most recent first.
@@ -59,25 +46,6 @@ for (const article of sortedArticles) {
     ) : null;
   })}
 
-  <section class="section container">
-    <p class="eyebrow">Explore by topic</p>
-    <h2>Find what you're working on</h2>
-    <div class="category-grid">
-      {CATEGORIES.map((c) => {
-        const featured = latestByCategory.get(c.label);
-        return featured ? (
-          <ArticleCard article={featured} />
-        ) : (
-          <a href={withBase(`/category/${toCategorySlug(c.label)}`)} class="category-card card">
-            <CategoryIcon label={c.label} color="var(--color-terracotta-dark)" />
-            <h3>{c.label}</h3>
-            <p>{c.blurb}</p>
-          </a>
-        );
-      })}
-    </div>
-  </section>
-
   <div class="section container">
     <NewsletterSignup />
   </div>
@@ -86,39 +54,11 @@ for (const article of sortedArticles) {
 <style>
   .slider-section {
     padding-top: clamp(1.5rem, 3vw, 3rem);
-    padding-bottom: 0;
+    padding-bottom: clamp(1.5rem, 3vw, 3rem);
   }
 
   .empty-state {
     margin: 0;
     color: var(--color-plum-soft);
-  }
-
-  .category-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 1.5rem;
-    margin-top: 1.5rem;
-  }
-
-  .category-card {
-    display: block;
-    padding: 1.5rem;
-    color: inherit;
-  }
-
-  .category-card:hover {
-    text-decoration: none;
-  }
-
-  .category-card h3 {
-    margin-top: 0.6em;
-    margin-bottom: 0.3em;
-    color: var(--color-terracotta-dark);
-  }
-
-  .category-card p {
-    font-size: 0.92rem;
-    margin: 0;
   }
 </style>
