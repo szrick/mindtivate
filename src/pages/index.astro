@@ -53,13 +53,10 @@ for (const article of sortedArticles) {
 
 <style>
   .slider-section {
-    /* The visible gap below the hero (before "Body" appears) is really
-       this section's own padding-bottom PLUS the next section's
-       (CategoryShowcase) padding-top stacked together — there's no color
-       boundary between them, so a visitor sees one combined gap. Matching
-       that same sum here keeps the gap above the hero equal to the one
-       below it at every viewport width, not just one. */
-    padding-top: calc(clamp(1.5rem, 3vw, 3rem) + clamp(2.5rem, 4vw, 4rem));
+    /* Half the gap above the hero as below it — most of the featured
+       section's height should be the images themselves, not empty space
+       between the header and the first thing on the page. */
+    padding-top: clamp(0.75rem, 1.5vw, 1.5rem);
     padding-bottom: clamp(1.5rem, 3vw, 3rem);
   }
 
