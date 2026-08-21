@@ -1,0 +1,167 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Saved Articles"
+  description="Articles you've saved to read later — stored locally in this browser."
+>
+  <section class="section container">
+    <p class="eyebrow">Saved for later</p>
+    <h1>Your saved articles</h1>
+    <p class="saved-intro">
+      These are stored locally in this browser — they won't show up on
+      another device, and clearing your browser data will clear this list
+      too.
+    </p>
+
+    <div class="saved-list" data-saved-list></div>
+    <p class="empty-state" data-saved-empty hidden>
+      You haven't saved any articles yet. Look for the bookmark icon at the
+      top of any article to save it here.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .saved-intro {
+    max-width: 60ch;
+  }
+
+  .empty-state {
+    color: var(--color-plum-soft);
+  }
+
+  .saved-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .saved-list :global(.saved-card) {
+    display: block;
+  }
+
+  .saved-list :global(.saved-card img) {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    border-radius: 0;
+  }
+
+  .saved-list :global(.saved-card-body) {
+    padding: 1.4rem;
+  }
+
+  .saved-list :global(.saved-card-body h3) {
+    margin: 0.6em 0 0.4em;
+    font-size: 1.15rem;
+  }
+
+  .saved-list :global(.saved-card-body a) {
+    color: inherit;
+  }
+
+  .saved-list :global(.saved-card-meta) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0.8em;
+  }
+
+  .saved-list :global(.saved-card-meta time) {
+    font-size: 0.82rem;
+    color: var(--color-plum-soft);
+  }
+
+  .saved-list :global(.remove-btn) {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--color-plum-soft);
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  .saved-list :global(.remove-btn:hover) {
+    color: var(--color-error);
+  }
+</style>
+
+<script>
+  import { getBookmarks, removeBookmark, onBookmarksChange, type Bookmark } from '../lib/bookmarks';
+  import { withBase } from '../lib/url';
+
+  const listEl = document.querySelector<HTMLElement>('[data-saved-list]');
+  const emptyEl = document.querySelector<HTMLElement>('[data-saved-empty]');
+
+  function formatDate(iso: string): string {
+    const date = new Date(iso);
+    if (Number.isNaN(date.getTime())) return '';
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function createCard(bookmark: Bookmark): HTMLElement {
+    const card = document.createElement('div');
+    card.className = 'saved-card card';
+
+    if (bookmark.heroImage) {
+      const img = document.createElement('img');
+      img.src = bookmark.heroImage;
+      img.alt = '';
+      img.loading = 'lazy';
+      card.appendChild(img);
+    }
+
+    const body = document.createElement('div');
+    body.className = 'saved-card-body';
+
+    const tag = document.createElement('span');
+    tag.className = 'tag';
+    tag.textContent = bookmark.category;
+    body.appendChild(tag);
+
+    const heading = document.createElement('h3');
+    const link = document.createElement('a');
+    link.href = withBase(`/articles/${bookmark.slug}`);
+    link.textContent = bookmark.title;
+    heading.appendChild(link);
+    body.appendChild(heading);
+
+    const meta = document.createElement('div');
+    meta.className = 'saved-card-meta';
+
+    const time = document.createElement('time');
+    time.dateTime = bookmark.pubDate;
+    time.textContent = formatDate(bookmark.pubDate);
+    meta.appendChild(time);
+
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.className = 'remove-btn';
+    removeBtn.textContent = 'Remove';
+    removeBtn.addEventListener('click', () => {
+      removeBookmark(bookmark.slug);
+      render();
+    });
+    meta.appendChild(removeBtn);
+
+    body.appendChild(meta);
+    card.appendChild(body);
+    return card;
+  }
+
+  function render() {
+    if (!listEl || !emptyEl) return;
+    const bookmarks = getBookmarks();
+    listEl.replaceChildren(...bookmarks.map(createCard));
+    emptyEl.hidden = bookmarks.length > 0;
+  }
+
+  render();
+  onBookmarksChange(render);
+</script>

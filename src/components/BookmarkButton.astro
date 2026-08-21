@@ -1,0 +1,112 @@
+---
+interface Props {
+  slug: string;
+  title: string;
+  category: string;
+  heroImage?: string;
+  pubDate: string;
+}
+
+const { slug, title, category, heroImage, pubDate } = Astro.props;
+---
+
+<div
+  class="bookmark-box"
+  data-bookmark-box
+  data-slug={slug}
+  data-title={title}
+  data-category={category}
+  data-hero-image={heroImage ?? ''}
+  data-pub-date={pubDate}
+>
+  <button type="button" class="bookmark-toggle" data-bookmark-toggle aria-pressed="false">
+    <svg class="bookmark-icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+      <path
+        d="M6 3.5h12a1 1 0 0 1 1 1V21l-7-4-7 4V4.5a1 1 0 0 1 1-1Z"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </button>
+  <p class="bookmark-copy" data-bookmark-copy>
+    Save this article to read later — it's stored right in your browser, so
+    you can find it again from the bookmark icon in the header next time you
+    visit.
+  </p>
+</div>
+
+<style>
+  .bookmark-box {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    font-size: 0.85rem;
+    color: var(--color-plum-soft);
+    background: var(--color-cream-deep);
+    border-radius: var(--radius-sm);
+    padding: 0.9em 1.1em;
+    margin: 0 0 2rem;
+  }
+
+  .bookmark-copy {
+    margin: 0;
+  }
+
+  .bookmark-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    flex-shrink: 0;
+    border: none;
+    border-radius: 50%;
+    background: var(--color-white);
+    color: var(--color-plum);
+    cursor: pointer;
+  }
+
+  .bookmark-toggle.is-saved {
+    color: var(--color-terracotta);
+  }
+
+  .bookmark-toggle.is-saved .bookmark-icon path {
+    fill: currentColor;
+  }
+</style>
+
+<script>
+  import { toggleBookmark, isBookmarked, type Bookmark } from '../lib/bookmarks';
+
+  document.querySelectorAll<HTMLElement>('[data-bookmark-box]').forEach((box) => {
+    const btn = box.querySelector<HTMLButtonElement>('[data-bookmark-toggle]');
+    const copy = box.querySelector<HTMLElement>('[data-bookmark-copy]');
+    if (!btn || !copy) return;
+
+    const bookmark: Bookmark = {
+      slug: box.dataset.slug ?? '',
+      title: box.dataset.title ?? '',
+      category: box.dataset.category ?? '',
+      heroImage: box.dataset.heroImage || undefined,
+      pubDate: box.dataset.pubDate ?? '',
+      savedAt: new Date().toISOString(),
+    };
+
+    function render(saved: boolean) {
+      btn!.setAttribute('aria-pressed', String(saved));
+      btn!.classList.toggle('is-saved', saved);
+      btn!.setAttribute('aria-label', saved ? 'Remove bookmark' : 'Save article');
+      copy!.textContent = saved
+        ? "Saved — find it anytime from the bookmark icon in the header. It's stored locally on this device, not tied to an account."
+        : "Save this article to read later — it's stored right in your browser, so you can find it again from the bookmark icon in the header next time you visit.";
+    }
+
+    render(isBookmarked(bookmark.slug));
+
+    btn.addEventListener('click', () => {
+      render(toggleBookmark({ ...bookmark, savedAt: new Date().toISOString() }));
+    });
+  });
+</script>
