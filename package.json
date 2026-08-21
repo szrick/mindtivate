@@ -14,7 +14,8 @@
     "pipeline:match": "node scripts/pipeline/2-product-match.mjs",
     "pipeline:draft": "node scripts/pipeline/3-generate-article.mjs",
     "pipeline:pin": "node scripts/pipeline/5-pinterest-pin.mjs",
-    "pipeline:engage": "node scripts/pipeline/6-reddit-engagement-draft.mjs"
+    "pipeline:engage": "node scripts/pipeline/6-reddit-engagement-draft.mjs",
+    "pipeline:newsletter": "node scripts/pipeline/7-newsletter-broadcast.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.11",

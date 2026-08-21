@@ -12,6 +12,12 @@
 export interface Env {
   ASSETS: { fetch(request: Request): Promise<Response> };
   RESEND_API_KEY: string;
+  // Not secret (an ID, not a credential) — set as a plain var in
+  // wrangler.jsonc. Required for contacts to actually be reachable by a
+  // broadcast: Resend's Broadcasts API sends to a specific audience_id,
+  // so a contact created without one (the previous behavior here) would
+  // never receive scripts/pipeline/7-newsletter-broadcast.mjs's emails.
+  RESEND_AUDIENCE_ID?: string;
 }
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -88,7 +94,11 @@ async function handleSubscribe(request: Request, env: Env): Promise<Response> {
       Authorization: `Bearer ${env.RESEND_API_KEY}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ email, unsubscribed: false }),
+    body: JSON.stringify({
+      email,
+      unsubscribed: false,
+      ...(env.RESEND_AUDIENCE_ID ? { audience_id: env.RESEND_AUDIENCE_ID } : {}),
+    }),
   });
 
   // 409 = already subscribed, which is fine from the visitor's perspective.

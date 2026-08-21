@@ -239,16 +239,14 @@ Nothing to run — merging to `main` triggers `deploy.yml`, which builds and
 publishes to GitHub Pages. The article also immediately appears in
 `/rss.xml`.
 
-## Newsletter (automatic)
+## Newsletter signup (automatic)
 
-Configure a Sender.net **RSS-to-email automation** pointed at
-`https://mindtivate.com/rss.xml`: Sender polls the feed and sends
-subscribers a "new post" email automatically on the next poll after an
-article is published. No code runs on the Mindtivate side for this — it's
-the intended zero-maintenance path. `scripts/lib/sender.mjs` also exposes
-`addSubscriberToGroup` for the one-off case of adding someone to a
-segment/tag via API, but campaign sends should go through Sender's own
-automation, not a custom script.
+The signup boxes on the site post to `/api/subscribe`, a route the
+Cloudflare Worker itself handles (`worker/index.ts`) by creating the
+contact via Resend's API. No pipeline step needed — this runs whenever a
+visitor signs up, independent of publishing. See docs/SETUP.md section 7
+for the one-time setup (`RESEND_API_KEY` / `RESEND_AUDIENCE_ID` as Worker
+variables).
 
 ## 5. Pinterest (`scripts/pipeline/5-pinterest-pin.mjs`)
 
@@ -280,12 +278,36 @@ npm run pipeline:engage -- --slug your-article-slug --post
 See [COMPLIANCE.md](COMPLIANCE.md) for why this isn't a single automated
 step.
 
+## 7. Newsletter broadcast (`scripts/pipeline/7-newsletter-broadcast.mjs`)
+
+Emails subscribers when an article publishes — the "notify people on a
+new post" piece that Sender's RSS-to-email automation used to handle,
+rewritten against Resend since subscribers now live there (see "Newsletter
+signup" above). Same two-step, human-gated pattern as stage 6: nothing
+sends until you approve the draft.
+
+```bash
+# 1. Draft a subject + teaser with Claude (writes a JSON file, sends nothing)
+npm run pipeline:newsletter -- --slug your-article-slug
+
+# 2. Review scripts/pipeline/output/newsletter-broadcast-drafts/your-article-slug.json
+#    — edit subject/teaser/html if needed, change "approved": false to
+#    "approved": true. Then:
+npm run pipeline:newsletter -- --slug your-article-slug --send
+```
+
+Requires `RESEND_API_KEY`, `RESEND_AUDIENCE_ID`, and `RESEND_FROM_EMAIL`
+in `.env` — see `.env.example` and docs/SETUP.md section 7.
+`RESEND_FROM_EMAIL`'s domain must be a verified sending domain in Resend
+(Domains → Add Domain in the Resend dashboard, then add the DNS records
+it gives you via Cloudflare's DNS tab), or sending will fail.
+
 ## Scheduled automation
 
 `.github/workflows/content-pipeline.yml` runs stages 1–3 every Monday and
 opens a PR with any new drafts. It requires `POE_API_KEY` (stages 2 and 3
 both run on Poe now) and the `REDDIT_*` secrets to be set as repository
-secrets. `ANTHROPIC_API_KEY` is no longer needed by this workflow — stage 6
-(Reddit engagement drafts) is the only remaining Anthropic caller, and that
-stage is never run by this scheduled workflow. It never touches stages 5
-or 6 and never merges its own PR.
+secrets. `ANTHROPIC_API_KEY` is only needed for stages 6 and 7 (Reddit
+engagement drafts and newsletter broadcast drafts), and neither is run by
+this scheduled workflow. It never touches stages 5,
+6, or 7, and never merges its own PR.
