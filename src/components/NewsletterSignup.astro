@@ -99,6 +99,16 @@ const subtext =
     flex-wrap: wrap;
   }
 
+  /* Without this, the class rule above (author-origin, normal weight)
+     outranks the UA stylesheet's `[hidden] { display: none }` (also
+     author-normal-beats-UA, regardless of selector specificity), so
+     src/lib/newsletter.ts setting form.hidden = true on a successful
+     signup would silently do nothing — the form stays visible right
+     above the new status message instead of being replaced by it. */
+  .newsletter-form[hidden] {
+    display: none;
+  }
+
   .newsletter-form input {
     -webkit-appearance: none;
     appearance: none;

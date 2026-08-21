@@ -73,6 +73,16 @@ import { withBase } from '../lib/url';
     margin: 0 0 0.8em;
   }
 
+  /* Without this, the class rule above (author-origin, normal weight)
+     outranks the UA stylesheet's `[hidden] { display: none }` (also
+     author-normal-beats-UA, regardless of selector specificity), so
+     src/lib/newsletter.ts setting form.hidden = true on a successful
+     signup would silently do nothing — the form stays visible right
+     above the new status message instead of being replaced by it. */
+  .inline-newsletter-form[hidden] {
+    display: none;
+  }
+
   .inline-newsletter-form input {
     flex: 1 1 200px;
     -webkit-appearance: none;
