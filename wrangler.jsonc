@@ -11,6 +11,14 @@
     // interface. If a RESEND_AUDIENCE_ID was also set as a dashboard
     // Variable, remove that copy so there's one source of truth; this
     // file's value is what actually deploys.
-    "RESEND_AUDIENCE_ID": "4bcd520b-ffcd-48d6-8910-b2fed130ee26"
+    "RESEND_AUDIENCE_ID": "4bcd520b-ffcd-48d6-8910-b2fed130ee26",
+    // Also not secret — just the sender identity shown to recipients.
+    // The domain here must be verified in Resend (Domains → Add Domain)
+    // or every send (confirmation emails, broadcasts) fails.
+    "RESEND_FROM_EMAIL": "Mindtivate Insights <insights@mindtivate.com>"
   }
+  // RESEND_API_KEY and CONFIRM_SECRET are NOT here — both are genuine
+  // credentials (CONFIRM_SECRET signs confirmation links; anyone with it
+  // can forge one for any address) and must be set as Worker Secrets in
+  // the Cloudflare dashboard instead, never committed. See docs/SETUP.md.
 }

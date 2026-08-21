@@ -41,7 +41,7 @@ export function initNewsletterForms(): void {
 
       if (res.ok && data.ok) {
         form.hidden = true;
-        if (statusEl) statusEl.textContent = "You're in! Check your inbox to confirm.";
+        if (statusEl) statusEl.textContent = 'Almost there — check your inbox and click the link to confirm.';
       } else {
         if (statusEl) statusEl.textContent = data.error || 'Something went wrong — please try again.';
         if (submitBtn) submitBtn.disabled = false;
