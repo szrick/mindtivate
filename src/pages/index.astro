@@ -67,7 +67,12 @@ for (const article of sortedArticles) {
     width: 100%;
     max-width: 1400px;
     margin: 0 auto;
-    padding: 0 1.5rem;
+    /* Longhand on purpose — this combines with .slider-section on the same
+       element, and a `padding` shorthand here would silently zero out its
+       padding-top/padding-bottom (same bug class documented on .section
+       in global.css). */
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
 
   .empty-state {
