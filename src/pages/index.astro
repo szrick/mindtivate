@@ -55,7 +55,7 @@ for (const article of sortedArticles) {
   {CATEGORIES.map((c) => {
     const articles = articlesByCategory.get(c.label);
     return articles && articles.length > 0 ? (
-      <CategoryShowcase label={c.label} tint={c.tint} articles={articles} />
+      <CategoryShowcase label={c.label} articles={articles} />
     ) : null;
   })}
 
