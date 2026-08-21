@@ -22,6 +22,11 @@ const allArticles = await getCollection(
   ({ data }) => data.status === 'published' && !data.draft && data.category === category,
 );
 const articles = allArticles.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// 3x3 grid per page; beyond that, arrow buttons page through the rest
+// client-side (see the script below) rather than splitting into separate
+// URL routes.
+const PAGE_SIZE = 9;
 ---
 
 <BaseLayout title={category} description={`Mindtivate articles about ${category.toLowerCase()}.`}>
@@ -29,9 +34,31 @@ const articles = allArticles.sort((a, b) => b.data.pubDate.valueOf() - a.data.pu
     <p class="eyebrow">Category</p>
     <h1>{category}</h1>
     {articles.length > 0 ? (
-      <div class="article-grid">
-        {articles.map((article) => <ArticleCard article={article} />)}
-      </div>
+      <>
+        {articles.length > PAGE_SIZE && (
+          <div class="grid-nav" data-grid-nav>
+            <span class="grid-nav-count" data-grid-count aria-hidden="true"></span>
+            <button type="button" class="nav-btn" data-grid-prev aria-label="Previous page">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                <path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+            <button type="button" class="nav-btn" data-grid-next aria-label="Next page">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                <path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+        )}
+
+        <div class="article-grid" data-article-grid data-page-size={PAGE_SIZE}>
+          {articles.map((article) => (
+            <div class="grid-item" data-grid-item>
+              <ArticleCard article={article} />
+            </div>
+          ))}
+        </div>
+      </>
     ) : (
       <p>No articles in this category yet — check back soon.</p>
     )}
@@ -43,10 +70,112 @@ const articles = allArticles.sort((a, b) => b.data.pubDate.valueOf() - a.data.pu
 </BaseLayout>
 
 <style>
+  .grid-nav {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 1.5rem 0 -0.5rem;
+  }
+
+  .grid-nav-count {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-plum-soft);
+    min-width: 2.6em;
+    text-align: center;
+  }
+
+  .nav-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    border-radius: 50%;
+    border: 1px solid var(--color-plum);
+    background: transparent;
+    color: var(--color-plum);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .nav-btn:hover {
+    background: var(--color-plum);
+    color: var(--color-white);
+  }
+
+  .nav-btn:disabled {
+    opacity: 0.35;
+    cursor: default;
+    background: transparent;
+    color: var(--color-plum);
+  }
+
   .article-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.75rem;
     margin-top: 1.5rem;
   }
+
+  /* Without this, .grid-item's own rules (author-origin, normal weight)
+     would outrank the UA stylesheet's `[hidden] { display: none }`, so
+     paging between pages would leave every page's cards stacked visible
+     on top of each other instead of showing nine at a time. */
+  .grid-item[hidden] {
+    display: none;
+  }
+
+  @media (max-width: 900px) {
+    .article-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .article-grid {
+      grid-template-columns: 1fr;
+    }
+  }
 </style>
+
+<script>
+  const grid = document.querySelector<HTMLElement>('[data-article-grid]');
+  const nav = document.querySelector<HTMLElement>('[data-grid-nav]');
+  const prevBtn = document.querySelector<HTMLButtonElement>('[data-grid-prev]');
+  const nextBtn = document.querySelector<HTMLButtonElement>('[data-grid-next]');
+  const countEl = document.querySelector<HTMLElement>('[data-grid-count]');
+
+  if (grid && nav && prevBtn && nextBtn && countEl) {
+    const pageSize = Number(grid.dataset.pageSize) || 9;
+    const items = Array.from(grid.querySelectorAll<HTMLElement>('[data-grid-item]'));
+    const totalPages = Math.max(1, Math.ceil(items.length / pageSize));
+    let page = 0;
+
+    function render() {
+      items.forEach((item, i) => {
+        item.hidden = Math.floor(i / pageSize) !== page;
+      });
+      countEl!.textContent = `${page + 1} / ${totalPages}`;
+      prevBtn!.disabled = page === 0;
+      nextBtn!.disabled = page >= totalPages - 1;
+    }
+
+    prevBtn.addEventListener('click', () => {
+      if (page === 0) return;
+      page -= 1;
+      render();
+      grid!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (page >= totalPages - 1) return;
+      page += 1;
+      render();
+      grid!.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+
+    render();
+  }
+</script>
