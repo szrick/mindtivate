@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import FeaturedArticles from '../components/FeaturedArticles.astro';
 import ArticleCard from '../components/ArticleCard.astro';
+import CategoryShowcase from '../components/CategoryShowcase.astro';
 import NewsletterSignup from '../components/NewsletterSignup.astro';
 import CategoryIcon from '../components/CategoryIcon.astro';
 import { CATEGORIES, toCategorySlug } from '../lib/categories';
@@ -28,6 +29,15 @@ for (const article of sortedArticles) {
     latestByCategory.set(article.data.category, article);
   }
 }
+
+// A scrollable row per category (SELF.com-style topic rows), each showing
+// every published article in that category, most recent first.
+const articlesByCategory = new Map<string, typeof sortedArticles>();
+for (const article of sortedArticles) {
+  const list = articlesByCategory.get(article.data.category);
+  if (list) list.push(article);
+  else articlesByCategory.set(article.data.category, [article]);
+}
 ---
 
 <BaseLayout
@@ -41,6 +51,13 @@ for (const article of sortedArticles) {
       <p class="empty-state">New articles are in research right now — check back soon.</p>
     )}
   </section>
+
+  {CATEGORIES.map((c) => {
+    const articles = articlesByCategory.get(c.label);
+    return articles && articles.length > 0 ? (
+      <CategoryShowcase label={c.label} tint={c.tint} articles={articles} />
+    ) : null;
+  })}
 
   <section class="section container">
     <p class="eyebrow">Explore by topic</p>

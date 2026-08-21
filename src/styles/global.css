@@ -33,6 +33,20 @@
   --shadow-card-hover: 0 10px 30px rgba(47, 42, 51, 0.12);
 
   --max-width: 1120px;
+
+  /* Soft per-category band tints for the homepage's "Explore by topic"
+     showcase rows — distinct enough to tell categories apart at a glance,
+     desaturated enough to stay inside the site's muted editorial palette
+     (unlike a saturated per-category color system, these are backgrounds
+     only; text stays the standard plum/plum-soft throughout). */
+  --tint-body: #f5e3da;
+  --tint-food: #e7ede3;
+  --tint-mind: #eae7ec;
+  --tint-hormones: #f2e0e2;
+  --tint-love: #fbe7de;
+  --tint-beauty: #f8ecd5;
+  --tint-sleep: #e5e9f1;
+  --tint-life-stages: #ece5d3;
 }
 
 * {
