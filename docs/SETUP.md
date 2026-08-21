@@ -147,40 +147,46 @@ program, etc.). Once approved:
 
 The signup boxes on the site (`NewsletterSignup.astro`, `NewsletterBox.astro`)
 post to `/api/subscribe`, a route handled by the Cloudflare Worker itself
-(`worker/index.ts` — see `wrangler.jsonc`'s `main`), which adds the contact
-via Resend's Contacts API. There's no third-party hosted form or iframe.
-Stage 7 of the content pipeline
-(`scripts/pipeline/7-newsletter-broadcast.mjs`) then emails that same
-audience when an article publishes — see `docs/CONTENT_PIPELINE.md`.
+(`worker/index.ts` — see `wrangler.jsonc`'s `main`). There's no third-party
+hosted form or iframe. Signup is **double opt-in**: the contact is created
+in Resend right away but marked unsubscribed (so it can't receive
+broadcasts yet), a confirmation email goes out with a signed link, and
+only clicking that link (`GET /api/confirm`) flips it to subscribed. The
+signature is a stateless HMAC (`CONFIRM_SECRET`) — no database involved,
+the link itself carries the email + an expiry, verified on click. Stage 7
+of the content pipeline (`scripts/pipeline/7-newsletter-broadcast.mjs`)
+then emails that same audience when an article publishes — see
+`docs/CONTENT_PIPELINE.md`.
 
 1. Create a Resend account and an API key at
    [resend.com/api-keys](https://resend.com/api-keys).
 2. **Create an Audience** in the Resend dashboard (Audiences → Create
-   audience) and copy its ID (`aud_...`). This is required — Resend's
-   Broadcasts API (what stage 7 uses to send) only reaches contacts that
-   belong to a specific audience; a contact created without one (an
-   earlier version of `worker/index.ts` did this) is invisible to any
-   broadcast.
+   audience) and copy its ID. This is required — Resend's Broadcasts API
+   (what stage 7 uses to send) only reaches contacts that belong to a
+   specific audience; a contact created without one is invisible to any
+   broadcast. Already set in `wrangler.jsonc`'s `vars.RESEND_AUDIENCE_ID`
+   — update that value if you create a different audience.
 3. **Verify a sending domain**: Resend dashboard → Domains → Add Domain
    (e.g. `mindtivate.com`, or a subdomain), then add the DNS records it
    gives you via Cloudflare's DNS tab. Sending fails until this is
-   verified.
-4. Set the Worker's copies (Cloudflare dashboard → Workers & Pages →
-   mindtivate → Settings → Variables and Secrets):
-   - `RESEND_API_KEY` — as a **Secret**.
-   - `RESEND_AUDIENCE_ID` — as a plain **Variable** (not secret, it's an
-     ID). Add this even if `worker/index.ts` currently reads it as
-     optional — without it, new signups go back to being
-     broadcast-unreachable.
-   - (Or `wrangler secret put RESEND_API_KEY` / edit `wrangler.jsonc`'s
-     `vars` for the audience ID, from a machine with Cloudflare CLI
-     access.)
+   verified — including confirmation emails, not just broadcasts.
+   `RESEND_FROM_EMAIL` is already set in `wrangler.jsonc`'s `vars`; change
+   it if you verify a different domain/address.
+4. Set these as **Secrets** on the Worker (Cloudflare dashboard → Workers
+   & Pages → mindtivate → Settings → Variables and Secrets — or
+   `wrangler secret put <name>` from a machine with Cloudflare CLI
+   access). Both are genuine credentials, unlike the audience ID/from
+   address above, so neither belongs in `wrangler.jsonc`:
+   - `RESEND_API_KEY`
+   - `CONFIRM_SECRET` — any long random string; it signs confirmation
+     links, so anyone holding it could forge one for an arbitrary email
+     address. Generate one with `openssl rand -hex 32` or similar.
 5. Set the pipeline's own copies in `.env` (see `.env.example`):
-   `RESEND_API_KEY`, `RESEND_AUDIENCE_ID` (same values as above — the
+   `RESEND_API_KEY`, `RESEND_AUDIENCE_ID`, and `RESEND_FROM_EMAIL` — the
    Worker and the local pipeline script each need their own copy, one
-   runtime doesn't share env with the other), and `RESEND_FROM_EMAIL`
-   (e.g. `"Mindtivate Insights <insights@mindtivate.com>"`, using the
-   domain verified in step 3).
+   runtime doesn't share env with the other. `CONFIRM_SECRET` is Worker-only
+   and doesn't belong in `.env` at all — the pipeline script never signs
+   or verifies confirmation links.
 
 This replaces Sender.net's **RSS-to-email automation**, which this repo
 used previously (see git history for `scripts/lib/sender.mjs` and the

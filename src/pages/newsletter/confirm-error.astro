@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { withBase } from '../../lib/url';
+---
+
+<BaseLayout title="Confirmation link didn't work" description="There was a problem confirming your Mindtivate Insights subscription.">
+  <section class="section container prose-page">
+    <p class="eyebrow">Mindtivate Insights</p>
+    <h1>That link didn't work</h1>
+    <p>
+      This confirmation link is invalid or has expired (links are valid
+      for 48 hours). Please
+      <a href={`${withBase('/')}#newsletter`}>sign up again</a> to get a
+      fresh one, or <a href={withBase('/contact')}>let us know</a> if it
+      keeps happening.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .prose-page {
+    max-width: 640px;
+  }
+</style>
