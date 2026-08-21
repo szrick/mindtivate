@@ -105,6 +105,18 @@ const subtext =
     outline: 3px solid var(--color-terracotta);
   }
 
+  /* Chrome/Edge force their own autofill background (a pale blue/yellow)
+     that a plain `background` rule can't override — this is the standard
+     workaround: an inset box-shadow the size of the field paints over it,
+     and -webkit-text-fill-color re-asserts the text color autofill also
+     otherwise overrides. */
+  .newsletter-form input:-webkit-autofill,
+  .newsletter-form input:-webkit-autofill:hover,
+  .newsletter-form input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px var(--color-white) inset;
+    -webkit-text-fill-color: var(--color-plum);
+  }
+
   .newsletter-status {
     margin: 0.6em 0 0;
     font-size: 0.85rem;
