@@ -89,6 +89,18 @@ import { withBase } from '../lib/url';
     outline: 3px solid var(--color-terracotta);
   }
 
+  /* Chrome/Edge force their own autofill background (a pale blue/yellow)
+     that a plain `background` rule can't override — this is the standard
+     workaround: an inset box-shadow the size of the field paints over it,
+     and -webkit-text-fill-color re-asserts the text color autofill also
+     otherwise overrides. */
+  .inline-newsletter-form input:-webkit-autofill,
+  .inline-newsletter-form input:-webkit-autofill:hover,
+  .inline-newsletter-form input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px var(--color-white) inset;
+    -webkit-text-fill-color: var(--color-plum);
+  }
+
   .inline-newsletter-form .btn {
     padding: 0.7em 1.4em;
     font-size: 0.8rem;

@@ -9,7 +9,12 @@ import { withBase } from '../../lib/url';
     <h1>You're confirmed!</h1>
     <p>
       You're all set — Mindtivate Insights will start landing in your
-      inbox. In the meantime, <a href={withBase('/articles')}>browse our latest articles</a>.
+      inbox. You can close this page now, or it'll head to our homepage
+      in <span data-countdown>5</span> seconds.
+    </p>
+    <p>
+      <a href={withBase('/')}>Go there now</a> instead, or
+      <a href={withBase('/articles')}>browse our latest articles</a>.
     </p>
   </section>
 </BaseLayout>
@@ -19,3 +24,21 @@ import { withBase } from '../../lib/url';
     max-width: 640px;
   }
 </style>
+
+<script>
+  import { withBase } from '../../lib/url';
+
+  const countdownEl = document.querySelector<HTMLElement>('[data-countdown]');
+  if (countdownEl) {
+    let secondsLeft = 5;
+    const interval = setInterval(() => {
+      secondsLeft -= 1;
+      if (secondsLeft <= 0) {
+        clearInterval(interval);
+        window.location.href = withBase('/');
+        return;
+      }
+      countdownEl.textContent = String(secondsLeft);
+    }, 1000);
+  }
+</script>
