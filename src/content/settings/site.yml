@@ -1,6 +1,6 @@
 newsletterHeadline: "Mindtivate Insights"
 newsletterSubtext: "Health, fitness, beauty, hormones, relationships, and practical tips for living well, delivered to your inbox free."
-senderFormAction: "https://stats.sender.net/forms/aM8rDG/subscribe"
+senderFormAction: "https://stats.sender.net/forms/aM8rDG/view"
 # Contact form endpoint. This is a static site with no backend of its own,
 # so the contact form needs a hosted form-handling service (Formspree,
 # Sender.net, Netlify Forms, etc.) — set its submit URL here.

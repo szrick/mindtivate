@@ -19,26 +19,21 @@ const formAction = settings?.data.senderFormAction ?? '#';
 
     <div class="newsletter-form-wrap">
       <!--
-        Sender.net hosted-form endpoint. Configure `senderFormAction` in
-        src/content/settings/site.yml (or via Pages CMS → Site settings) with
-        the form's subscribe URL from your Sender account. Sender then owns
+        Sender.net's forms on this account are hosted pages (a URL + QR
+        code from the dashboard), not a POST endpoint you can submit an
+        inline <form> to — so this links out to that hosted page rather
+        than collecting the email on-site. Configure `senderFormAction` in
+        src/content/settings/site.yml (or via Pages CMS → Site settings)
+        with that form's URL from your Sender account. Sender then owns
         double opt-in, tagging, and the automation sequence — see
         docs/CONTENT_PIPELINE.md.
       -->
-      <form class="newsletter-form" action={formAction} method="post" target="_blank">
-        <label for="newsletter-email" class="visually-hidden">Email address</label>
-        <input
-          id="newsletter-email"
-          name="email"
-          type="email"
-          required
-          placeholder="you@example.com"
-          autocomplete="email"
-        />
-        <button type="submit" class="btn btn-primary">Sign up</button>
-      </form>
+      <a href={formAction} target="_blank" rel="noopener noreferrer" class="btn btn-primary newsletter-cta">
+        Sign up free
+      </a>
       <p class="newsletter-consent">
-        By signing up, you agree to our <a href={withBase('/privacy-policy')}>privacy policy</a>.
+        Opens Sender's signup page in a new tab. By signing up, you agree to our
+        <a href={withBase('/privacy-policy')}>privacy policy</a>.
       </p>
     </div>
   </div>
@@ -77,27 +72,8 @@ const formAction = settings?.data.senderFormAction ?? '#';
     color: var(--color-plum-soft);
   }
 
-  .newsletter-form {
-    display: flex;
-    gap: 0.6rem;
-    flex-wrap: wrap;
-  }
-
-  .newsletter-form input {
-    -webkit-appearance: none;
-    appearance: none;
-    padding: 0.85em 1.1em;
-    border-radius: 999px;
-    border: 1px solid var(--color-border);
-    background: var(--color-white);
-    min-width: 240px;
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    color: var(--color-plum);
-  }
-
-  .newsletter-form input:focus-visible {
-    outline: 3px solid var(--color-terracotta);
+  .newsletter-cta {
+    white-space: nowrap;
   }
 
   .newsletter-consent {

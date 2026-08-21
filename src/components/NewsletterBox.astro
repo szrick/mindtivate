@@ -8,12 +8,6 @@
 import { getEntry } from 'astro:content';
 import { withBase } from '../lib/url';
 
-interface Props {
-  id?: string;
-}
-
-const { id = 'inline-newsletter-email' } = Astro.props;
-
 const settings = await getEntry('settings', 'site');
 const formAction = settings?.data.senderFormAction ?? '#';
 ---
@@ -24,20 +18,12 @@ const formAction = settings?.data.senderFormAction ?? '#';
     Health, fitness, beauty, hormones, relationships, and practical tips
     for living well, delivered to your inbox free.
   </p>
-  <form class="inline-newsletter-form" action={formAction} method="post" target="_blank">
-    <label for={id} class="visually-hidden">Email address</label>
-    <input
-      id={id}
-      type="email"
-      name="email"
-      required
-      placeholder="you@example.com"
-      autocomplete="email"
-    />
-    <button type="submit" class="btn btn-primary">Sign up</button>
-  </form>
+  <a href={formAction} target="_blank" rel="noopener noreferrer" class="btn btn-primary inline-newsletter-cta">
+    Sign up free
+  </a>
   <p class="inline-newsletter-consent">
-    By signing up, you agree to our <a href={withBase('/privacy-policy')}>privacy policy</a>.
+    Opens Sender's signup page in a new tab. By signing up, you agree to our
+    <a href={withBase('/privacy-policy')}>privacy policy</a>.
   </p>
 </aside>
 
