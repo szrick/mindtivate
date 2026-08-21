@@ -54,6 +54,8 @@ const shareImageUrl = heroImage ? new URL(heroImage.src, Astro.site).toString() 
       pubDate={pubDate.toISOString()}
     />
 
+    {products.length > 0 && <AffiliateDisclosure />}
+
     <div class="prose">
       <slot />
     </div>
@@ -68,8 +70,6 @@ const shareImageUrl = heroImage ? new URL(heroImage.src, Astro.site).toString() 
     )}
 
     <ShareButtons title={title} url={articleUrl} imageUrl={shareImageUrl} />
-
-    <AffiliateDisclosure />
   </article>
 
   <RelatedArticles article={article} />
