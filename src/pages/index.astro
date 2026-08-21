@@ -31,7 +31,7 @@ for (const article of sortedArticles) {
   title="Mindtivate — Evidence-Based Wellness for Women"
   description="Evidence-checked health and wellness guidance for women — sourced from the questions real communities are actually asking."
 >
-  <section class="section container slider-section">
+  <section class="section featured-wide slider-section">
     {featuredArticles.length > 0 ? (
       <FeaturedArticles articles={featuredArticles} />
     ) : (
@@ -55,6 +55,19 @@ for (const article of sortedArticles) {
   .slider-section {
     padding-top: clamp(1.5rem, 3vw, 3rem);
     padding-bottom: clamp(1.5rem, 3vw, 3rem);
+  }
+
+  /* Deliberately wider than the standard .container (1120px) — the
+     featured section reads as a spotlight/hero treatment, so it's allowed
+     to fill more of the viewport on large screens instead of leaving the
+     same cream margins every other section uses. Everything below it
+     (category rows, newsletter) intentionally stays at the narrower
+     reading width. */
+  .featured-wide {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
   }
 
   .empty-state {

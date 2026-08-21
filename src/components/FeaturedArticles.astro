@@ -123,7 +123,10 @@ const [main, ...side] = articles;
   }
 
   .featured-main {
-    min-height: 420px;
+    /* Scales with viewport instead of staying a fixed height, so the
+       hero grows on wide screens rather than leaving a fixed-size image
+       surrounded by ever-more empty margin as the window widens. */
+    min-height: clamp(420px, 37.5vw, 580px);
   }
 
   .featured-side {
@@ -134,7 +137,7 @@ const [main, ...side] = articles;
 
   .featured-side-item {
     flex: 1;
-    min-height: 200px;
+    min-height: clamp(200px, 17vw, 280px);
   }
 
   .featured-copy-sm {
