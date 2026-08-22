@@ -58,13 +58,39 @@ export function parseFlatYaml(fileContents) {
   return parseFlatYamlLines(fileContents);
 }
 
+// Handles YAML's `>` (folded) and `|` (literal) block scalars, e.g.:
+//   description: >
+//     Wrapped across a couple of
+//     lines for readability.
+// Without this, a `>`/`|` value line parses as the literal one-character
+// string ">" or "|" and every indented line under it is silently dropped
+// (each lacks a ":", so the line-by-line loop below just skips it) —
+// this bit every pipeline script that reads `description` as an LLM
+// drafting input, since most existing article files write it this way
+// for readability even though toFrontmatter (this file's writer) never
+// produces this form itself. Continuation lines are collected while they
+// stay indented; the next unindented line ends the block scalar, same as
+// real YAML.
 function parseFlatYamlLines(text) {
+  const lines = text.split(/\r?\n/);
   const data = {};
-  for (const line of text.split(/\r?\n/)) {
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
     const idx = line.indexOf(':');
     if (idx === -1) continue;
     const key = line.slice(0, idx).trim();
     let value = line.slice(idx + 1).trim();
+
+    if (value === '>' || value === '|') {
+      const joiner = value === '>' ? ' ' : '\n';
+      const collected = [];
+      while (i + 1 < lines.length && /^\s+\S/.test(lines[i + 1])) {
+        collected.push(lines[++i].trim());
+      }
+      data[key] = collected.join(joiner);
+      continue;
+    }
+
     if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
       value = value.slice(1, -1);
     }

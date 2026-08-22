@@ -8,7 +8,7 @@
 // script creates the broadcast with send:false, and a human opens Resend
 // (Broadcasts tab), edits it if they want, and hits Send themselves.
 //
-// Claude drafts the actual email copy (subject, one-line intro, and a
+// Poe drafts the actual email copy (subject, one-line intro, and a
 // per-article hook) — deliberately NOT the articles' on-page SEO
 // descriptions verbatim. Those are written to read well as search
 // snippets; email needs a real subject-line hook instead of a "New this
@@ -31,7 +31,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { loadEnv } from '../lib/env.mjs';
 import { parseFlatYaml, readFrontmatter } from '../lib/frontmatter.mjs';
 import { createBroadcast } from '../lib/resend.mjs';
-import { askClaudeForJson } from '../lib/claude.mjs';
+import { askPoeForJson } from '../lib/poe.mjs';
 
 loadEnv();
 
@@ -97,8 +97,8 @@ function listRecentPublishedArticles(days) {
   return articles;
 }
 
-// Merges Claude's per-slug hooks back onto the article list. Falls back to
-// the on-page description for any slug Claude's response is missing (a
+// Merges Poe's per-slug hooks back onto the article list. Falls back to
+// the on-page description for any slug the response is missing (a
 // truncated/malformed response shouldn't silently drop an article from
 // the digest) rather than throwing.
 function attachHooks(articles, draftedArticles) {
@@ -157,8 +157,8 @@ async function run() {
     return;
   }
 
-  console.log(`Drafting copy for ${articles.length} article(s) with Claude...`);
-  const draft = await askClaudeForJson({
+  console.log(`Drafting copy for ${articles.length} article(s) with Poe...`);
+  const draft = await askPoeForJson({
     system: SYSTEM_PROMPT,
     prompt: `This week's articles, in order:\n\n${articles
       .map((a, i) => `${i + 1}. Slug: ${a.slug}\n   Title: "${a.title}"\n   Category: ${a.category}\n   SEO description: ${a.description}`)

@@ -15,7 +15,7 @@
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { loadEnv } from '../lib/env.mjs';
-import { askClaudeForJson } from '../lib/claude.mjs';
+import { askPoeForJson } from '../lib/poe.mjs';
 import { readFrontmatter } from '../lib/frontmatter.mjs';
 import { createBroadcast } from '../lib/resend.mjs';
 
@@ -135,8 +135,8 @@ async function run() {
     return;
   }
 
-  console.log('Drafting subject + teaser with Claude...');
-  const { subject, teaser } = await askClaudeForJson({
+  console.log('Drafting subject + teaser with Poe...');
+  const { subject, teaser } = await askPoeForJson({
     system: SYSTEM_PROMPT,
     prompt: `Article title: "${article.title}"\nArticle description: ${article.description}\nCategory: ${article.category}\nArticle link: ${link}\n\nWrite the subject and teaser.`,
     maxTokens: 400,

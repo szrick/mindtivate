@@ -35,22 +35,19 @@
    settings collections.
 4. Invite editors — they'll get the form UI, no git knowledge required.
 
-## 3. Anthropic (Claude) — Reddit engagement drafts (stage 6, optional)
+## 3. Poe — drafting (stages 2, 3, 5, 6, 7, 8)
 
-Only needed if you use `6-reddit-engagement-draft.mjs`. Stages 2 and 3
-(product matching and article drafting) run on Poe instead — see below.
-
-1. Create an API key at [console.anthropic.com](https://console.anthropic.com).
-2. Locally: add it to `.env` as `ANTHROPIC_API_KEY`.
-3. For the scheduled GitHub Action: not needed — `content-pipeline.yml`
-   never runs stage 6.
-
-## 3b. Poe — product research briefs & article drafting (stages 2 & 3)
+Every drafting step in the pipeline — product research briefs, article
+text, Pinterest pin copy, Reddit comments, newsletter broadcast subjects,
+and the weekly digest — goes through Poe (`scripts/lib/poe.mjs`) rather
+than calling Anthropic directly, so there's a single API key and a single
+bot-selection mechanism for all of it.
 
 1. Create an API key at [poe.com/api_key](https://poe.com/api_key).
 2. Locally: add it to `.env` as `POE_API_KEY`, plus:
-   - `POE_MODEL` — the bot used to write briefs and article text. Defaults
-     to `Claude-Sonnet-4.5`.
+   - `POE_MODEL` — the bot used for all text drafting (briefs, article
+     text, Pinterest/Reddit/newsletter/digest copy). Defaults to
+     `Claude-Sonnet-4.5`.
    - `POE_IMAGE_MODEL` — the image-gen bot used for stage 3's hero
      illustration. Defaults to `GPT-Image-1`.
    - `POE_SEARCH_MODEL` — the web-search-capable bot used for stage 3's
@@ -60,8 +57,10 @@ Only needed if you use `6-reddit-engagement-draft.mjs`. Stages 2 and 3
    All three are bot **handles**, not fixed identifiers — check
    [poe.com](https://poe.com) for what's actually available on your
    account/plan and adjust if a default doesn't resolve.
-3. For the scheduled GitHub Action: add repo secret `POE_API_KEY` and,
-   optionally, repo variables `POE_MODEL` / `POE_IMAGE_MODEL` /
+3. For the scheduled GitHub Actions (`content-pipeline.yml`,
+   `weekly-digest.yml`, `weekly-pinterest-pins.yml`,
+   `weekly-reddit-comment-drafts.yml`): add repo secret `POE_API_KEY`
+   and, optionally, repo variables `POE_MODEL` / `POE_IMAGE_MODEL` /
    `POE_SEARCH_MODEL`.
 
 ## 4. Reddit research and (optional) comment posting
@@ -114,8 +113,8 @@ second one is the one that can take time and isn't guaranteed.
    `REDDIT_USERNAME`, `REDDIT_PASSWORD`, and a descriptive
    `REDDIT_USER_AGENT` (Reddit rate-limits generic user agents harder).
    `weekly-reddit-comment-drafts.yml` (which runs stage 6's *draft* step
-   on a schedule — see `docs/CONTENT_PIPELINE.md`) needs
-   `ANTHROPIC_API_KEY` as a repository secret, but **not** these Reddit
+   on a schedule — see `docs/CONTENT_PIPELINE.md`) needs `POE_API_KEY`
+   (see section 3) as a repository secret, but **not** these Reddit
    credentials — drafting doesn't touch Reddit's API at all, only
    `--post` does, and that never runs in CI.
 4. Read [COMPLIANCE.md](COMPLIANCE.md) before using `--post`.
@@ -156,10 +155,9 @@ program, etc.). Once approved:
    there to fall back to `PINTEREST_BOARD_ID` for it.
 5. For the scheduled drafting workflow
    (`.github/workflows/weekly-pinterest-pins.yml`) to run, add
-   `ANTHROPIC_API_KEY` as a repository secret (Settings → Secrets and
-   variables → Actions → Secrets) — it's the only credential that
-   workflow needs; nothing Pinterest-related runs in CI (see
-   `docs/CONTENT_PIPELINE.md`'s Pinterest section for why).
+   `POE_API_KEY` (see section 3) as a repository secret — it's the only
+   credential that workflow needs; nothing Pinterest-related runs in CI
+   (see `docs/CONTENT_PIPELINE.md`'s Pinterest section for why).
 
 ## 7. Resend — newsletter signup + new-article emails
 
@@ -226,13 +224,13 @@ anything that goes out publicly — see `docs/COMPLIANCE.md`.
 6. **Weekly digest** (stage 8, optional): `.github/workflows/weekly-digest.yml`
    runs `pipeline:digest` every Monday, gated by `weeklyDigestEnabled` in
    `src/content/settings/site.yml` (toggle via Pages CMS → Site settings
-   — off by default). When on, Claude drafts a subject line, a one-line
+   — off by default). When on, Poe drafts a subject line, a one-line
    intro, and a per-article hook for anything published in the last 7
    days (deliberately not the articles' on-page SEO descriptions — see
    the comment at the top of `8-weekly-digest.mjs`), then it's created as
    an unsent Resend broadcast for you to review and send from Resend's
-   dashboard — nothing sends automatically. Needs `ANTHROPIC_API_KEY` and
-   `RESEND_API_KEY` as **repository secrets** (Settings → Secrets and
+   dashboard — nothing sends automatically. Needs `POE_API_KEY` (see
+   section 3) and `RESEND_API_KEY` as **repository secrets** (Settings → Secrets and
    variables → Actions → Secrets) and `RESEND_AUDIENCE_ID` /
    `RESEND_FROM_EMAIL` as **repository variables** (same page, Variables
    tab) — separate from both the Worker's Cloudflare secrets and your

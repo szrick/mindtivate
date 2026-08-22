@@ -27,7 +27,7 @@
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { loadEnv } from '../lib/env.mjs';
-import { askClaude } from '../lib/claude.mjs';
+import { askPoe } from '../lib/poe.mjs';
 import { readFrontmatter, insertFrontmatterField } from '../lib/frontmatter.mjs';
 import { getRedditToken, fetchThreadInfo, postComment } from '../lib/reddit.mjs';
 
@@ -125,8 +125,8 @@ async function run() {
 
   const link = `https://mindtivate.com/articles/${args.slug}/`;
   const prompt = `Original thread: ${article.sourceThreadUrl}\nArticle title: "${article.title}"\nArticle summary: ${article.description}\nArticle link: ${link}\n\nWrite the comment.`;
-  console.log('Drafting comment with Claude...');
-  const commentMarkdown = (await askClaude({ system: SYSTEM_PROMPT, prompt, maxTokens: 400 })).trim();
+  console.log('Drafting comment with Poe...');
+  const commentMarkdown = (await askPoe({ system: SYSTEM_PROMPT, prompt, maxTokens: 400 })).trim();
 
   const draft = {
     slug: args.slug,

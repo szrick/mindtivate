@@ -1,7 +1,7 @@
 name: Weekly Pinterest pin drafts
 
 # Finds published articles with no pinterestPinUrl yet and drafts a pin
-# (image + Claude-drafted title/description) for a handful of them each
+# (image + Poe-drafted title/description) for a handful of them each
 # run, opening a PR with the results. Nothing is ever posted to Pinterest
 # from this workflow — see scripts/pipeline/5-pinterest-pin.mjs's header
 # for why the actual send stays a manual, local, human-run step.
@@ -43,7 +43,8 @@ jobs:
             echo "::endgroup::"
           done
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          POE_API_KEY: ${{ secrets.POE_API_KEY }}
+          POE_MODEL: ${{ vars.POE_MODEL }}
 
       - name: Open PR with new pin draft(s)
         uses: peter-evans/create-pull-request@v6

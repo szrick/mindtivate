@@ -21,8 +21,9 @@ article moves from a Reddit thread to a published page.
   git directly.
 - **GitHub Pages** — hosting, deployed via `.github/workflows/deploy.yml`
   on every push to `main`.
-- **Claude (Anthropic API)** — drafts article copy from research briefs.
-  See `scripts/lib/claude.mjs`.
+- **[Poe API](https://poe.com/api_key)** — every drafting step (research
+  briefs, article copy, Pinterest pin copy, Reddit comments, newsletter
+  copy) goes through here. See `scripts/lib/poe.mjs`.
 - **Sender.net** — newsletter delivery and the "new post" email automation
   (RSS-triggered, no custom integration needed — see `src/pages/rss.xml.js`).
 
@@ -51,7 +52,7 @@ scripts under `scripts/pipeline/`, run in order:
 | 1 | `npm run pipeline:research` | Scans target subreddits for recurring, specific problems. |
 | 2 | `npm run pipeline:match` | Turns each pain point into a product research brief (category + search query). |
 | — | *(manual)* | A human researches the brief, applies for the affiliate program, and adds/updates a record in `src/content/products/`. |
-| 3 | `npm run pipeline:draft` | Drafts an article with Claude from a pain point (+ matched product). Always written as `status: draft`. |
+| 3 | `npm run pipeline:draft` | Drafts an article with Poe from a pain point (+ matched product). Always written as `status: draft`. |
 | — | *(manual/CMS)* | Review the draft in Pages CMS, verify the affiliate link, set `status: published`. |
 | — | *(CI)* | `deploy.yml` publishes to GitHub Pages on merge to `main`. |
 | 5 | `npm run pipeline:pin -- --slug <slug>` | Creates a Pinterest pin linking to the published article. |
@@ -84,7 +85,7 @@ src/
   pages/           # routes: /, /articles, /articles/[slug], /category/[category], ...
   styles/          # global.css (design tokens)
 scripts/
-  lib/             # small dependency-free API clients (Reddit, Claude, Pinterest, Sender)
+  lib/             # small dependency-free API clients (Reddit, Poe, Pinterest, Resend)
   pipeline/        # the numbered pipeline stages described above
 docs/              # architecture, content pipeline, compliance, setup
 .pages.yml         # Pages CMS collection config

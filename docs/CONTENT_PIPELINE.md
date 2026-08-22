@@ -254,7 +254,7 @@ Two-step, human-gated, same shape as stages 6/7 below:
 
 ```bash
 # 1. Draft: renders the pin image (article hero photo + gradient scrim +
-#    category badge + Claude-drafted headline/subtext + logo, at
+#    category badge + Poe-drafted headline/subtext + logo, at
 #    Pinterest's recommended 1000x1500) and drafts a title/description.
 #    Writes both to scripts/pipeline/pinterest-pin-drafts/<slug>.{png,json}.
 npm run pipeline:pin -- --slug your-article-slug
@@ -311,7 +311,7 @@ any article whose `sourceSubreddit` is on the permanently-excluded list
 from `docs/COMPLIANCE.md` (`find-uncommented-articles.mjs`'s
 `NEVER_COMMENT_SUBREDDITS`) — that policy applies regardless of whether a
 human or a schedule is doing the finding, so it's enforced in code, not
-left to review to catch. Requires `ANTHROPIC_API_KEY` as a repository
+left to review to catch. Requires `POE_API_KEY` as a repository
 secret.
 
 ## 7. Newsletter broadcast (`scripts/pipeline/7-newsletter-broadcast.mjs`)
@@ -323,7 +323,7 @@ signup" above). Same two-step, human-gated pattern as stage 6: nothing
 sends until you approve the draft.
 
 ```bash
-# 1. Draft a subject + teaser with Claude (writes a JSON file, sends nothing)
+# 1. Draft a subject + teaser with Poe (writes a JSON file, sends nothing)
 npm run pipeline:newsletter -- --slug your-article-slug
 
 # 2. Review scripts/pipeline/output/newsletter-broadcast-drafts/your-article-slug.json
@@ -341,7 +341,7 @@ it gives you via Cloudflare's DNS tab), or sending will fail.
 ## 8. Weekly digest (`scripts/pipeline/8-weekly-digest.mjs`)
 
 Lists whatever articles have `status: published` and a `pubDate` in the
-last 7 days, sorted newest first, then has Claude draft the actual email
+last 7 days, sorted newest first, then has Poe draft the actual email
 copy for them: a subject line, a one-line intro, and a per-article hook.
 Deliberately not the articles' on-page SEO descriptions reused verbatim —
 those are written to read well as search snippets, and reusing several of
@@ -360,7 +360,7 @@ npm run pipeline:digest -- --force   # run even if the toggle is off
 npm run pipeline:digest -- --dry-run # print the drafted subject/intro/hooks, create nothing in Resend
 ```
 
-Requires `ANTHROPIC_API_KEY` (drafting) in addition to the `RESEND_*` vars
+Requires `POE_API_KEY` (drafting) in addition to the `RESEND_*` vars
 stage 7 uses.
 
 Gated by `weeklyDigestEnabled` in `src/content/settings/site.yml` — off by
@@ -388,5 +388,8 @@ above for why sending stays manual).
 `.github/workflows/weekly-reddit-comment-drafts.yml` runs stage 6's
 **draft step only** every Monday, for up to 5 published articles missing
 a `redditCommentUrl`, and opens a PR with the results (see stage 6's
-section above). `ANTHROPIC_API_KEY` is required by this workflow and by
-weekly-pinterest-pins.yml and stage 7 (newsletter broadcast drafts).
+section above). `POE_API_KEY` is required by this workflow and by
+weekly-pinterest-pins.yml, weekly-digest.yml, and stage 7 (newsletter
+broadcast drafts) — every drafting step in this pipeline goes through
+Poe (`scripts/lib/poe.mjs`), not a direct Anthropic client, so there's
+one credential for all of it. See `docs/SETUP.md` section 3.
