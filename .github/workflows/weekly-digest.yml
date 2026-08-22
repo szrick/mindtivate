@@ -1,0 +1,37 @@
+name: Weekly newsletter digest (draft only)
+
+# Runs every week and, if weeklyDigestEnabled is on in
+# src/content/settings/site.yml (toggle via Pages CMS → Site settings),
+# creates an unsent Resend Broadcast draft listing whatever published in
+# the last 7 days. It never sends anything itself — a human reviews and
+# sends the draft from Resend's own dashboard. Safe to leave running
+# unconditionally: it's a no-op when the toggle is off, and a no-op again
+# on any week with nothing new published.
+
+on:
+  schedule:
+    - cron: '0 15 * * 1' # Mondays 15:00 UTC
+  workflow_dispatch:
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Draft weekly digest in Resend (if enabled)
+        run: npm run pipeline:digest
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_AUDIENCE_ID: ${{ vars.RESEND_AUDIENCE_ID }}
+          RESEND_FROM_EMAIL: ${{ vars.RESEND_FROM_EMAIL }}

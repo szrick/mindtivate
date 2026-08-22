@@ -8,3 +8,11 @@ contactFormAction: "REPLACE_WITH_CONTACT_FORM_ACTION_URL"
 # https://www.google.com/recaptcha/admin for this domain. Leave blank to
 # skip rendering the CAPTCHA widget (the honeypot field still applies).
 recaptchaSiteKey: ""
+# Controls scripts/pipeline/8-weekly-digest.mjs, run weekly by
+# .github/workflows/weekly-digest.yml. When true and there's at least one
+# article published in the last 7 days, it creates an unsent draft
+# broadcast in Resend (Broadcasts tab) for a human to review, edit, and
+# send — nothing goes out automatically. Toggle here or via Pages CMS →
+# Site settings.
+weeklyDigestEnabled: false
+
