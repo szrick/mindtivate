@@ -43,7 +43,15 @@ researched an answer to the thread's question, not a marketer. Rules:
 - No emoji, no hype, no "check out my site!" energy.
 - 80-150 words.
 - Do not claim personal experience you don't have; speak as "we researched" (Mindtivate is a team, not one person).
-Output plain text only — the comment body, nothing else.`;
+- The ONLY link anywhere in the comment is that one article link. Do not
+  add a "Learn more" / "Sources" / citations section, a numbered link
+  list, or any other link — even a citation-style one. A pile of extra
+  links (especially to unrelated sites or a competitor) is exactly the
+  kind of thing that gets a comment removed as spam, regardless of how
+  well-researched the writing itself is.
+Output plain text only — the comment body, nothing else. No headings, no
+list of links or sources at the end, no markdown besides the one inline
+link to the article.`;
 
 function parseArgs(argv) {
   const args = { post: false };
