@@ -136,12 +136,27 @@ program, etc.). Once approved:
 
 ## 6. Pinterest
 
-1. Create a Pinterest **business** account for Mindtivate and a board (or
-   boards) for your content.
+1. Create a Pinterest **business** account for Mindtivate. You can pin
+   everything to one board, or create one board per category (Body,
+   Food, Mind, Hormones, Love, Beauty, Sleep, Life Stages) — see step 4.
 2. Register an app at
    [developers.pinterest.com](https://developers.pinterest.com) and
    generate an access token with `pins:write` and `boards:read` scopes.
 3. Add `PINTEREST_ACCESS_TOKEN` and `PINTEREST_BOARD_ID` to `.env`.
+   `PINTEREST_BOARD_ID` is the catch-all board — used whenever a category
+   has no board of its own configured (step 4).
+4. **Optional, per-category boards**: if you created a separate board per
+   category, put each board's ID in `scripts/lib/pinterest-boards.json`
+   (not secret — an ID, not a credential — so it's a committed file, not
+   an env var). A board's ID isn't in its URL; find it via the Pinterest
+   API (`GET /v5/boards`) or the board's settings. Leave a category blank
+   there to fall back to `PINTEREST_BOARD_ID` for it.
+5. For the scheduled drafting workflow
+   (`.github/workflows/weekly-pinterest-pins.yml`) to run, add
+   `ANTHROPIC_API_KEY` as a repository secret (Settings → Secrets and
+   variables → Actions → Secrets) — it's the only credential that
+   workflow needs; nothing Pinterest-related runs in CI (see
+   `docs/CONTENT_PIPELINE.md`'s Pinterest section for why).
 
 ## 7. Resend — newsletter signup + new-article emails
 

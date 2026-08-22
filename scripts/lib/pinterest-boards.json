@@ -1,0 +1,11 @@
+{
+  "_comment": "Category -> Pinterest board ID. Not secret (an ID, not a credential), so this lives in the repo rather than .env — same reasoning as wrangler.jsonc's RESEND_AUDIENCE_ID. Find a board's ID via the Pinterest API (GET /v5/boards) or the board's page source; the board's URL slug is NOT its ID. Leave a category blank to fall back to PINTEREST_BOARD_ID (a single catch-all board) for that category.",
+  "Body": "",
+  "Food": "",
+  "Mind": "",
+  "Hormones": "",
+  "Love": "",
+  "Beauty": "",
+  "Sleep": "",
+  "Life Stages": ""
+}

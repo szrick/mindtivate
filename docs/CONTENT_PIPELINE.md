@@ -250,16 +250,38 @@ variables).
 
 ## 5. Pinterest (`scripts/pipeline/5-pinterest-pin.mjs`)
 
-Run manually, after the article is live (Pinterest needs a public image
-URL, so this has to happen post-deploy):
+Two-step, human-gated, same shape as stages 6/7 below:
 
 ```bash
-npm run pipeline:pin -- --slug your-article-slug --image https://mindtivate.com/images/your-hero.jpg
+# 1. Draft: renders the pin image (article hero photo + gradient scrim +
+#    category badge + Claude-drafted headline/subtext + logo, at
+#    Pinterest's recommended 1000x1500) and drafts a title/description.
+#    Writes both to scripts/pipeline/pinterest-pin-drafts/<slug>.{png,json}.
+npm run pipeline:pin -- --slug your-article-slug
+
+# 2. Review the .png and .json (edit either if you want), set
+#    "approved": true in the .json, then:
+npm run pipeline:pin -- --slug your-article-slug --send
 ```
 
-Creates a pin on the configured board linking to
-`https://mindtivate.com/articles/<slug>/`. Prints the resulting pin URL —
-add it back to the article's `pinterestPinUrl` field via Pages CMS.
+`--send` calls Pinterest directly with the image as base64 data — unlike
+the old version of this script, it does NOT need the article's image to
+already be publicly reachable, so there's no post-deploy timing
+dependency. It resolves which board to pin to via `resolveBoardId()` in
+`scripts/lib/pinterest.mjs` (category → board from
+`scripts/lib/pinterest-boards.json`, falling back to `PINTEREST_BOARD_ID`
+for any category without one configured), and on success writes the
+resulting pin URL back onto the article's `pinterestPinUrl` field
+automatically — no manual Pages CMS step needed.
+
+`.github/workflows/weekly-pinterest-pins.yml` runs the **draft step
+only** (never `--send`) every Monday for up to 5 published articles
+missing a `pinterestPinUrl`, opening a PR with the generated images/copy.
+Pinterest pins have no built-in "unsent draft" state the way Resend
+broadcasts do, so a real PR diff — the actual pin image, viewable inline
+on GitHub — is the review surface instead. Sending stays a manual, local,
+human-run command on purpose, same as every other step in this pipeline
+that posts something publicly.
 
 ## 6. Reddit engagement (`scripts/pipeline/6-reddit-engagement-draft.mjs`)
 
@@ -337,12 +359,16 @@ stage 7.
 `.github/workflows/content-pipeline.yml` runs stages 1–3 every Monday and
 opens a PR with any new drafts. It requires `POE_API_KEY` (stages 2 and 3
 both run on Poe now) and the `REDDIT_*` secrets to be set as repository
-secrets. `ANTHROPIC_API_KEY` is only needed for stages 6 and 7 (Reddit
-engagement drafts and newsletter broadcast drafts), and neither is run by
-this scheduled workflow. It never touches stages 5,
-6, or 7, and never merges its own PR.
+secrets. It never touches stages 5, 6, or 7, and never merges its own PR.
 
 `.github/workflows/weekly-digest.yml` runs stage 8 every Monday. It's
 always safe to run — `weeklyDigestEnabled` being off, or there being
 nothing new to report, both make it a no-op — so unlike the workflow
 above, there's nothing to gate it from running unconditionally.
+
+`.github/workflows/weekly-pinterest-pins.yml` runs stage 5's **draft
+step only** every Monday, for up to 5 published articles missing a
+`pinterestPinUrl`, and opens a PR with the results (see stage 5's section
+above for why sending stays manual). `ANTHROPIC_API_KEY` is required by
+this workflow and by stage 7 (newsletter broadcast drafts) — stage 6
+(Reddit engagement drafts) uses it too but isn't run on any schedule.
