@@ -175,3 +175,12 @@ content:
       - name: recaptchaSiteKey
         label: Google reCAPTCHA v2 site key (blank = no CAPTCHA widget)
         type: string
+      - name: weeklyDigestEnabled
+        label: Weekly digest enabled
+        description: >-
+          When on, the weekly GitHub Action creates a draft broadcast in
+          Resend for any article published in the last 7 days — it's a
+          draft only, you still review and send it from Resend's
+          dashboard. Off by default.
+        type: boolean
+        default: false

@@ -302,6 +302,27 @@ in `.env` — see `.env.example` and docs/SETUP.md section 7.
 (Domains → Add Domain in the Resend dashboard, then add the DNS records
 it gives you via Cloudflare's DNS tab), or sending will fail.
 
+## 8. Weekly digest (`scripts/pipeline/8-weekly-digest.mjs`)
+
+Unlike stage 7, this one needs no LLM step — it just lists whatever
+articles have `status: published` and a `pubDate` in the last 7 days,
+sorted newest first. Because there's no drafting to review, the human
+checkpoint moves to Resend itself: this script creates the broadcast with
+`send: false`, so it lands as an unsent draft in Resend's dashboard
+(Broadcasts tab) — open it there, edit the subject/body with Resend's own
+editor if you want, and send it whenever you're ready.
+
+```bash
+npm run pipeline:digest              # respects weeklyDigestEnabled (site.yml)
+npm run pipeline:digest -- --force   # run even if the toggle is off
+npm run pipeline:digest -- --dry-run # print what would be drafted, call nothing
+```
+
+Gated by `weeklyDigestEnabled` in `src/content/settings/site.yml` — off by
+default, toggle it via Pages CMS → Site settings (no git needed). Requires
+the same `RESEND_API_KEY` / `RESEND_AUDIENCE_ID` / `RESEND_FROM_EMAIL` as
+stage 7.
+
 ## Scheduled automation
 
 `.github/workflows/content-pipeline.yml` runs stages 1–3 every Monday and
@@ -311,3 +332,8 @@ secrets. `ANTHROPIC_API_KEY` is only needed for stages 6 and 7 (Reddit
 engagement drafts and newsletter broadcast drafts), and neither is run by
 this scheduled workflow. It never touches stages 5,
 6, or 7, and never merges its own PR.
+
+`.github/workflows/weekly-digest.yml` runs stage 8 every Monday. It's
+always safe to run — `weeklyDigestEnabled` being off, or there being
+nothing new to report, both make it a no-op — so unlike the workflow
+above, there's nothing to gate it from running unconditionally.

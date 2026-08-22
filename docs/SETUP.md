@@ -205,6 +205,18 @@ human-gated (draft → review → approve → send) rather than a fully
 automatic poll-and-send, matching the rest of the pipeline's approach to
 anything that goes out publicly — see `docs/COMPLIANCE.md`.
 
+6. **Weekly digest** (stage 8, optional): `.github/workflows/weekly-digest.yml`
+   runs `pipeline:digest` every Monday, gated by `weeklyDigestEnabled` in
+   `src/content/settings/site.yml` (toggle via Pages CMS → Site settings
+   — off by default). When on, it drafts an unsent Resend broadcast
+   listing anything published in the last 7 days for you to review and
+   send from Resend's dashboard — nothing sends automatically. Needs
+   `RESEND_API_KEY` as a **repository secret** (Settings → Secrets and
+   variables → Actions → Secrets) and `RESEND_AUDIENCE_ID` /
+   `RESEND_FROM_EMAIL` as **repository variables** (same page, Variables
+   tab) — separate from both the Worker's Cloudflare secrets and your
+   local `.env`, since GitHub Actions doesn't share env with either.
+
 ## 8. Verify
 
 ```bash

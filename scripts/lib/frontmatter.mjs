@@ -48,8 +48,19 @@ export function readFrontmatter(fileContents) {
   const match = fileContents.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?([\s\S]*)$/);
   if (!match) return { data: {}, body: fileContents };
   const [, rawFrontmatter, body] = match;
+  return { data: parseFlatYamlLines(rawFrontmatter), body: body.trim() };
+}
+
+// Same flat string/boolean line parsing as readFrontmatter, but for a
+// standalone YAML file with no `---` frontmatter fences around it (e.g.
+// src/content/settings/site.yml) — shared here so the two never drift.
+export function parseFlatYaml(fileContents) {
+  return parseFlatYamlLines(fileContents);
+}
+
+function parseFlatYamlLines(text) {
   const data = {};
-  for (const line of rawFrontmatter.split(/\r?\n/)) {
+  for (const line of text.split(/\r?\n/)) {
     const idx = line.indexOf(':');
     if (idx === -1) continue;
     const key = line.slice(0, idx).trim();
@@ -61,7 +72,7 @@ export function readFrontmatter(fileContents) {
     else if (value === 'false') data[key] = false;
     else data[key] = value;
   }
-  return { data, body: body.trim() };
+  return data;
 }
 
 // Inserts a single flat field into an existing file's frontmatter block
