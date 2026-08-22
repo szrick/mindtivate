@@ -1,0 +1,22 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { withBase } from '../../lib/url';
+---
+
+<BaseLayout title="Unsubscribe link didn't work" description="There was a problem unsubscribing you from Mindtivate Insights.">
+  <section class="section container prose-page">
+    <p class="eyebrow">Mindtivate Insights</p>
+    <h1>That link didn't work</h1>
+    <p>
+      This unsubscribe link is invalid. Please
+      <a href={withBase('/contact')}>contact us</a> and we'll remove you by
+      hand.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .prose-page {
+    max-width: 640px;
+  }
+</style>

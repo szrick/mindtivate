@@ -158,6 +158,15 @@ of the content pipeline (`scripts/pipeline/7-newsletter-broadcast.mjs`)
 then emails that same audience when an article publishes — see
 `docs/CONTENT_PIPELINE.md`.
 
+The moment a contact confirms, `worker/index.ts` also fires a 3-email
+welcome sequence (Day 0 / 3 / 7) via `ctx.waitUntil` — sent one at a time
+using Resend's `scheduled_at` on the Day 3 and Day 7 sends, so there's
+nothing to poll or re-trigger later. Edit `WELCOME_SEQUENCE` in
+`worker/index.ts` to change the content or timing. Every welcome email
+carries an unsubscribe link (`GET /api/unsubscribe`), signed the same way
+as the confirmation link but with a 5-year expiry instead of 48 hours,
+since it needs to keep working no matter how long the email sits unread.
+
 1. Create a Resend account and an API key at
    [resend.com/api-keys](https://resend.com/api-keys).
 2. **Create an Audience** in the Resend dashboard (Audiences → Create

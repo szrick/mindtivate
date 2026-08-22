@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { withBase } from '../../lib/url';
+---
+
+<BaseLayout title="You're unsubscribed" description="You've been unsubscribed from Mindtivate Insights.">
+  <section class="section container prose-page">
+    <p class="eyebrow">Mindtivate Insights</p>
+    <h1>You're unsubscribed</h1>
+    <p>
+      You won't get any more emails from us. If that was a mistake, you can
+      <a href={`${withBase('/')}#newsletter`}>sign up again</a> any time.
+    </p>
+    <p>
+      <a href={withBase('/')}>Back to the homepage</a>
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .prose-page {
+    max-width: 640px;
+  }
+</style>
