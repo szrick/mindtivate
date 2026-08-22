@@ -304,19 +304,28 @@ it gives you via Cloudflare's DNS tab), or sending will fail.
 
 ## 8. Weekly digest (`scripts/pipeline/8-weekly-digest.mjs`)
 
-Unlike stage 7, this one needs no LLM step — it just lists whatever
-articles have `status: published` and a `pubDate` in the last 7 days,
-sorted newest first. Because there's no drafting to review, the human
-checkpoint moves to Resend itself: this script creates the broadcast with
+Lists whatever articles have `status: published` and a `pubDate` in the
+last 7 days, sorted newest first, then has Claude draft the actual email
+copy for them: a subject line, a one-line intro, and a per-article hook.
+Deliberately not the articles' on-page SEO descriptions reused verbatim —
+those are written to read well as search snippets, and reusing several of
+them back to back in one email tends to read repetitive (see the system
+prompt at the top of the script for the exact rules it's drafting under).
+
+Unlike stage 7, there's no local JSON file to approve — the review
+checkpoint is Resend itself: this script creates the broadcast with
 `send: false`, so it lands as an unsent draft in Resend's dashboard
-(Broadcasts tab) — open it there, edit the subject/body with Resend's own
+(Broadcasts tab) — open it there, edit the drafted copy with Resend's own
 editor if you want, and send it whenever you're ready.
 
 ```bash
 npm run pipeline:digest              # respects weeklyDigestEnabled (site.yml)
 npm run pipeline:digest -- --force   # run even if the toggle is off
-npm run pipeline:digest -- --dry-run # print what would be drafted, call nothing
+npm run pipeline:digest -- --dry-run # print the drafted subject/intro/hooks, create nothing in Resend
 ```
+
+Requires `ANTHROPIC_API_KEY` (drafting) in addition to the `RESEND_*` vars
+stage 7 uses.
 
 Gated by `weeklyDigestEnabled` in `src/content/settings/site.yml` — off by
 default, toggle it via Pages CMS → Site settings (no git needed). Requires

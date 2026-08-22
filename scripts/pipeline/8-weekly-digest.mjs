@@ -3,12 +3,18 @@
 // as a Resend Broadcast.
 //
 // Unlike stage 7 (one broadcast per article, drafted to a local JSON file
-// for approval), this one needs no LLM step — it's just a templated list
-// of whatever published in the last 7 days — so the "review before it
-// goes out" step happens directly in Resend's own dashboard instead of a
-// local file: this script creates the broadcast with send:false, and a
-// human opens Resend (Broadcasts tab), edits it if they want, and hits
-// Send themselves.
+// for approval), the "review before it goes out" step here happens
+// directly in Resend's own dashboard instead of a local file: this
+// script creates the broadcast with send:false, and a human opens Resend
+// (Broadcasts tab), edits it if they want, and hits Send themselves.
+//
+// Claude drafts the actual email copy (subject, one-line intro, and a
+// per-article hook) — deliberately NOT the articles' on-page SEO
+// descriptions verbatim. Those are written to read well as search
+// snippets; email needs a real subject-line hook instead of a "New this
+// week: X" label, and hooks that read fresh next to each other rather
+// than N descriptions all in the same "here's what actually changes"
+// mold the article-drafting pipeline tends to produce.
 //
 // Gated by `weeklyDigestEnabled` in src/content/settings/site.yml (toggle
 // via Pages CMS → Site settings) so the scheduled GitHub Action can run
@@ -19,12 +25,13 @@
 // Usage:
 //   npm run pipeline:digest              # respects weeklyDigestEnabled
 //   npm run pipeline:digest -- --force   # ignore the toggle (manual testing)
-//   npm run pipeline:digest -- --dry-run # print what would be drafted, call nothing
+//   npm run pipeline:digest -- --dry-run # print the drafted copy, create nothing in Resend
 
 import { readdirSync, readFileSync } from 'node:fs';
 import { loadEnv } from '../lib/env.mjs';
 import { parseFlatYaml, readFrontmatter } from '../lib/frontmatter.mjs';
 import { createBroadcast } from '../lib/resend.mjs';
+import { askClaudeForJson } from '../lib/claude.mjs';
 
 loadEnv();
 
@@ -32,6 +39,33 @@ const ARTICLES_DIR = 'src/content/articles';
 const SETTINGS_PATH = 'src/content/settings/site.yml';
 const SITE_URL = 'https://mindtivate.com';
 const WINDOW_DAYS = 7;
+
+const SYSTEM_PROMPT = `You write a short weekly newsletter email for Mindtivate, an evidence-based
+women's health/wellness site — specific and grounded, never hype-y or
+diet-culture. You're given this week's newly-published articles (title,
+category, and each one's on-page SEO description). Write fresh copy for
+the EMAIL — do not reuse an SEO description verbatim, and don't write in
+that same "here's what actually X" template for every article; vary the
+phrasing so the hooks don't all sound alike next to each other.
+
+Rules:
+- Subject: specific and genuinely intriguing — built from the real
+  tension/question in the single strongest article this week (pick one,
+  don't try to summarize all of them). Not generic hype ("You won't
+  believe...", "This one trick") and not a label like "New this week: X".
+  Under 60 characters.
+- Intro: one short, warm, human sentence introducing the week's read(s).
+  No "Hi there", no sign-off, no mention of "this newsletter" or "this
+  email".
+- Per-article hook: one short sentence per article (2 max), building
+  curiosity about what's actually in the piece without giving the answer
+  away or overselling it. Second person where it reads naturally. No
+  "click here" / "read more" — that's a separate button already.
+- No medical claims, no "shocking" / "secret" / "amazing" language.
+- Do not mention that you are an AI or that this was generated.
+
+Output strict JSON only, with one hook per article in the same order
+given: {"subject": "...", "intro": "...", "articles": [{"slug": "...", "hook": "..."}]}`;
 
 function parseArgs(argv) {
   const args = { force: false, dryRun: false };
@@ -63,16 +97,25 @@ function listRecentPublishedArticles(days) {
   return articles;
 }
 
-function renderHtml(articles) {
+// Merges Claude's per-slug hooks back onto the article list. Falls back to
+// the on-page description for any slug Claude's response is missing (a
+// truncated/malformed response shouldn't silently drop an article from
+// the digest) rather than throwing.
+function attachHooks(articles, draftedArticles) {
+  const hookBySlug = new Map((draftedArticles ?? []).map((a) => [a.slug, a.hook]));
+  return articles.map((a) => ({ ...a, hook: hookBySlug.get(a.slug) || a.description }));
+}
+
+function renderHtml({ intro, articles }) {
   const cards = articles
-    .map(({ title, description, category, slug }) => {
+    .map(({ title, hook, category, slug }) => {
       const link = `${SITE_URL}/articles/${slug}/`;
       return `<tr>
         <td style="padding:0 0 1.6em;">
           <p style="margin:0 0 0.3em;font-size:12px;letter-spacing:0.04em;text-transform:uppercase;color:#5f7457;font-family:Arial,sans-serif;">${category}</p>
           <h2 style="margin:0 0 0.4em;font-size:19px;line-height:1.35;color:#2f2a33;"><a href="${link}" style="color:#2f2a33;text-decoration:none;">${title}</a></h2>
-          <p style="margin:0 0 0.5em;font-size:15px;line-height:1.6;color:#55505c;">${description}</p>
-          <a href="${link}" style="font-size:14px;font-family:Arial,sans-serif;font-weight:bold;color:#d97a5f;text-decoration:none;">Read it →</a>
+          <p style="margin:0 0 0.5em;font-size:15px;line-height:1.6;color:#55505c;">${hook}</p>
+          <a href="${link}" style="font-size:14px;font-family:Arial,sans-serif;font-weight:bold;color:#d97a5f;text-decoration:none;">Read the full breakdown →</a>
         </td>
       </tr>`;
     })
@@ -83,6 +126,7 @@ function renderHtml(articles) {
   <body style="margin:0;padding:32px 24px;background:#fbf6ef;font-family:Georgia,serif;">
     <div style="max-width:560px;margin:0 auto;">
       <p style="margin:0 0 1.5em;font-size:13px;letter-spacing:0.04em;text-transform:uppercase;color:#5f7457;font-family:Arial,sans-serif;">Mindtivate Insights — this week</p>
+      <p style="margin:0 0 1.6em;font-size:16px;line-height:1.6;color:#2f2a33;">${intro}</p>
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
         ${cards}
       </table>
@@ -91,15 +135,11 @@ function renderHtml(articles) {
 </html>`;
 }
 
-function renderText(articles) {
-  return articles
-    .map(({ title, description, slug }) => `${title}\n${description}\n${SITE_URL}/articles/${slug}/`)
+function renderText({ intro, articles }) {
+  const list = articles
+    .map(({ title, hook, slug }) => `${title}\n${hook}\n${SITE_URL}/articles/${slug}/`)
     .join('\n\n');
-}
-
-function buildSubject(articles) {
-  if (articles.length === 1) return `New this week: ${articles[0].title}`;
-  return `${articles.length} new articles this week on Mindtivate`;
+  return `${intro}\n\n${list}`;
 }
 
 async function run() {
@@ -117,12 +157,23 @@ async function run() {
     return;
   }
 
-  const subject = buildSubject(articles);
-  const html = renderHtml(articles);
-  const text = renderText(articles);
+  console.log(`Drafting copy for ${articles.length} article(s) with Claude...`);
+  const draft = await askClaudeForJson({
+    system: SYSTEM_PROMPT,
+    prompt: `This week's articles, in order:\n\n${articles
+      .map((a, i) => `${i + 1}. Slug: ${a.slug}\n   Title: "${a.title}"\n   Category: ${a.category}\n   SEO description: ${a.description}`)
+      .join('\n\n')}`,
+    maxTokens: 1000,
+  });
 
-  console.log(`Digest: "${subject}"`);
-  for (const a of articles) console.log(`  - [${a.category}] ${a.title}`);
+  const subject = draft.subject;
+  const articlesWithHooks = attachHooks(articles, draft.articles);
+  const html = renderHtml({ intro: draft.intro, articles: articlesWithHooks });
+  const text = renderText({ intro: draft.intro, articles: articlesWithHooks });
+
+  console.log(`\nSubject: "${subject}"`);
+  console.log(`Intro: ${draft.intro}`);
+  for (const a of articlesWithHooks) console.log(`  - [${a.category}] ${a.title}\n    ${a.hook}`);
 
   if (args.dryRun) {
     console.log('\n--dry-run: not creating a Resend draft.');

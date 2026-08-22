@@ -2,11 +2,13 @@ name: Weekly newsletter digest (draft only)
 
 # Runs every week and, if weeklyDigestEnabled is on in
 # src/content/settings/site.yml (toggle via Pages CMS → Site settings),
-# creates an unsent Resend Broadcast draft listing whatever published in
-# the last 7 days. It never sends anything itself — a human reviews and
+# has Claude draft a subject/intro/per-article hook for whatever
+# published in the last 7 days and creates it as an unsent Resend
+# Broadcast draft. It never sends anything itself — a human reviews and
 # sends the draft from Resend's own dashboard. Safe to leave running
 # unconditionally: it's a no-op when the toggle is off, and a no-op again
-# on any week with nothing new published.
+# on any week with nothing new published (neither case calls Claude or
+# Resend at all).
 
 on:
   schedule:
@@ -32,6 +34,7 @@ jobs:
       - name: Draft weekly digest in Resend (if enabled)
         run: npm run pipeline:digest
         env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           RESEND_AUDIENCE_ID: ${{ vars.RESEND_AUDIENCE_ID }}
           RESEND_FROM_EMAIL: ${{ vars.RESEND_FROM_EMAIL }}

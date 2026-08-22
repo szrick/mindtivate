@@ -208,10 +208,13 @@ anything that goes out publicly — see `docs/COMPLIANCE.md`.
 6. **Weekly digest** (stage 8, optional): `.github/workflows/weekly-digest.yml`
    runs `pipeline:digest` every Monday, gated by `weeklyDigestEnabled` in
    `src/content/settings/site.yml` (toggle via Pages CMS → Site settings
-   — off by default). When on, it drafts an unsent Resend broadcast
-   listing anything published in the last 7 days for you to review and
-   send from Resend's dashboard — nothing sends automatically. Needs
-   `RESEND_API_KEY` as a **repository secret** (Settings → Secrets and
+   — off by default). When on, Claude drafts a subject line, a one-line
+   intro, and a per-article hook for anything published in the last 7
+   days (deliberately not the articles' on-page SEO descriptions — see
+   the comment at the top of `8-weekly-digest.mjs`), then it's created as
+   an unsent Resend broadcast for you to review and send from Resend's
+   dashboard — nothing sends automatically. Needs `ANTHROPIC_API_KEY` and
+   `RESEND_API_KEY` as **repository secrets** (Settings → Secrets and
    variables → Actions → Secrets) and `RESEND_AUDIENCE_ID` /
    `RESEND_FROM_EMAIL` as **repository variables** (same page, Variables
    tab) — separate from both the Worker's Cloudflare secrets and your
