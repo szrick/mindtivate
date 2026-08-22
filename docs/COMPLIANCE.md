@@ -36,7 +36,12 @@ designed around.
   context, or whether a moderator has already flagged similar comments as
   spam — a human reviewing each comment before it goes out is the
   difference between "helpful answer that happens to link to more detail"
-  and "spam that gets the account banned."
+  and "spam that gets the account banned." `weekly-reddit-comment-drafts.yml`
+  automates the *drafting* half on a schedule (opens a PR so reviewing
+  means reading the comment text in a diff and merging, rather than
+  running the script by hand) — it never runs `--post`, and it hard-skips
+  the permanently research-only subreddits listed above rather than
+  relying on review to catch one.
 - **Vote/comment manipulation.** Never use multiple accounts to
   upvote/reply to your own content, and don't post the same comment across
   many threads — that's manipulation under Reddit's rules regardless of

@@ -74,6 +74,9 @@ content:
       - name: pinterestPinUrl
         label: Pinterest pin URL
         type: string
+      - name: redditCommentUrl
+        label: Reddit comment URL
+        type: string
       - name: tags
         label: Tags
         type: string
