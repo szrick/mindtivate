@@ -1,7 +1,7 @@
 name: Weekly Reddit comment drafts
 
 # Finds published articles with a sourceThreadUrl but no redditCommentUrl
-# yet and drafts a comment (Claude, in the voice of someone who actually
+# yet and drafts a comment (Poe, in the voice of someone who actually
 # researched the answer) for a handful of them each run, opening a PR
 # with the results. Nothing is ever posted to Reddit from this workflow
 # — see scripts/pipeline/6-reddit-engagement-draft.mjs's header, and
@@ -42,7 +42,8 @@ jobs:
             echo "::endgroup::"
           done
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          POE_API_KEY: ${{ secrets.POE_API_KEY }}
+          POE_MODEL: ${{ vars.POE_MODEL }}
 
       - name: Open PR with new comment draft(s)
         uses: peter-evans/create-pull-request@v6

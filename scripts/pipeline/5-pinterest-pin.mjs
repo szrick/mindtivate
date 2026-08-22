@@ -2,7 +2,7 @@
 // Stage 5: draft and create a Pinterest pin for a published article.
 //
 // Two-step, human-gated (same pattern as stages 6/7): drafting never
-// posts anything. It renders the pin image, asks Claude for the pin's
+// posts anything. It renders the pin image, asks Poe for the pin's
 // wording, and writes both to scripts/pipeline/pinterest-pin-drafts/ for
 // review. Only --send, after approved:true, actually calls Pinterest.
 //
@@ -21,7 +21,7 @@
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { loadEnv } from '../lib/env.mjs';
-import { askClaudeForJson } from '../lib/claude.mjs';
+import { askPoeForJson } from '../lib/poe.mjs';
 import { readFrontmatter, insertFrontmatterField } from '../lib/frontmatter.mjs';
 import { createPin, resolveBoardId } from '../lib/pinterest.mjs';
 import { renderPinImage } from '../lib/pinterest-pin-image.mjs';
@@ -161,8 +161,8 @@ async function run() {
     return;
   }
 
-  console.log('Drafting Pinterest copy with Claude...');
-  const copy = await askClaudeForJson({
+  console.log('Drafting Pinterest copy with Poe...');
+  const copy = await askPoeForJson({
     system: SYSTEM_PROMPT,
     prompt: `Article title: "${article.title}"\nCategory: ${article.category}\nSEO description: ${article.description}`,
     maxTokens: 500,

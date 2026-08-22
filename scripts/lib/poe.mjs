@@ -1,6 +1,7 @@
-// Poe API client (OpenAI-compatible chat completions endpoint), used for
-// stages 2 and 3 instead of the direct Anthropic client in
-// scripts/lib/claude.mjs. Get a key at https://poe.com/api_key.
+// Poe API client (OpenAI-compatible chat completions endpoint) — the
+// only LLM credential this pipeline needs; every drafting stage (2, 3,
+// 5, 6, 7, 8) goes through here rather than a direct provider client.
+// Get a key at https://poe.com/api_key.
 //
 // Bot handles (the "model" field) are whatever's available on your Poe
 // account and can change — POE_MODEL / POE_IMAGE_MODEL / POE_SEARCH_MODEL
