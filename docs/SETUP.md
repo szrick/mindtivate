@@ -113,8 +113,11 @@ second one is the one that can take time and isn't guaranteed.
 3. Add to `.env`: `REDDIT_CLIENT_ID`, `REDDIT_CLIENT_SECRET`,
    `REDDIT_USERNAME`, `REDDIT_PASSWORD`, and a descriptive
    `REDDIT_USER_AGENT` (Reddit rate-limits generic user agents harder).
-   These are **not** needed by the scheduled Action, which only runs
-   stages 1–3 (research/match/draft) — never stage 6.
+   `weekly-reddit-comment-drafts.yml` (which runs stage 6's *draft* step
+   on a schedule — see `docs/CONTENT_PIPELINE.md`) needs
+   `ANTHROPIC_API_KEY` as a repository secret, but **not** these Reddit
+   credentials — drafting doesn't touch Reddit's API at all, only
+   `--post` does, and that never runs in CI.
 4. Read [COMPLIANCE.md](COMPLIANCE.md) before using `--post`.
 
 If approval is slow or denied, the research pipeline keeps working fine

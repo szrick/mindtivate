@@ -291,14 +291,28 @@ Two-step, human-gated by design:
 # 1. Generate a draft comment (writes a JSON file, posts nothing)
 npm run pipeline:engage -- --slug your-article-slug
 
-# 2. Review scripts/pipeline/output/reddit-comment-drafts/your-article-slug.json,
+# 2. Review scripts/pipeline/reddit-comment-drafts/your-article-slug.json,
 #    edit the text if needed, re-check the subreddit's current rules, and
 #    change "approved": false to "approved": true. Then:
 npm run pipeline:engage -- --slug your-article-slug --post
 ```
 
+`--post` records the resulting `redditCommentUrl` back onto the
+article's frontmatter automatically.
+
 See [COMPLIANCE.md](COMPLIANCE.md) for why this isn't a single automated
-step.
+step — drafting is automated (below), posting never is.
+
+`.github/workflows/weekly-reddit-comment-drafts.yml` runs the **draft
+step only** every Monday, for up to 5 published articles that have a
+`sourceThreadUrl` but no `redditCommentUrl` yet, and opens a PR with the
+results (same shape as the Pinterest workflow above). It also hard-skips
+any article whose `sourceSubreddit` is on the permanently-excluded list
+from `docs/COMPLIANCE.md` (`find-uncommented-articles.mjs`'s
+`NEVER_COMMENT_SUBREDDITS`) — that policy applies regardless of whether a
+human or a schedule is doing the finding, so it's enforced in code, not
+left to review to catch. Requires `ANTHROPIC_API_KEY` as a repository
+secret.
 
 ## 7. Newsletter broadcast (`scripts/pipeline/7-newsletter-broadcast.mjs`)
 
@@ -369,6 +383,10 @@ above, there's nothing to gate it from running unconditionally.
 `.github/workflows/weekly-pinterest-pins.yml` runs stage 5's **draft
 step only** every Monday, for up to 5 published articles missing a
 `pinterestPinUrl`, and opens a PR with the results (see stage 5's section
-above for why sending stays manual). `ANTHROPIC_API_KEY` is required by
-this workflow and by stage 7 (newsletter broadcast drafts) — stage 6
-(Reddit engagement drafts) uses it too but isn't run on any schedule.
+above for why sending stays manual).
+
+`.github/workflows/weekly-reddit-comment-drafts.yml` runs stage 6's
+**draft step only** every Monday, for up to 5 published articles missing
+a `redditCommentUrl`, and opens a PR with the results (see stage 6's
+section above). `ANTHROPIC_API_KEY` is required by this workflow and by
+weekly-pinterest-pins.yml and stage 7 (newsletter broadcast drafts).

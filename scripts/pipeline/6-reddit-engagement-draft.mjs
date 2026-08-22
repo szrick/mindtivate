@@ -3,15 +3,23 @@
 // article, for the thread the article was originally researched from.
 //
 // This script NEVER posts on its first run. It writes a draft to
-// scripts/pipeline/output/reddit-comment-drafts/<slug>.json with
-// "approved": false. A human must open that file, edit the comment text if
-// needed, and change it to "approved": true before `--post` will do
-// anything. This exists because most of the target subreddits
-// (r/loseit, r/xxfitness, r/bodyweightfitness, r/nutrition, r/mentalhealth)
-// have explicit rules against self-promotion and link-dropping — see
-// docs/COMPLIANCE.md. Auto-posting without a human checking the specific
-// thread's current rules and context is how accounts get banned and how
-// the site gets a spam reputation.
+// scripts/pipeline/reddit-comment-drafts/<slug>.json with "approved":
+// false. A human must review it and change that to "approved": true
+// before `--post` will do anything. This exists because most of the
+// target subreddits (r/loseit, r/xxfitness, r/bodyweightfitness,
+// r/nutrition, r/mentalhealth) have explicit rules against
+// self-promotion and link-dropping — see docs/COMPLIANCE.md.
+// Auto-posting without a human checking the specific thread's current
+// rules and context is how accounts get banned and how the site gets a
+// spam reputation.
+//
+// Unlike the old version of this script, the drafts directory is
+// deliberately NOT gitignored: weekly-reddit-comment-drafts.yml runs the
+// drafting half on a schedule and opens a PR with the results, so
+// reviewing means reading the comment text right in the PR (much lighter
+// than Pinterest's image review — it's 80-150 words) and flipping one
+// field before merging. --send still only ever runs locally, by a
+// human, same as every other "goes out publicly" step in this pipeline.
 //
 // Usage:
 //   npm run pipeline:engage -- --slug some-article-slug          # draft only
@@ -20,12 +28,12 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { loadEnv } from '../lib/env.mjs';
 import { askClaude } from '../lib/claude.mjs';
-import { readFrontmatter } from '../lib/frontmatter.mjs';
+import { readFrontmatter, insertFrontmatterField } from '../lib/frontmatter.mjs';
 import { getRedditToken, fetchThreadInfo, postComment } from '../lib/reddit.mjs';
 
 loadEnv();
 
-const DRAFTS_DIR = 'scripts/pipeline/output/reddit-comment-drafts';
+const DRAFTS_DIR = 'scripts/pipeline/reddit-comment-drafts';
 
 const SYSTEM_PROMPT = `You write a single Reddit comment in the voice of someone who genuinely
 researched an answer to the thread's question, not a marketer. Rules:
@@ -87,12 +95,31 @@ async function run() {
       process.exitCode = 1;
       return;
     }
+    if (draft.sentAt) {
+      console.error(`Draft was already posted at ${draft.sentAt} (${draft.commentUrl}). Delete that field (or the whole file) to re-post.`);
+      process.exitCode = 1;
+      return;
+    }
 
     const token = await getRedditToken();
     const thread = await fetchThreadInfo(token, article.sourceThreadUrl);
     console.log(`Posting comment to: ${thread.title}`);
     const result = await postComment(token, { parentFullname: thread.fullname, text: draft.commentMarkdown });
-    console.log('Posted.', result.json?.data?.things?.[0]?.data?.permalink ?? '');
+    const permalink = result.json?.data?.things?.[0]?.data?.permalink;
+    const commentUrl = permalink ? `https://www.reddit.com${permalink}` : null;
+
+    draft.sentAt = new Date().toISOString();
+    draft.commentUrl = commentUrl;
+    writeFileSync(draftPath, JSON.stringify(draft, null, 2));
+
+    if (commentUrl) {
+      const updatedArticle = insertFrontmatterField(readFileSync(articlePath, 'utf8'), 'redditCommentUrl', commentUrl);
+      writeFileSync(articlePath, updatedArticle);
+      console.log(`Posted: ${commentUrl}`);
+      console.log(`Recorded redditCommentUrl in ${articlePath}.`);
+    } else {
+      console.log('Posted, but no permalink came back in the response — record the URL in Pages CMS by hand.');
+    }
     return;
   }
 

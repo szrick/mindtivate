@@ -18,6 +18,7 @@ const articles = defineCollection({
       sourceThreadUrl: z.string().url().optional(),
       featuredProducts: z.array(reference('products')).default([]),
       pinterestPinUrl: z.string().url().optional(),
+      redditCommentUrl: z.string().url().optional(),
       tags: z.array(z.string()).default([]),
     }),
 });
