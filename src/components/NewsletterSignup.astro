@@ -81,10 +81,11 @@ const subtext =
        text and form columns on wide screens. Once this wraps to a single
        column on narrow screens, that same 2rem as a row-gap stacked on
        top of the paragraph's own margin-bottom read as a big dead patch
-       of empty space above the input — a smaller row-gap keeps a clean
-       break without that much air. */
+       of empty space above the input — dropping the row-gap to 0 leaves
+       just that margin-bottom (consistent with paragraph spacing
+       everywhere else on the site) as the break between them. */
     column-gap: 2rem;
-    row-gap: 0.5rem;
+    row-gap: 0;
     flex-wrap: wrap;
   }
 
