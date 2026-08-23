@@ -47,6 +47,7 @@ const [main, ...side] = articles;
             <div class="featured-copy featured-copy-sm">
               <span class="tag">{article.data.category}</span>
               <h3>{article.data.title}</h3>
+              <p>{article.data.description}</p>
             </div>
           </a>
         ))}
@@ -152,6 +153,15 @@ const [main, ...side] = articles;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+
+  /* Overrides the general .featured-copy p rule's 2-line clamp — these
+     side cards are much shorter than the main one, so a single line
+     keeps the excerpt from crowding out the title/image. */
+  .featured-copy-sm p {
+    margin: 0.3em 0 0;
+    font-size: 0.82rem;
+    -webkit-line-clamp: 1;
   }
 
   @media (max-width: 640px) {
