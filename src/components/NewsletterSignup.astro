@@ -124,13 +124,17 @@ const subtext =
   }
 
   .newsletter-form input {
+    /* flex-basis (not min-width) so the field can still shrink to fit
+       narrow screens instead of forcing the card wider than the
+       viewport — a hard min-width here previously pushed the whole
+       card off the right edge on phones. */
+    flex: 1 1 200px;
     -webkit-appearance: none;
     appearance: none;
     padding: 0.85em 1.1em;
     border-radius: 999px;
     border: 1px solid var(--color-border);
     background: var(--color-white);
-    min-width: 240px;
     font-family: var(--font-body);
     font-size: 0.95rem;
     color: var(--color-plum);
