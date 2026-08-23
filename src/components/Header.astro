@@ -302,7 +302,10 @@ const navCategories = CATEGORIES;
     border: 1px solid var(--color-border);
     background: var(--color-white);
     font-family: var(--font-body);
-    font-size: 0.95rem;
+    /* iOS/Android mobile browsers auto-zoom the whole page on focus for
+       any text input under 16px, then leave it pannable until the user
+       zooms back out manually -- 1rem is the floor that avoids it. */
+    font-size: 1rem;
     color: var(--color-plum);
   }
 
