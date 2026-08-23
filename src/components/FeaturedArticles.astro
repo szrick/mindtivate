@@ -17,14 +17,16 @@ const [main, ...side] = articles;
 {main && (
   <div class="featured-grid">
     <a href={withBase(`/articles/${main.slug}`)} class="featured-card featured-main">
-      {main.data.heroImage && (
-        <img
-          src={main.data.heroImage.src}
-          alt={main.data.heroImageAlt ?? main.data.title}
-          loading="eager"
-        />
-      )}
-      <div class="featured-scrim"></div>
+      <div class="featured-media">
+        {main.data.heroImage && (
+          <img
+            src={main.data.heroImage.src}
+            alt={main.data.heroImageAlt ?? main.data.title}
+            loading="eager"
+          />
+        )}
+        <div class="featured-scrim"></div>
+      </div>
       <div class="featured-copy">
         <span class="tag">{main.data.category}</span>
         <h2>{main.data.title}</h2>
@@ -36,14 +38,16 @@ const [main, ...side] = articles;
       <div class="featured-side">
         {side.map((article) => (
           <a href={withBase(`/articles/${article.slug}`)} class="featured-card featured-side-item">
-            {article.data.heroImage && (
-              <img
-                src={article.data.heroImage.src}
-                alt={article.data.heroImageAlt ?? article.data.title}
-                loading="lazy"
-              />
-            )}
-            <div class="featured-scrim"></div>
+            <div class="featured-media">
+              {article.data.heroImage && (
+                <img
+                  src={article.data.heroImage.src}
+                  alt={article.data.heroImageAlt ?? article.data.title}
+                  loading="lazy"
+                />
+              )}
+              <div class="featured-scrim"></div>
+            </div>
             <div class="featured-copy featured-copy-sm">
               <span class="tag">{article.data.category}</span>
               <h3>{article.data.title}</h3>
@@ -76,13 +80,21 @@ const [main, ...side] = articles;
     text-decoration: none;
   }
 
-  .featured-card img {
+  /* The image sits in its own fixed-height box so the excerpt below is
+     free to grow to fit its full text — the excerpt is in normal flow,
+     not overlaid on top of the image, so nothing gets clipped no matter
+     how long a description runs. */
+  .featured-media {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .featured-media img {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    border-radius: 0;
   }
 
   .featured-scrim {
@@ -92,15 +104,17 @@ const [main, ...side] = articles;
   }
 
   .featured-copy {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    position: relative;
+    /* Pulls the copy block up to overlap the bottom of the image (the
+       previous overlaid look), while staying in normal flow so it can
+       push the card taller instead of being clipped when the excerpt
+       runs long. */
+    margin-top: -5.5rem;
     padding: clamp(1.25rem, 3vw, 2.5rem);
-    /* A dedicated translucent-black backdrop directly behind the title,
-       on top of the wider image-level scrim above, so the title stays
-       readable regardless of how light or busy the hero image is. */
-    background: rgba(0, 0, 0, 0.45);
+    /* Solid, not translucent — this box can now extend below the image
+       onto the plain card background, and needs to stay readable there
+       too, not just over the photo. */
+    background: var(--color-plum);
   }
 
   .featured-copy .tag {
@@ -117,13 +131,9 @@ const [main, ...side] = articles;
   .featured-copy p {
     color: rgba(255, 255, 255, 0.85);
     margin: 0;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
   }
 
-  .featured-main {
+  .featured-main .featured-media {
     /* Scales with viewport instead of staying a fixed height, so the
        hero grows on wide screens rather than leaving a fixed-size image
        surrounded by ever-more empty margin as the window widens. */
@@ -138,10 +148,14 @@ const [main, ...side] = articles;
 
   .featured-side-item {
     flex: 1;
+  }
+
+  .featured-side-item .featured-media {
     min-height: clamp(200px, 17vw, 280px);
   }
 
   .featured-copy-sm {
+    margin-top: -3.5rem;
     padding: 1.1rem;
   }
 
@@ -149,19 +163,11 @@ const [main, ...side] = articles;
     color: #fff;
     margin: 0.4em 0 0;
     font-size: 1rem;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
   }
 
-  /* Overrides the general .featured-copy p rule's 2-line clamp — these
-     side cards are much shorter than the main one, so a single line
-     keeps the excerpt from crowding out the title/image. */
   .featured-copy-sm p {
     margin: 0.3em 0 0;
     font-size: 0.82rem;
-    -webkit-line-clamp: 1;
   }
 
   @media (max-width: 640px) {
@@ -169,11 +175,11 @@ const [main, ...side] = articles;
       grid-template-columns: 1fr;
     }
 
-    .featured-main {
+    .featured-main .featured-media {
       min-height: 260px;
     }
 
-    .featured-side-item {
+    .featured-side-item .featured-media {
       min-height: 220px;
     }
   }

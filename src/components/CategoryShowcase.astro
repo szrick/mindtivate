@@ -226,18 +226,14 @@ const categorySlug = toCategorySlug(label);
 
   /* A short excerpt so a reader has some idea what the article actually
      covers before clicking — title alone (esp. clamped to 2 lines in
-     this narrow a card) often isn't enough. Clamped to 2 lines itself so
-     one long description doesn't make a single card tower over its
-     row-mates. */
+     this narrow a card) often isn't enough. Shown in full (no clamp):
+     cards in a row can end up different heights when descriptions vary
+     in length, but that's preferable to cutting text off mid-sentence. */
   .showcase-excerpt {
     margin: 0 0 0.4em;
     font-size: 0.85rem;
     line-height: 1.4;
     color: var(--color-plum-soft);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
   }
 
   .showcase-card time {
