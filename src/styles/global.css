@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Lato:wght@400;700;900&display=swap');
 
 :root {
   /* The site has no dark theme, so opt out of the browser/OS auto-dark
@@ -22,8 +22,8 @@
   --color-success: #5f7457;
   --color-error: #b3453a;
 
-  --font-heading: 'Fraunces', Georgia, serif;
-  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Montserrat', Georgia, serif;
+  --font-body: 'Lato', system-ui, -apple-system, sans-serif;
 
   --radius-sm: 8px;
   --radius-md: 14px;
