@@ -17,6 +17,11 @@
   --color-cream-deep: #f2e9db;
   --color-plum: #2f2a33;
   --color-plum-soft: #55505c;
+  /* Neutral 50% grey — deliberately not tinted with the plum palette,
+     for chrome controls (header icons, "See all" links) that should
+     read as quieter/neutral rather than as a softer version of the
+     brand's own text color. */
+  --color-gray-50: #808080;
   --color-white: #ffffff;
   --color-border: #e7ddcd;
   --color-success: #5f7457;
