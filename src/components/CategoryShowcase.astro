@@ -46,7 +46,7 @@ const categorySlug = toCategorySlug(label);
 
     <ul class="showcase-track" data-track>
       {articles.map((article) => {
-        const { title, pubDate, heroImage, heroImageAlt } = article.data;
+        const { title, description, pubDate, heroImage, heroImageAlt } = article.data;
         return (
           <li class="showcase-item">
             <a href={withBase(`/articles/${article.slug}`)} class="showcase-card">
@@ -55,6 +55,7 @@ const categorySlug = toCategorySlug(label);
               )}
               <span class="showcase-tag">{label}</span>
               <h3>{title}</h3>
+              <p class="showcase-excerpt">{description}</p>
               <time datetime={pubDate.toISOString()}>
                 {pubDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
               </time>
@@ -214,13 +215,29 @@ const categorySlug = toCategorySlug(label);
     font-size: 1rem;
     line-height: 1.3;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
 
   .showcase-card:hover h3 {
     text-decoration: underline;
+  }
+
+  /* A short excerpt so a reader has some idea what the article actually
+     covers before clicking — title alone (esp. clamped to 2 lines in
+     this narrow a card) often isn't enough. Clamped to 2 lines itself so
+     one long description doesn't make a single card tower over its
+     row-mates. */
+  .showcase-excerpt {
+    margin: 0 0 0.4em;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: var(--color-plum-soft);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
 
   .showcase-card time {
