@@ -46,6 +46,15 @@
 
 html {
   scroll-behavior: smooth;
+  /* Bumps the base text size up from the browser default (16px) to
+     17px. Every font-size on the site is set in rem, relative to this
+     root value, so this scales all text (and the many rem-based
+     spacing/padding values alongside it) proportionally in one place,
+     rather than needing to touch dozens of individual font-size rules.
+     Expressed as a percentage (not a fixed px) so it still multiplies
+     whatever base size the visitor's own browser/OS text-size setting
+     is using, instead of overriding it. */
+  font-size: 106.25%;
 }
 
 body {
