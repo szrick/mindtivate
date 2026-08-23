@@ -212,7 +212,14 @@ const navCategories = CATEGORIES;
   .header-icons {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    /* Tighter than the surrounding whitespace on purpose -- the cluster
+       is right-anchored (justify-self: end on mobile, last flex item on
+       desktop), so shrinking this gap pulls the bookmark icon in toward
+       the search icon rather than shifting search. That reads as one
+       paired control, distinct from the open space around the
+       centered logo, instead of hamburger/logo/bookmark/search all
+       looking like evenly spaced siblings. */
+    gap: 0.25rem;
     flex-shrink: 0;
   }
 
