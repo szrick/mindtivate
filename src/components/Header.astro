@@ -27,12 +27,12 @@ const navCategories = CATEGORIES;
         <span class="bar"></span>
         <span class="bar"></span>
       </button>
-
-      <a href={withBase('/')} class="logo" aria-label="Mindtivate home">
-        <img src={withBase('/logo-icon.png')} alt="" class="logo-icon" width="32" height="28" />
-        <span class="logo-text">Mindtivate<span class="logo-dot">.</span></span>
-      </a>
     </div>
+
+    <a href={withBase('/')} class="logo" aria-label="Mindtivate home">
+      <img src={withBase('/logo-icon.png')} alt="" class="logo-icon" width="32" height="28" />
+      <span class="logo-text">Mindtivate<span class="logo-dot">.</span></span>
+    </a>
 
     <nav class="primary-nav" aria-label="Primary">
       <ul>
@@ -47,32 +47,34 @@ const navCategories = CATEGORIES;
       </ul>
     </nav>
 
-    <a href={withBase('/saved')} class="bookmark-link" data-bookmark-link aria-label="Saved articles">
-      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-        <path
-          d="M6 3.5h12a1 1 0 0 1 1 1V21l-7-4-7 4V4.5a1 1 0 0 1 1-1Z"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.8"
-          stroke-linejoin="round"
-        />
-      </svg>
-      <span class="bookmark-count" data-bookmark-count hidden></span>
-    </a>
+    <div class="header-icons">
+      <a href={withBase('/saved')} class="bookmark-link" data-bookmark-link aria-label="Saved articles">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path
+            d="M6 3.5h12a1 1 0 0 1 1 1V21l-7-4-7 4V4.5a1 1 0 0 1 1-1Z"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linejoin="round"
+          />
+        </svg>
+        <span class="bookmark-count" data-bookmark-count hidden></span>
+      </a>
 
-    <button
-      type="button"
-      class="search-toggle"
-      data-search-toggle
-      aria-label="Search"
-      aria-expanded="false"
-      aria-controls="header-search-bar"
-    >
-      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-        <circle cx="10.5" cy="10.5" r="7" fill="none" stroke="currentColor" stroke-width="1.8" />
-        <line x1="15.8" y1="15.8" x2="21" y2="21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-      </svg>
-    </button>
+      <button
+        type="button"
+        class="search-toggle"
+        data-search-toggle
+        aria-label="Search"
+        aria-expanded="false"
+        aria-controls="header-search-bar"
+      >
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="7" fill="none" stroke="currentColor" stroke-width="1.8" />
+          <line x1="15.8" y1="15.8" x2="21" y2="21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
   </div>
 
   <div id="header-search-bar" class="header-search-bar" data-header-search-bar hidden>
@@ -124,7 +126,6 @@ const navCategories = CATEGORIES;
   .header-left {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
     flex-shrink: 0;
   }
 
@@ -149,7 +150,10 @@ const navCategories = CATEGORIES;
     width: 1.4rem;
     height: 2px;
     border-radius: 2px;
-    background: var(--color-plum);
+    /* Lighter than the logo/nav text on purpose — a chrome control like
+       this shouldn't compete with the page's actual content for
+       attention. */
+    background: var(--color-plum-soft);
   }
 
   .logo {
@@ -205,6 +209,13 @@ const navCategories = CATEGORIES;
     color: var(--color-terracotta-dark);
   }
 
+  .header-icons {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
   .search-toggle {
     display: inline-flex;
     align-items: center;
@@ -214,7 +225,10 @@ const navCategories = CATEGORIES;
     border: none;
     border-radius: 50%;
     background: transparent;
-    color: var(--color-plum);
+    /* Lighter than the logo/nav text on purpose — a chrome control like
+       this shouldn't compete with the page's actual content for
+       attention. */
+    color: var(--color-plum-soft);
     cursor: pointer;
     flex-shrink: 0;
   }
@@ -231,7 +245,10 @@ const navCategories = CATEGORIES;
     width: 2.4rem;
     height: 2.4rem;
     border-radius: 50%;
-    color: var(--color-plum);
+    /* Lighter than the logo/nav text on purpose — a chrome control like
+       this shouldn't compete with the page's actual content for
+       attention. */
+    color: var(--color-plum-soft);
     flex-shrink: 0;
   }
 
@@ -335,6 +352,33 @@ const navCategories = CATEGORIES;
 
     .menu-toggle {
       display: flex;
+    }
+
+    /* With the full nav hidden, .header-inner would otherwise just be
+       three items packed flex-start — hamburger and logo huddled on the
+       left with a lot of dead space before the icons, and the logo
+       nowhere near the visual center. A 1fr/auto/1fr grid keeps the
+       hamburger pinned to the left edge and the icon cluster pinned to
+       the right edge (via the two equal flexible columns) while the
+       logo, sized to its own content, lands truly centered between them
+       regardless of the two clusters' differing widths. */
+    .header-inner {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .header-left {
+      justify-self: start;
+    }
+
+    .logo {
+      justify-self: center;
+    }
+
+    .header-icons {
+      justify-self: end;
     }
   }
 
