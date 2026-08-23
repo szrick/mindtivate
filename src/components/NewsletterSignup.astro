@@ -77,7 +77,14 @@ const subtext =
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 2rem;
+    /* Split so the generous 2rem only applies horizontally, between the
+       text and form columns on wide screens. Once this wraps to a single
+       column on narrow screens, that same 2rem as a row-gap stacked on
+       top of the paragraph's own margin-bottom read as a big dead patch
+       of empty space above the input — a smaller row-gap keeps a clean
+       break without that much air. */
+    column-gap: 2rem;
+    row-gap: 0.5rem;
     flex-wrap: wrap;
   }
 
