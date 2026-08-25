@@ -290,7 +290,20 @@ where a person would ("it's," "you're," "don't"). Prefer concrete,
 specific detail over vague generalities. Don't hedge every claim into
 mush ("may potentially help support") — state what the evidence actually
 shows, with appropriate uncertainty only where the evidence itself is
-genuinely mixed.`;
+genuinely mixed. Vary paragraph length too, not just sentences — a
+one- or two-sentence paragraph next to a longer one reads more natural
+than uniform blocks of text. Occasionally break up a longer sentence
+with a parenthetical aside or an em dash instead of always reaching for
+a comma or starting a new sentence. Don't lean on the same word for the
+same idea every time it comes up — vary it the way a person naturally
+would (if you've called something "a habit" once, the next reference
+can be "the routine," "that pattern," and so on). A well-placed,
+genuinely clarifying analogy or comparison lands more human than a
+purely clinical explanation — but only reach for one where it actually
+illuminates the point, never as decoration. It's fine for the register
+to shift slightly within a piece — mostly clear and direct, with an
+occasional more-conversational aside — rather than holding one uniform
+tone for the entire length.`;
 
 function buildSystemPrompt(template) {
   return `${BASE_VOICE_PROMPT}
