@@ -1,10 +1,10 @@
 name: Content pipeline (research → draft PR)
 
-# Runs the research + drafting stages of the pipeline and opens a PR with a
-# new draft article for a human to review in Pages CMS or GitHub before it's
-# merged. It never publishes directly, posts to Reddit, or creates a
-# Pinterest pin — see docs/CONTENT_PIPELINE.md for why those stay
-# human-triggered.
+# Runs the research + drafting stages of the pipeline and opens a PR with
+# up to 3 new draft articles (fewer on a day with fewer new candidates) for
+# a human to review in Pages CMS or GitHub before merging. It never
+# publishes directly, posts to Reddit, or creates a Pinterest pin — see
+# docs/CONTENT_PIPELINE.md for why those stay human-triggered.
 
 on:
   schedule:
@@ -43,8 +43,17 @@ jobs:
           POE_API_KEY: ${{ secrets.POE_API_KEY }}
           POE_MODEL: ${{ vars.POE_MODEL }}
 
-      - name: Draft article with Poe
-        run: npm run pipeline:draft
+      - name: Draft up to 3 articles with Poe
+        # --index selects which brief (0 = top candidate) from the latest
+        # product-briefs file; looping 0-2 drafts the top 3 instead of just
+        # one. `|| echo ...` keeps a day with fewer than 3 candidates from
+        # failing the whole job — pipeline:draft exits non-zero when an
+        # index doesn't exist, which would otherwise abort the step (and
+        # any indices after it) on `set -e`, GitHub Actions' default.
+        run: |
+          for i in 0 1 2; do
+            npm run pipeline:draft -- --index "$i" || echo "No brief at index $i — skipping."
+          done
         env:
           POE_API_KEY: ${{ secrets.POE_API_KEY }}
           POE_MODEL: ${{ vars.POE_MODEL }}
