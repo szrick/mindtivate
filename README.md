@@ -65,7 +65,7 @@ site's reputation. Full rationale in
 [docs/COMPLIANCE.md](docs/COMPLIANCE.md).
 
 A scheduled GitHub Action (`.github/workflows/content-pipeline.yml`) runs
-stages 1–3 weekly and opens a PR with new drafts for review — it never
+stages 1–3 daily and opens a PR with new drafts for review — it never
 merges, publishes, pins, or comments on its own.
 
 ## Newsletter

@@ -75,7 +75,7 @@ Reddit archive. **No Reddit account, app, or credentials needed** — this
 is the default and requires zero setup. Trade-offs worth knowing: it's
 third-party community infrastructure (no uptime guarantee) and data can
 lag up to ~36 hours behind live Reddit, and it has no "hot" ranking, only
-chronological — none of which matters much for a weekly research scan.
+chronological — none of which matters much for a daily research scan.
 
 ### Comment posting (stage 6, optional) — requires a real Reddit app
 

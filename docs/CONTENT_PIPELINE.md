@@ -375,10 +375,12 @@ stage 7.
 
 ## Scheduled automation
 
-`.github/workflows/content-pipeline.yml` runs stages 1–3 every Monday and
-opens a PR with any new drafts. It requires `POE_API_KEY` (stages 2 and 3
-both run on Poe now) and the `REDDIT_*` secrets to be set as repository
-secrets. It never touches stages 5, 6, or 7, and never merges its own PR.
+`.github/workflows/content-pipeline.yml` runs stages 1–3 daily and opens
+a PR with any new drafts. It requires `POE_API_KEY` (stages 2 and 3 both
+run on Poe now) to be set as a repository secret — stage 1 itself needs
+no Reddit credentials, since it reads Arctic Shift rather than Reddit's
+own API. It never touches stages 5, 6, or 7, and never merges its own
+PR.
 
 `.github/workflows/weekly-digest.yml` runs stage 8 every Monday. It's
 always safe to run — `weeklyDigestEnabled` being off, or there being
