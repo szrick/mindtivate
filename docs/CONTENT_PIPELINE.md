@@ -35,9 +35,14 @@ For recent posts, filters for ones that read like a specific, recurring,
 answerable problem (regex
 heuristics for phrases like "any recommendations", "how do I",
 "struggling with"; excludes megathreads and mod posts), and keeps ones
-with at least 5 comments as a signal the question resonates. Writes
-candidates to `scripts/pipeline/output/research-<timestamp>.json`
-(gitignored — this is working data, not published content).
+with at least 5 comments as a signal the question resonates. Also drops
+any candidate whose thread URL matches an existing article's
+`sourceThreadUrl` — drafted or published, status doesn't matter — so a
+thread already turned into an article doesn't get drafted again just
+because a later run rescans the same subreddits and it's still
+recurring/popular. Writes candidates to
+`scripts/pipeline/output/research-<timestamp>.json` (gitignored — this
+is working data, not published content).
 
 To scope a run to a specific topic or subreddit set (e.g. a weight-loss
 batch) instead of editing the script:
