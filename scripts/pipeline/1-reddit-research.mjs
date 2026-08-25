@@ -17,11 +17,28 @@
 // selftext) within each scoped subreddit; applies whether you're on the
 // default category-grouped list or a custom --subreddits one.
 
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { loadEnv } from '../lib/env.mjs';
 import { fetchSubredditPosts, searchSubreddit, permalinkFor } from '../lib/arcticshift.mjs';
+import { readFrontmatter } from '../lib/frontmatter.mjs';
 
 loadEnv();
+
+// Every existing article's source thread, regardless of status/draft — a
+// pain point already covered (even by a draft still waiting on review)
+// shouldn't be drafted again just because a later run rescans the same
+// subreddits. Arctic Shift has no memory of its own, so this check
+// matters most once this runs daily instead of weekly: without it, the
+// same recurring/popular thread could resurface run after run.
+function listCoveredThreadUrls() {
+  const dir = 'src/content/articles';
+  if (!existsSync(dir)) return new Set();
+  const urls = readdirSync(dir)
+    .filter((f) => f.endsWith('.md'))
+    .map((f) => readFrontmatter(readFileSync(`${dir}/${f}`, 'utf8')).data.sourceThreadUrl)
+    .filter(Boolean);
+  return new Set(urls);
+}
 
 // 5 subreddits per site category (src/lib/categories.ts), so each
 // category draws from a real spread of communities instead of a single
@@ -124,10 +141,17 @@ async function run() {
     }
   }
 
+  const covered = listCoveredThreadUrls();
+  const deduped = results.filter((r) => !covered.has(r.url));
+  const skipped = results.length - deduped.length;
+  if (skipped > 0) {
+    console.log(`\nSkipped ${skipped} candidate(s) already covered by an existing article.`);
+  }
+
   mkdirSync('scripts/pipeline/output', { recursive: true });
   const outPath = `scripts/pipeline/output/research-${Date.now()}.json`;
-  writeFileSync(outPath, JSON.stringify(results, null, 2));
-  console.log(`\nWrote ${results.length} candidate pain points to ${outPath}`);
+  writeFileSync(outPath, JSON.stringify(deduped, null, 2));
+  console.log(`\nWrote ${deduped.length} candidate pain points to ${outPath}`);
 }
 
 run().catch((err) => {
