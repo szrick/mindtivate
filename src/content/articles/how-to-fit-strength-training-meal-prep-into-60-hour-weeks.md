@@ -8,7 +8,7 @@ updatedDate: 2026-08-26
 category: Body
 heroImage: _images/how-to-fit-strength-training-meal-prep-into-60-hour-weeks-hero.png
 status: published
-draft: true
+draft: false
 author: mindtivate-team
 sourceSubreddit: r/xxfitness
 sourceThreadUrl: https://www.reddit.com/r/xxfitness/comments/1vuzqki/
