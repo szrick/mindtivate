@@ -1,23 +1,24 @@
 ---
-title: "How to Fit Strength Training & Meal Prep Into 60+ Hour Weeks"
-description: "When you're juggling work, school, wedding planning, and chronic health conditions, here's how to structure training and meal prep without burning out."
+title: How to Fit Strength Training & Meal Prep Into 60+ Hour Weeks
+description: When you're juggling work, school, wedding planning, and chronic
+  health conditions, here's how to structure training and meal prep without
+  burning out.
 pubDate: 2026-08-25
+updatedDate: 2026-08-26
 category: Body
+heroImage: _images/how-to-fit-strength-training-meal-prep-into-60-hour-weeks-hero.png
 status: draft
 draft: true
-author: "mindtivate-team"
+author: mindtivate-team
 sourceSubreddit: r/xxfitness
-sourceThreadUrl: "https://www.reddit.com/r/xxfitness/comments/1vuzqki/"
-heroImage: "./_images/how-to-fit-strength-training-meal-prep-into-60-hour-weeks-hero.png"
-heroImageAlt: "Lifestyle photo related to \"How to Fit Strength Training & Meal Prep Into 60+ Hour Weeks\""
-tags: 
+sourceThreadUrl: https://www.reddit.com/r/xxfitness/comments/1vuzqki/
+tags:
   - meal prep
   - strength training
   - time management
   - chronic illness
   - body recomposition
 ---
-
 ## The real problem isn't motivation—it's capacity
 
 You're looking at 60+ hours of committed time each week before you even add in the gym, meal prep, wedding planning, or a social life. And you're managing POTS and lingering Lyme symptoms on top of it. The question isn't whether you *want* to train and prep meals—it's whether the system you're building can actually hold up under that load without making you sicker or more exhausted.
