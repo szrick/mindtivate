@@ -1,22 +1,23 @@
 ---
 title: Is Your Workout Routine Bloated or Just Balanced?
-description: "Too many rows and presses, not enough of something else? Here's how to tell if your routine is actually unbalanced or just more varied than before."
+description: Too many rows and presses, not enough of something else? Here's how
+  to tell if your routine is actually unbalanced or just more varied than
+  before.
 pubDate: 2026-08-25
+updatedDate: 2026-08-27
 category: Body
-status: draft
-draft: true
-author: "mindtivate-team"
+heroImage: _images/is-your-workout-routine-bloated-or-just-balanced-hero.png
+status: published
+draft: false
+author: mindtivate-team
 sourceSubreddit: r/xxfitness
-sourceThreadUrl: "https://www.reddit.com/r/xxfitness/comments/1vw5q45/"
-heroImage: "./_images/is-your-workout-routine-bloated-or-just-balanced-hero.png"
-heroImageAlt: "Lifestyle photo related to \"Is Your Workout Routine Bloated or Just Balanced?\""
-tags: 
+sourceThreadUrl: https://www.reddit.com/r/xxfitness/comments/1vw5q45/
+tags:
   - strength training
   - workout programming
   - exercise selection
   - volume
 ---
-
 ## When variety starts to feel like clutter
 
 You've moved past the same two full-body sessions every week, added exercises you actually enjoy, and now you're second-guessing whether a third of your routine is redundant. Specifically: a lot of rowing, a lot of pressing, and a nagging sense you might be missing something important while overdoing what you already have covered.
