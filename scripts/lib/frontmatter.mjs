@@ -125,6 +125,35 @@ export function insertFrontmatterField(fileContents, key, value, { comment } = {
   return fileContents.slice(0, match.index) + newFrontmatterBlock + fileContents.slice(match.index + match[0].length);
 }
 
+// Sets a single flat frontmatter field, updating it in place if already
+// present (unlike insertFrontmatterField, which no-ops on an existing
+// key) or inserting it if not. Same "touch only this one line, leave
+// everything else — including hand-written multi-line block scalars —
+// untouched" approach, so it's safe to use on already-published,
+// human-edited files.
+export function upsertFrontmatterField(fileContents, key, value) {
+  const match = fileContents.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
+  if (!match) throw new Error('File has no frontmatter block to update');
+  const nl = match[0].includes('\r\n') ? '\r\n' : '\n';
+  const lines = match[1].split(/\r?\n/);
+  const idx = lines.findIndex((line) => line.trim().startsWith(`${key}:`));
+  if (idx === -1) return insertFrontmatterField(fileContents, key, value);
+
+  lines[idx] = `${key}: ${yamlScalar(value)}`;
+  const newFrontmatterBlock = `---${nl}${lines.join(nl)}${nl}---${nl}`;
+  return fileContents.slice(0, match.index) + newFrontmatterBlock + fileContents.slice(match.index + match[0].length);
+}
+
+// Swaps out everything after the frontmatter block, leaving the block
+// itself byte-for-byte untouched. Paired with upsertFrontmatterField
+// above when a script needs to both bump a field (e.g. updatedDate) and
+// edit the body in the same pass.
+export function replaceArticleBody(fileContents, newBody) {
+  const match = fileContents.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
+  if (!match) throw new Error('File has no frontmatter block');
+  return fileContents.slice(0, match.index + match[0].length) + newBody.trim() + '\n';
+}
+
 export function slugify(title) {
   return title
     .toLowerCase()
