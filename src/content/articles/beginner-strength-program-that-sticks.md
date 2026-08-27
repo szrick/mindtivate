@@ -1,19 +1,21 @@
 ---
-title: "A Beginner Strength Program You'll Actually Stick To"
+title: A Beginner Strength Program You'll Actually Stick To
 description: >
-  Most "beginner" strength programs are written for people who already
-  like lifting. Here's a simpler starting point built around what
-  actually keeps people showing up.
+  Most "beginner" strength programs are written for people who already like
+  lifting. Here's a simpler starting point built around what actually keeps
+  people showing up.
 pubDate: 2026-07-14
+updatedDate: 2026-08-27
 category: Body
-status: published
-draft: false
+heroImage: _images/strength-program-hero.svg
+status: draft
+draft: true
 author: mindtivate-team
-heroImage: ./_images/strength-program-hero.svg
-heroImageAlt: Illustration of a barbell resting on a stand
-tags: [strength training, beginners, programming]
+tags:
+  - strength training
+  - beginners
+  - programming
 ---
-
 The hardest part of a beginner strength program was never the exercises —
 it's the third week, when the novelty wears off and you have to decide
 whether to show up anyway.
