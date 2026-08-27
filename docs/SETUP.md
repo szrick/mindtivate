@@ -59,9 +59,9 @@ bot-selection mechanism for all of it.
    account/plan and adjust if a default doesn't resolve.
 3. For the scheduled GitHub Actions (`content-pipeline.yml`,
    `weekly-digest.yml`, `weekly-pinterest-pins.yml`,
-   `weekly-reddit-comment-drafts.yml`): add repo secret `POE_API_KEY`
-   and, optionally, repo variables `POE_MODEL` / `POE_IMAGE_MODEL` /
-   `POE_SEARCH_MODEL`.
+   `weekly-reddit-comment-drafts.yml`, `weekly-internal-links.yml`): add
+   repo secret `POE_API_KEY` and, optionally, repo variables `POE_MODEL` /
+   `POE_IMAGE_MODEL` / `POE_SEARCH_MODEL`.
 
 ## 4. Reddit research and (optional) comment posting
 

@@ -382,6 +382,36 @@ default, toggle it via Pages CMS → Site settings (no git needed). Requires
 the same `RESEND_API_KEY` / `RESEND_AUDIENCE_ID` / `RESEND_FROM_EMAIL` as
 stage 7.
 
+## 9. Internal link backfill (`scripts/pipeline/9-backfill-internal-links.mjs`)
+
+Stage 3's internal-link candidates are whatever else was already
+published *when that article was drafted* — an early article can end up
+permanently under-linked even once plenty of genuinely relevant articles
+exist later. This stage retroactively fixes that: it finds published
+articles with fewer than 2 internal links (the same "0-2 is normal, more
+reads as SEO padding" norm stage 3 uses), oldest first, and asks Poe to
+propose 0-2 new inline links per article against the *current* full list
+of other published articles.
+
+Rather than trusting the model to reproduce a whole rewritten article
+(risking it subtly altering already-reviewed prose it wasn't asked to
+touch), it proposes each addition as an exact `findText` → `replaceText`
+pair — a real sentence from the article, verbatim, with a link woven in.
+The script only applies an addition if `findText` matches the current
+body *exactly once* and `slug` is a real candidate from the list; anything
+else is skipped with a warning rather than guessed at. A successful run
+also bumps the article's `updatedDate`.
+
+```bash
+npm run pipeline:relink                       # up to 5 oldest under-linked articles
+npm run pipeline:relink -- --limit 10
+npm run pipeline:relink -- --slug some-article-slug   # just one article
+```
+
+Requires `POE_API_KEY`. Since this edits already-*published* files
+directly (not a new draft), review the diff like any other content
+change before merging — see the scheduled workflow below.
+
 ## Scheduled automation
 
 `.github/workflows/content-pipeline.yml` runs stages 1–3 daily and opens
@@ -405,8 +435,13 @@ above for why sending stays manual).
 `.github/workflows/weekly-reddit-comment-drafts.yml` runs stage 6's
 **draft step only** every Monday, for up to 5 published articles missing
 a `redditCommentUrl`, and opens a PR with the results (see stage 6's
-section above). `POE_API_KEY` is required by this workflow and by
-weekly-pinterest-pins.yml, weekly-digest.yml, and stage 7 (newsletter
+section above).
+
+`.github/workflows/weekly-internal-links.yml` runs stage 9 every Monday,
+for up to 5 under-linked published articles, and opens a PR with the
+resulting edits (see stage 9's section above).
+
+`POE_API_KEY` is required by all of the above and by stage 7 (newsletter
 broadcast drafts) — every drafting step in this pipeline goes through
 Poe (`scripts/lib/poe.mjs`), not a direct Anthropic client, so there's
 one credential for all of it. See `docs/SETUP.md` section 3.
