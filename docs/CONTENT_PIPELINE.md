@@ -40,7 +40,16 @@ any candidate whose thread URL matches an existing article's
 `sourceThreadUrl` — drafted or published, status doesn't matter — so a
 thread already turned into an article doesn't get drafted again just
 because a later run rescans the same subreddits and it's still
-recurring/popular. Writes candidates to
+recurring/popular. Also reorders the remaining candidates — see
+`balanceCandidates()` in the script — so that drafting (which always
+takes the first few, by index) spreads across categories and subreddits
+instead of always landing on whichever is scanned first (previously
+almost always Body/r/xxfitness, since it's first in
+`DEFAULT_SUBREDDITS_BY_CATEGORY` and reliably has the most qualifying
+posts). The reorder derives its rotation priority from the existing
+article corpus itself (least-represented category/subreddit surfaces
+first) rather than a separate state file, so it self-corrects as the
+site's category balance changes over time. Writes candidates to
 `scripts/pipeline/output/research-<timestamp>.json` (gitignored — this
 is working data, not published content).
 

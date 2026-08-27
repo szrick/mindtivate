@@ -24,20 +24,81 @@ import { readFrontmatter } from '../lib/frontmatter.mjs';
 
 loadEnv();
 
-// Every existing article's source thread, regardless of status/draft — a
-// pain point already covered (even by a draft still waiting on review)
-// shouldn't be drafted again just because a later run rescans the same
-// subreddits. Arctic Shift has no memory of its own, so this check
-// matters most once this runs daily instead of weekly: without it, the
-// same recurring/popular thread could resurface run after run.
-function listCoveredThreadUrls() {
+// Every existing article's source thread, category, and source subreddit,
+// regardless of status/draft — a pain point already covered (even by a
+// draft still waiting on review) shouldn't be drafted again just because
+// a later run rescans the same subreddits. Arctic Shift has no memory of
+// its own, so this check matters most once this runs daily instead of
+// weekly: without it, the same recurring/popular thread could resurface
+// run after run. categoryCounts/subredditCounts feed balanceCandidates
+// below — deriving rotation state from the existing article corpus each
+// run means there's no separate state file to keep in sync or get stale.
+function scanExistingArticles() {
   const dir = 'src/content/articles';
-  if (!existsSync(dir)) return new Set();
-  const urls = readdirSync(dir)
-    .filter((f) => f.endsWith('.md'))
-    .map((f) => readFrontmatter(readFileSync(`${dir}/${f}`, 'utf8')).data.sourceThreadUrl)
-    .filter(Boolean);
-  return new Set(urls);
+  const coveredUrls = new Set();
+  const categoryCounts = {};
+  const subredditCounts = {};
+  if (!existsSync(dir)) return { coveredUrls, categoryCounts, subredditCounts };
+  for (const f of readdirSync(dir).filter((f) => f.endsWith('.md'))) {
+    const { data } = readFrontmatter(readFileSync(`${dir}/${f}`, 'utf8'));
+    if (data.sourceThreadUrl) coveredUrls.add(data.sourceThreadUrl);
+    if (data.category) categoryCounts[data.category] = (categoryCounts[data.category] ?? 0) + 1;
+    if (data.sourceSubreddit) {
+      const key = data.sourceSubreddit.replace(/^r\//, '');
+      subredditCounts[key] = (subredditCounts[key] ?? 0) + 1;
+    }
+  }
+  return { coveredUrls, categoryCounts, subredditCounts };
+}
+
+// Reorders candidates so drafting (which always takes the first N by
+// index — see content-pipeline.yml) spreads across categories and
+// subreddits instead of always grabbing whichever happens to be scanned
+// first. r/xxfitness is first in DEFAULT_SUBREDDITS_BY_CATEGORY's Body
+// entry and reliably has the most qualifying posts, so without this the
+// top of the list — and therefore every day's drafts — was almost always
+// Body/r/xxfitness.
+//
+// Within each category, candidates are sorted by ascending existing-
+// article count for that specific subreddit (the least-drafted-from
+// subreddit surfaces first). Across categories, a round-robin then
+// interleaves them in ascending order of existing-article count for that
+// category (the least-represented category goes first). Candidates with
+// no targetCategory (a custom --subreddits run) are left in their
+// original order at the end, unaffected.
+function balanceCandidates(candidates, categoryCounts, subredditCounts) {
+  const buckets = new Map();
+  const uncategorized = [];
+  for (const c of candidates) {
+    if (!c.targetCategory) {
+      uncategorized.push(c);
+      continue;
+    }
+    if (!buckets.has(c.targetCategory)) buckets.set(c.targetCategory, []);
+    buckets.get(c.targetCategory).push(c);
+  }
+
+  for (const list of buckets.values()) {
+    list.sort((a, b) => (subredditCounts[a.subreddit] ?? 0) - (subredditCounts[b.subreddit] ?? 0));
+  }
+
+  const categoryPriority = [...buckets.keys()].sort(
+    (a, b) => (categoryCounts[a] ?? 0) - (categoryCounts[b] ?? 0)
+  );
+
+  const ordered = [];
+  let anyLeft = true;
+  while (anyLeft) {
+    anyLeft = false;
+    for (const category of categoryPriority) {
+      const bucket = buckets.get(category);
+      if (bucket.length > 0) {
+        ordered.push(bucket.shift());
+        anyLeft = true;
+      }
+    }
+  }
+  return [...ordered, ...uncategorized];
 }
 
 // 5 subreddits per site category (src/lib/categories.ts), so each
@@ -141,17 +202,19 @@ async function run() {
     }
   }
 
-  const covered = listCoveredThreadUrls();
-  const deduped = results.filter((r) => !covered.has(r.url));
+  const { coveredUrls, categoryCounts, subredditCounts } = scanExistingArticles();
+  const deduped = results.filter((r) => !coveredUrls.has(r.url));
   const skipped = results.length - deduped.length;
   if (skipped > 0) {
     console.log(`\nSkipped ${skipped} candidate(s) already covered by an existing article.`);
   }
 
+  const balanced = balanceCandidates(deduped, categoryCounts, subredditCounts);
+
   mkdirSync('scripts/pipeline/output', { recursive: true });
   const outPath = `scripts/pipeline/output/research-${Date.now()}.json`;
-  writeFileSync(outPath, JSON.stringify(deduped, null, 2));
-  console.log(`\nWrote ${deduped.length} candidate pain points to ${outPath}`);
+  writeFileSync(outPath, JSON.stringify(balanced, null, 2));
+  console.log(`\nWrote ${balanced.length} candidate pain points to ${outPath}`);
 }
 
 run().catch((err) => {
