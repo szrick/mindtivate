@@ -1,20 +1,20 @@
 ---
-title: "Do Rest Days Actually Need to Be Fully Sedentary?"
+title: Do Rest Days Actually Need to Be Fully Sedentary?
 description: >
-  Rest day gets treated as a synonym for doing nothing, but the research on active recovery says otherwise.
+  Rest day gets treated as a synonym for doing nothing, but the research on
+  active recovery says otherwise.
 pubDate: 2026-06-01
+updatedDate: 2026-08-27
 category: Body
-status: published
-draft: false
+heroImage: _images/body-placeholder-hero.svg
+status: draft
+draft: true
 author: mindtivate-team
-heroImage: ./_images/body-placeholder-hero.svg
-heroImageAlt: Illustration representing Body
-tags: [recovery, placeholder]
+tags:
+  - recovery
+  - placeholder
 ---
 
-<!-- Placeholder article generated to preview the homepage category showcase
-     design with realistic content volume. Replace with a real article
-     whenever one is ready for this slot. -->
 
 "Rest day" often gets interpreted as doing nothing at all, but the
 research on recovery points to light activity being just as useful, and
