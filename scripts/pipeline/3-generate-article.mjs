@@ -199,24 +199,80 @@ function warnOnAiClicheLanguage(bodyMarkdown) {
   }
 }
 
-// Category -> scene hint, so the hero photo is actually about the
-// article's topic rather than one generic image for every piece.
+// Category -> scene hints, so the hero photo is actually about the
+// article's topic rather than one generic image for every piece. Each
+// category has two variants:
+// - withPerson: a template with a {subject} placeholder, filled in by
+//   randomEthnicity() below. A soft "diverse" instruction on its own
+//   wasn't reliably producing variety in practice — every hero image
+//   ended up as a Black woman regardless — so ethnicity is now chosen
+//   explicitly per image instead of left to the model's own judgment.
+// - objectOnly: a person-free alternative (equipment, a meal, a journal
+//   and tea, etc.) so hero images aren't always a photo of a woman.
 const HERO_SCENE_HINTS = {
-  Body: 'a woman mid-set in a strength workout, doing a bodyweight exercise, or in an everyday healthy-routine moment — lifting weights, a push-up or stretch, walking outside, focused and natural',
-  Food: 'a woman preparing or enjoying a wholesome meal in her kitchen, natural light',
-  Mind: 'a woman in a quiet, grounding moment — journaling, stretching, or sitting with a warm drink, calm and present',
-  Hormones: 'a woman in a calm, everyday self-care moment — resting a hand on her stomach, sitting with tea, or a quiet moment checking in with herself, warm natural light',
-  Love: 'a woman with a warm, confident expression in a candid moment — journaling, laughing with a friend, or a quiet moment of self-reflection',
-  Beauty: 'a woman doing a simple skincare or self-care routine — washing her face, applying moisturizer, or a quiet bathroom-mirror moment, natural light',
-  Sleep: 'a woman resting or gently stretching in a cozy setting, soft morning or evening light',
-  'Life Stages': "a woman in an everyday moment that reflects where she's at in life — with a baby, mid-workout in her 40s, or simply going about her day, natural and unposed",
+  Body: {
+    withPerson:
+      '{subject} mid-set in a strength workout, doing a bodyweight exercise, or in an everyday healthy-routine moment — lifting weights, a push-up or stretch, walking outside, focused and natural',
+    objectOnly:
+      'workout equipment in an inviting home or gym setting — dumbbells, a yoga mat, running shoes by a door, or a water bottle and towel after a workout, natural light, no people',
+  },
+  Food: {
+    withPerson: '{subject} preparing or enjoying a wholesome meal in her kitchen, natural light',
+    objectOnly:
+      'a wholesome home-cooked meal or fresh ingredients laid out on a kitchen counter, natural light, no people',
+  },
+  Mind: {
+    withPerson:
+      '{subject} in a quiet, grounding moment — journaling, stretching, or sitting with a warm drink, calm and present',
+    objectOnly:
+      'a journal, a warm drink, and soft natural light on a quiet windowsill or desk — a calm, grounding still life, no people',
+  },
+  Hormones: {
+    withPerson:
+      '{subject} in a calm, everyday self-care moment — resting a hand on her stomach, sitting with tea, or a quiet moment checking in with herself, warm natural light',
+    objectOnly: 'a warm cup of tea and a soft blanket in a calm, quiet corner of a home, warm natural light, no people',
+  },
+  Love: {
+    withPerson:
+      '{subject} with a warm, confident expression in a candid moment — journaling, laughing with a friend, or a quiet moment of self-reflection',
+    objectOnly: 'two coffee cups on a table between friends, or a handwritten note and pen, warm natural light, no people',
+  },
+  Beauty: {
+    withPerson:
+      '{subject} doing a simple skincare or self-care routine — washing her face, applying moisturizer, or a quiet bathroom-mirror moment, natural light',
+    objectOnly: 'simple skincare products arranged on a bathroom shelf or counter, soft natural light, no people',
+  },
+  Sleep: {
+    withPerson: '{subject} resting or gently stretching in a cozy setting, soft morning or evening light',
+    objectOnly: 'a made bed with soft linens in warm morning or evening light, a cozy bedroom scene, no people',
+  },
+  'Life Stages': {
+    withPerson:
+      "{subject} in an everyday moment that reflects where she's at in life — with a baby, mid-workout in her 40s, or simply going about her day, natural and unposed",
+    objectOnly: 'everyday objects that reflect a life stage — a baby item, a well-used planner, or a pair of walking shoes by a door, natural light, no people',
+  },
 };
+
+// Explicit ethnicity rotation — see the comment on HERO_SCENE_HINTS above
+// for why this replaced a vague "diverse" instruction.
+const ETHNICITIES = ['a Black woman', 'a white woman', 'an Asian woman', 'a Latina woman', 'a South Asian woman', 'a Middle Eastern woman'];
+
+function randomEthnicity() {
+  return ETHNICITIES[Math.floor(Math.random() * ETHNICITIES.length)];
+}
 
 async function generateHeroImage(title, slug, category) {
   try {
     console.log('Generating hero image...');
-    const sceneHint = HERO_SCENE_HINTS[category] || 'a woman in a candid, everyday moment related to the topic';
-    const imagePrompt = `Editorial lifestyle photograph for a women's health and wellness article titled "${title}". Show ${sceneHint}. Candid, documentary-style composition — natural and unposed, not an overly retouched stock-photo look. Diverse in age, body type, and skin tone; avoid one narrow beauty standard. Natural, warm lighting; soft warm color grading (cream, muted plum, blush undertones) to match an editorial brand palette. Shallow depth of field for an artistic, magazine-quality feel. No visible text, logos, or watermarks in the image.`;
+    const hints = HERO_SCENE_HINTS[category];
+    // Roughly 1 in 3 hero images is a person-free object/scene shot
+    // instead of a photo of a woman — see HERO_SCENE_HINTS' comment.
+    const useObjectOnly = Math.random() < 1 / 3;
+    const sceneHint =
+      useObjectOnly || !hints
+        ? (hints?.objectOnly ?? 'objects or a scene related to the topic, no people')
+        : hints.withPerson.replace('{subject}', randomEthnicity());
+    const imagePrompt = `Editorial lifestyle photograph for a women's health and wellness article titled "${title}". Show ${sceneHint}. Candid, documentary-style composition — natural and unposed, not an overly retouched stock-photo look. Natural, warm lighting; soft warm color grading (cream, muted plum, blush undertones) to match an editorial brand palette. Shallow depth of field for an artistic, magazine-quality feel. Absolutely no text, words, letters, numbers, captions, titles, logos, or watermarks anywhere in the image — this must be a clean photograph with zero typography of any kind.`;
     const { buffer, ext } = await generatePoeImage({ prompt: imagePrompt });
 
     const imagesDir = 'src/content/articles/_images';
