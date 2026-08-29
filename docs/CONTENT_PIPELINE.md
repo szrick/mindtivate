@@ -211,12 +211,17 @@ product record) and, via the [Poe API](https://poe.com/api_key)
    any `/articles/` link that doesn't match a real known slug.
 3. **Generates a hero photo** (`POE_IMAGE_MODEL`) for the article
    (`src/content/articles/_images/<slug>-hero.<ext>`) — an editorial-style
-   lifestyle photograph of a woman in a candid, topically-relevant moment
-   (the scene hint is chosen from the article's category — see
-   `HERO_SCENE_HINTS` in the script), not a stock-photo pose or a single
-   narrow beauty standard. Non-fatal — a failure just means no hero image.
-   These are AI-generated, not real photography of a real person — see
-   COMPLIANCE.md.
+   lifestyle photograph in a candid, topically-relevant moment (the scene
+   hint is chosen from the article's category — see `HERO_SCENE_HINTS` in
+   the script). About 1 in 3 hero images is a person-free object/scene
+   shot instead of a photo of a woman (`objectOnly` in each category's
+   hint); when a person is shown, her ethnicity is chosen explicitly at
+   random from a fixed list (`ETHNICITIES`/`randomEthnicity()`) rather
+   than left to a vague "diverse" instruction — that wasn't reliably
+   producing variety in practice, and every hero image ended up as the
+   same ethnicity regardless of the instruction. Non-fatal — a failure
+   just means no hero image. These are AI-generated, not real photography
+   of a real person — see COMPLIANCE.md.
 4. **Finds a product image on amazon.com** (`POE_SEARCH_MODEL`) — only if
    `--product` is passed and that product record doesn't already have an
    `image` field. This searches amazon.com for a matching real listing and
