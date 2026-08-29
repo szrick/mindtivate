@@ -153,16 +153,37 @@ function looksLikePainPoint(post) {
 // tagged candidates. targetCategory is a hint for review/organization —
 // stage 3 still assigns the article's actual category itself, this
 // doesn't bind it.
+//
+// Arctic Shift is free, third-party, community-run infrastructure with
+// no uptime guarantee (see docs/SETUP.md) -- a transient 500 from one
+// subreddit used to throw and abort the entire day's run, costing every
+// other subreddit's candidates too. One retry after a short pause covers
+// a genuinely transient blip; if it fails twice, this subreddit is
+// skipped (logged, not silent) and the run continues with the rest.
 async function scanSubreddit(subreddit, query, targetCategory) {
   console.log(
     `  ${query ? `Searching r/${subreddit} for "${query}"` : `Scanning r/${subreddit}`}${targetCategory ? ` (${targetCategory})` : ''}...`
   );
-  // Arctic Shift has no "hot"/"top" ranking, only chronological — pull up
-  // to 100 (its per-request max) and let the pain-point heuristic +
-  // engagement threshold below do the real filtering.
-  const recent = query
-    ? await searchSubreddit(subreddit, query, { limit: 100 })
-    : await fetchSubredditPosts(subreddit, { limit: 100 });
+
+  let recent;
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      // Arctic Shift has no "hot"/"top" ranking, only chronological — pull
+      // up to 100 (its per-request max) and let the pain-point heuristic +
+      // engagement threshold below do the real filtering.
+      recent = query
+        ? await searchSubreddit(subreddit, query, { limit: 100 })
+        : await fetchSubredditPosts(subreddit, { limit: 100 });
+      break;
+    } catch (err) {
+      if (attempt === 2) {
+        console.warn(`    skipping r/${subreddit} -- Arctic Shift request failed twice: ${err.message}`);
+        return [];
+      }
+      console.warn(`    Arctic Shift request failed (${err.message}), retrying once...`);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+  }
 
   const candidates = recent
     .filter(looksLikePainPoint)
