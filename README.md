@@ -65,8 +65,10 @@ site's reputation. Full rationale in
 [docs/COMPLIANCE.md](docs/COMPLIANCE.md).
 
 A scheduled GitHub Action (`.github/workflows/content-pipeline.yml`) runs
-stages 1–3 daily and opens a PR with new drafts for review — it never
-merges, publishes, pins, or comments on its own.
+stages 1–3 daily and, once the site still builds with the new file(s)
+added, pushes new drafts straight to `main` (always `status: draft`,
+so nothing goes live) for review in Pages CMS — it never publishes,
+pins, or comments on its own.
 
 ## Newsletter
 

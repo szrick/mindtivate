@@ -230,8 +230,7 @@ product record) and, via the [Poe API](https://poe.com/api_key)
 
 ## Review
 
-Open the new file in Pages CMS (or a PR, if `content-pipeline.yml`
-generated it) and check:
+Open the new file in Pages CMS and check:
 
 - Does it actually answer the researched question?
 - Is any product mention accurate, and does the linked product record have
@@ -414,13 +413,23 @@ change before merging — see the scheduled workflow below.
 
 ## Scheduled automation
 
-`.github/workflows/content-pipeline.yml` runs stages 1–3 daily and opens
-a PR with up to 3 new drafts (the top 3 candidates that day, fewer if
-research turns up less than that). It requires `POE_API_KEY` (stages 2
-and 3 both run on Poe now) to be set as a repository secret — stage 1
-itself needs no Reddit credentials, since it reads Arctic Shift rather
-than Reddit's own API. It never touches stages 5, 6, or 7, and never
-merges its own PR.
+`.github/workflows/content-pipeline.yml` runs stages 1–3 daily and, once
+`npm run build` still succeeds with the new file(s) added, commits and
+pushes up to 3 new drafts (the top 3 candidates that day, fewer if
+research turns up less than that) straight to `main` — no PR, no merge
+step. Safe specifically because every drafted article is always written
+with `status: draft` and `draft: true`, which is what keeps it off the
+live site regardless of anything else; landing on `main` just makes it
+show up in Pages CMS immediately, instead of sitting invisible on an
+unmerged PR branch until someone notices and merges it. If the build
+fails (e.g. a malformed draft — Astro validates every article's
+frontmatter against the schema at build time, even draft ones), nothing
+is committed; today's candidates get reconsidered on a future run via
+the same dedup logic that skips already-covered threads. Requires
+`POE_API_KEY` (stages 2 and 3 both run on Poe now) to be set as a
+repository secret — stage 1 itself needs no Reddit credentials, since it
+reads Arctic Shift rather than Reddit's own API. It never touches stages
+5, 6, or 7.
 
 `.github/workflows/weekly-digest.yml` runs stage 8 every Monday. It's
 always safe to run — `weeklyDigestEnabled` being off, or there being
