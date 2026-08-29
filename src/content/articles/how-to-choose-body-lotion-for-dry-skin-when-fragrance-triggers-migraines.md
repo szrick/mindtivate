@@ -1,22 +1,23 @@
 ---
 title: How to Choose Body Lotion for Dry Skin When Fragrance Triggers Migraines
-description: "You need deep hydration without strong scents. Here's what to look for in a body lotion when fragrance is a migraine trigger and dry skin needs real help."
+description: You need deep hydration without strong scents. Here's what to look
+  for in a body lotion when fragrance is a migraine trigger and dry skin needs
+  real help.
 pubDate: 2026-08-28
+updatedDate: 2026-08-29
 category: Beauty
-status: draft
-draft: true
-author: "mindtivate-team"
+heroImage: _images/how-to-choose-body-lotion-for-dry-skin-when-fragrance-triggers-migraines-hero.png
+status: published
+draft: false
+author: mindtivate-team
 sourceSubreddit: r/beauty
-sourceThreadUrl: "https://www.reddit.com/r/beauty/comments/1vxzowi/"
-heroImage: "./_images/how-to-choose-body-lotion-for-dry-skin-when-fragrance-triggers-migraines-hero.png"
-heroImageAlt: "Lifestyle photo related to \"How to Choose Body Lotion for Dry Skin When Fragrance Triggers Migraines\""
-tags: 
+sourceThreadUrl: https://www.reddit.com/r/beauty/comments/1vxzowi/
+tags:
   - dry skin
-  - "fragrance-free"
+  - fragrance-free
   - migraines
   - body lotion
 ---
-
 ## The fragrance-hydration dilemma
 
 You're stuck between two needs: your dry skin wants a rich, long-lasting moisturizer, and your migraines can't tolerate strong fragrance. It's not an uncommon tension—perfumes and chemical odors are [well-documented migraine triggers](https://americanmigrainefoundation.org/resource-library/migraine-home-remedies/), and most body lotions marketed for "nourishing" dry skin lean heavily into cocoa butter, vanilla, and other scented formulas. The good news is that fragrance-free doesn't mean less effective hydration. In fact, dermatologists often recommend it as the safer choice for anyone with sensitive or very dry skin.
@@ -38,12 +39,14 @@ For very dry skin, you'll often get better results from a cream or ointment than
 When you're shopping for a body moisturizer that won't trigger migraines, here's what to prioritize:
 
 **Look for:**
+
 - "Fragrance-free" on the label (not just "unscented," which can still contain masking fragrance)
 - Ingredients like glycerin, petrolatum, ceramides, shea butter, or dimethicone high on the ingredient list
 - A cream or ointment texture if your skin is very dry
 - Products labeled for sensitive skin, which tend to skip common irritants
 
 **Skip:**
+
 - Anything with "parfum" or "fragrance" in the ingredient list
 - Heavily scented formulas, even if you like the smell—migraine triggers don't always announce themselves immediately
 - Lotions with a lot of alcohol high in the ingredient list, which can be drying
