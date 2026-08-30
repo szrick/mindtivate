@@ -480,4 +480,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   });
 }
 
-export { generateHeroImage };
+export { generateHeroImage, BASE_VOICE_PROMPT, warnOnAiClicheLanguage };

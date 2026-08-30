@@ -237,10 +237,26 @@ product record) and, via the [Poe API](https://poe.com/api_key)
 
 Runs on whatever stage 3 just drafted and, once it's satisfied, flips the
 article straight to `status: published, draft: false` itself — no human
-review step in between for pipeline-authored articles. Four checks, each
+review step in between for pipeline-authored articles. Five checks, each
 non-fatal on its own (a failed check just leaves that one thing as stage
 3 left it, logged as a warning, rather than blocking the article):
 
+0. **Editorial critique + rewrite** — asks a stronger Poe bot
+   (`POE_EDITOR_MODEL`, defaults to an Opus-class model — a deliberately
+   higher-capability choice than `POE_MODEL`'s drafting default, since
+   this call's whole job is judging another model's writing) to critique
+   the draft: accuracy, specificity, structure, voice, and any
+   diet-culture/fear-based/medical-claim red flags. If — and only if —
+   the critique actually finds something worth changing, the same bot
+   rewrites the article against its own feedback (title/description/body
+   can all change; category doesn't). The rewrite is explicitly told to
+   preserve every existing link untouched, since link review and
+   placement stay entirely stage 4's own job (step 2 below) — a rewrite
+   that silently drops a link it was told to keep is logged as a warning
+   rather than blocked on, but every step after this one operates on the
+   revised title/body, not the original. A rewrite that comes back empty
+   or under half the original length is rejected outright and the
+   original draft passes through unchanged.
 1. **Hero image text check** — sends the generated hero photo to a
    vision-capable Poe bot (`POE_VISION_MODEL`, falls back to `POE_MODEL`)
    and asks whether it has any visible text, words, letters, captions,
@@ -293,8 +309,9 @@ is never touched by this stage. **A manually-created draft is still
 review-gated exactly as before** — only pipeline-authored articles skip
 the human review step now.
 
-Requires `POE_API_KEY`, and benefits from `POE_VISION_MODEL` set to a
-vision-capable Poe bot for the hero-image text check (falls back to
+Requires `POE_API_KEY`, and benefits from `POE_EDITOR_MODEL` (an
+Opus-class bot for the critique + rewrite pass) and `POE_VISION_MODEL`
+(a vision-capable bot for the hero-image text check, falls back to
 `POE_MODEL`, which defaults to `Claude-Sonnet-4.5` — itself
 vision-capable).
 

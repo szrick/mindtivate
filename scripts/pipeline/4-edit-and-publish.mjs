@@ -2,10 +2,19 @@
 // Stage 4: the automated editor. Runs on a freshly-drafted article (still
 // status: draft, draft: true from stage 3) and, once it's satisfied,
 // flips it to status: published, draft: false -- no human review step in
-// between. Four checks/fixes, each non-fatal on its own (a failure just
+// between. Five checks/fixes, each non-fatal on its own (a failure just
 // leaves that one thing as stage 3 left it, logged as a warning) so one
 // flaky Poe call doesn't block the rest of the run:
 //
+//   0. Editorial critique + rewrite: asks a stronger Poe bot
+//      (POE_EDITOR_MODEL, defaults to an Opus-class model) to critique
+//      the draft -- accuracy, specificity, structure, voice, diet-culture
+//      or medical-claim red flags -- then, if it found anything worth
+//      changing, has it rewrite the article against its own feedback.
+//      Everything downstream (hero image aside) operates on this revised
+//      version. The rewrite is told to preserve every existing link
+//      untouched; link review/placement stays entirely stage 4's own job
+//      (step 2 below), not the rewrite's.
 //   1. Hero image text check: asks a vision-capable Poe bot whether the
 //      generated hero photo has any visible text baked into it. If so,
 //      regenerates it once (reusing 3-generate-article.mjs's own
@@ -49,7 +58,7 @@ import {
   removeFrontmatterField,
   replaceArticleBody,
 } from '../lib/frontmatter.mjs';
-import { generateHeroImage } from './3-generate-article.mjs';
+import { generateHeroImage, BASE_VOICE_PROMPT, warnOnAiClicheLanguage } from './3-generate-article.mjs';
 
 loadEnv();
 
@@ -59,6 +68,12 @@ const USER_AGENT = 'Mozilla/5.0 (compatible; MindtivateEditorBot/1.0; +https://m
 // Same "0-2 is normal, more reads as SEO padding" norm stage 3 and stage
 // 9 both use.
 const MAX_INTERNAL_LINKS = 2;
+// A stronger, more expensive model than POE_MODEL (stage 3's drafting
+// default) is worth it here specifically -- this is the one call in the
+// whole pipeline whose entire job is judging the quality of another
+// model's writing, not just checking structural rules. Bot handle, not a
+// fixed identifier -- check poe.com for what's on your account/plan.
+const EDITOR_MODEL = process.env.POE_EDITOR_MODEL || 'Claude-Opus-4.5';
 
 function parseArgs(argv) {
   const args = {};
@@ -125,6 +140,124 @@ function hasFeaturedProduct(raw) {
 function resolveImagePath(articleFilePath, heroImageValue) {
   const dir = articleFilePath.split('/').slice(0, -1).join('/');
   return `${dir}/${heroImageValue.replace(/^\.\//, '')}`;
+}
+
+const CRITIQUE_SYSTEM_PROMPT = `You are a senior editor for Mindtivate, a fitness/nutrition/mental-health
+site for women, reviewing an already-drafted article before it's revised
+and published. Give concrete, actionable feedback, not just praise:
+
+- Is the advice accurate, specific, and well-supported, or does anything
+  read as vague, generic, or hedged into mush?
+- Does the structure flow well, with each section actually earning its
+  place?
+- Is the voice human and direct, not AI-cliche or robotic?
+- Any diet-culture language, fear-based framing, or medical-diagnosis-
+  adjacent claims that need softening or removing?
+- Any specific claim that seems unsupported, exaggerated, or needs more
+  accurate framing?
+
+Don't comment on links, images, or the affiliate product -- those are
+reviewed separately, later in the pipeline. If the article is already
+genuinely strong with nothing worth changing, say so plainly rather than
+inventing nitpicks to fill the response.
+
+Respond with strict JSON only, no prose outside the JSON:
+{"strengths": string, "issues": string[], "revisionInstructions": string}
+"revisionInstructions" should be a concise, concrete paragraph a
+different writer could act on directly -- specific, not vague
+encouragement. Set it to an empty string if nothing needs changing.`;
+
+const REWRITE_SYSTEM_PROMPT = `${BASE_VOICE_PROMPT}
+
+You are revising an already-drafted Mindtivate article per an editor's
+critique (given below). Apply the editor's revision instructions to
+improve clarity, accuracy, structure, and voice, while keeping the
+article's core topic and factual claims intact -- this is a revision,
+not a rewrite from scratch.
+
+Preserve every existing markdown link in the body EXACTLY as written --
+same URL, same surrounding meaning. Never add, remove, or alter a link;
+link review and internal-link placement happen in a separate pass right
+after this one, so leave that entirely alone here.
+
+Respond with strict JSON only, no prose outside the JSON:
+{"title": string, "description": string, "bodyMarkdown": string}`;
+
+function extractAllLinkUrls(body) {
+  return [...body.matchAll(/\]\(([^)]+)\)/g)].map((m) => m[1]);
+}
+
+// Step 0: ask a stronger model to critique the draft, then -- only if it
+// actually found something worth changing -- have it rewrite the article
+// against its own feedback. Both calls are non-fatal (a Poe error just
+// means the original draft passes through unchanged), and the rewrite
+// itself is sanity-checked before being trusted: rejected outright if
+// it comes back empty/suspiciously short, or if it silently dropped one
+// of the links it was told to preserve (that's logged, not blocked on --
+// the article still ships, but it's worth a human noticing).
+async function critiqueAndRewrite({ title, description, category, body }) {
+  const fallback = { title, description, body };
+
+  let critique;
+  try {
+    critique = await askPoeForJson({
+      system: CRITIQUE_SYSTEM_PROMPT,
+      prompt: `Title: "${title}"\nCategory: ${category}\nDescription: ${description}\n\nArticle body:\n${body}`,
+      maxTokens: 1200,
+      model: EDITOR_MODEL,
+    });
+  } catch (err) {
+    console.warn(`  editorial critique skipped (Poe error): ${err.message}`);
+    return fallback;
+  }
+
+  if (!critique?.revisionInstructions) {
+    console.log('  editor found nothing worth revising');
+    return fallback;
+  }
+  console.log(`  editor feedback: ${critique.revisionInstructions}`);
+
+  let rewrite;
+  try {
+    rewrite = await askPoeForJson({
+      system: REWRITE_SYSTEM_PROMPT,
+      prompt: `Original title: "${title}"
+Original description: ${description}
+Category: ${category}
+
+Original body:
+${body}
+
+Editor's strengths noted: ${critique.strengths || 'none given'}
+Editor's issues to fix: ${Array.isArray(critique.issues) && critique.issues.length ? critique.issues.join('; ') : 'none given'}
+Editor's revision instructions: ${critique.revisionInstructions}
+
+Write the revised article JSON now.`,
+      maxTokens: 3000,
+      model: EDITOR_MODEL,
+    });
+  } catch (err) {
+    console.warn(`  rewrite skipped (Poe error): ${err.message}`);
+    return fallback;
+  }
+
+  if (!rewrite?.bodyMarkdown || rewrite.bodyMarkdown.trim().length < body.trim().length * 0.5) {
+    console.warn('  rewrite rejected -- came back empty or suspiciously short, keeping the original draft');
+    return fallback;
+  }
+
+  const droppedLinks = extractAllLinkUrls(body).filter((u) => !rewrite.bodyMarkdown.includes(u));
+  if (droppedLinks.length > 0) {
+    console.warn(`  NOTE: rewrite dropped ${droppedLinks.length} existing link(s), verify manually: ${droppedLinks.join(', ')}`);
+  }
+  warnOnAiClicheLanguage(rewrite.bodyMarkdown);
+
+  console.log('  article revised per editorial feedback');
+  return {
+    title: rewrite.title || title,
+    description: rewrite.description || description,
+    body: rewrite.bodyMarkdown,
+  };
 }
 
 const IMAGE_TEXT_CHECK_SYSTEM_PROMPT = `You are a strict image QA reviewer for a health/wellness editorial site.
@@ -389,17 +522,33 @@ async function processDraftArticle(filePath) {
   const { data, body: originalBody } = readFrontmatter(originalRaw);
   const slug = filePath.split('/').pop().replace(/\.md$/, '');
 
-  let raw = await reviewHeroImage(originalRaw, data, slug);
+  console.log('  getting editorial feedback from Poe...');
+  const revised = await critiqueAndRewrite({
+    title: data.title,
+    description: data.description,
+    category: data.category,
+    body: originalBody,
+  });
+
+  let raw = originalRaw;
+  if (revised.title !== data.title) raw = upsertFrontmatterField(raw, 'title', revised.title);
+  if (revised.description !== data.description) raw = upsertFrontmatterField(raw, 'description', revised.description);
+
+  // Everything below operates on the (possibly revised) title/body --
+  // the hero image prompt uses the article's title, and link/affiliate
+  // review both read the current body, so a rewrite from step 0 needs to
+  // be visible to every step that follows it.
+  raw = await reviewHeroImage(raw, { ...data, title: revised.title }, slug);
 
   console.log('  reviewing external/internal links...');
-  let body = await reviewLinks({ title: data.title, category: data.category, body: originalBody, slug });
+  let body = await reviewLinks({ title: revised.title, category: data.category, body: revised.body, slug });
   body = await stripDeadExternalLinks(body);
 
   if (!hasFeaturedProduct(raw)) {
     console.log('  checking for a relevant affiliate product...');
     const matchedSlug = await matchAffiliateProduct({
-      title: data.title,
-      description: data.description,
+      title: revised.title,
+      description: revised.description,
       category: data.category,
       body,
     });

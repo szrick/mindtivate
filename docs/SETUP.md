@@ -59,14 +59,20 @@ bot-selection mechanism for all of it.
      baked into it. Defaults to `POE_MODEL` (in turn `Claude-Sonnet-4.5`
      if that's unset too — vision-capable already, so this only needs
      setting if you've pointed `POE_MODEL` at something that isn't).
-   All four are bot **handles**, not fixed identifiers — check
+   - `POE_EDITOR_MODEL` — the bot stage 4 uses to critique the draft and,
+     if warranted, rewrite it. Deliberately a stronger/more expensive
+     model than `POE_MODEL`'s drafting default is worth it here, since
+     this call's entire job is judging another model's writing quality.
+     Defaults to `Claude-Opus-4.5`.
+   All five are bot **handles**, not fixed identifiers — check
    [poe.com](https://poe.com) for what's actually available on your
    account/plan and adjust if a default doesn't resolve.
 3. For the scheduled GitHub Actions (`content-pipeline.yml`,
    `weekly-digest.yml`, `weekly-pinterest-pins.yml`,
    `weekly-reddit-comment-drafts.yml`, `weekly-internal-links.yml`): add
    repo secret `POE_API_KEY` and, optionally, repo variables `POE_MODEL` /
-   `POE_IMAGE_MODEL` / `POE_SEARCH_MODEL` / `POE_VISION_MODEL`.
+   `POE_IMAGE_MODEL` / `POE_SEARCH_MODEL` / `POE_VISION_MODEL` /
+   `POE_EDITOR_MODEL`.
 
 ## 4. Reddit research and (optional) comment posting
 
