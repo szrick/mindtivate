@@ -1,22 +1,22 @@
 ---
-title: "Will Preschool Help My 3-Year-Old's Aggression After a New Baby?"
-description: "Your preschooler's aggression since the baby arrived isn't unusual—and preschool can help, but not for the reason you might think."
+title: Will Preschool Help My 3-Year-Old's Aggression After a New Baby?
+description: Your preschooler's aggression since the baby arrived isn't
+  unusual—and preschool can help, but not for the reason you might think.
 pubDate: 2026-08-29
+updatedDate: 2026-08-30
 category: Mind
-status: draft
-draft: true
-author: "mindtivate-team"
+heroImage: _images/will-preschool-help-my-3-year-old-s-aggression-after-a-new-baby-hero.png
+status: published
+draft: false
+author: mindtivate-team
 sourceSubreddit: r/Mommit
-sourceThreadUrl: "https://www.reddit.com/r/Mommit/comments/1w1byji/"
-heroImage: "./_images/will-preschool-help-my-3-year-old-s-aggression-after-a-new-baby-hero.png"
-heroImageAlt: "Lifestyle photo related to \"Will Preschool Help My 3-Year-Old's Aggression After a New Baby?\""
-tags: 
+sourceThreadUrl: https://www.reddit.com/r/Mommit/comments/1w1byji/
+tags:
   - parenting
   - preschool
   - sibling adjustment
   - toddler behavior
 ---
-
 Your daughter is about to start preschool, and you're hoping it'll ease the aggressive, attention-seeking behaviors that showed up after her brother was born. That hope makes sense—more structure, more stimulation, time with other kids. But whether preschool helps depends less on what it takes off your plate and more on what's actually driving the behavior in the first place.
 
 A year after a sibling arrives, aggression in a preschooler usually isn't about needing more to do. It's about needing to know she still matters as much as she did before.
