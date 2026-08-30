@@ -1,24 +1,27 @@
-name: Content pipeline (research → draft, push to main)
+name: Content pipeline (research → draft → edit → publish)
 
-# Runs the research + drafting stages of the pipeline and, once the site
-# still builds cleanly with the new file(s) added, commits and pushes
-# straight to main -- no PR, no merge step. This is safe specifically
-# because every drafted article is always written with draft: true (see
-# 3-generate-article.mjs), which is what keeps it off the live site, RSS
-# feed, and homepage regardless of anything else; landing the file on
-# main just makes it show up in Pages CMS immediately for review there,
-# instead of sitting invisible on an unmerged PR branch until someone
-# notices and merges it. It never publishes directly, posts to Reddit,
-# or creates a Pinterest pin — see docs/CONTENT_PIPELINE.md for why
-# those stay human-triggered.
+# Runs the full pipeline unattended: research, draft, an automated
+# editorial pass, then publishes straight to main — no PR, no human
+# review step. Stage 3 always drafts with draft: true first; stage 4
+# (the editor, 4-edit-and-publish.mjs) then checks the hero image for
+# baked-in text, reviews/repairs external and internal links, attaches a
+# real affiliate product if a genuinely relevant one exists, and only
+# then flips the article to status: published, draft: false. If stage 4
+# fails partway through one article, that article is left as a draft
+# rather than published half-reviewed — see the comment at the top of
+# 4-edit-and-publish.mjs.
 #
-# The build-first-abort-otherwise step is the actual safety net: Astro
-# validates every article's frontmatter against the content schema at
-# build time, even draft ones, so a malformed draft (bad category value,
-# broken YAML) would otherwise break the live site's build the moment it
-# landed on main. If the build fails, nothing is committed -- the run
-# just ends, and today's candidates get reconsidered on a future run via
-# the same dedup logic that normally skips already-covered threads.
+# The build-first-abort-otherwise step below is the real safety net:
+# Astro validates every article's frontmatter against the content schema
+# at build time, so a malformed article (bad category value, broken
+# YAML, a stray reference) would otherwise break the live site's build
+# the moment it landed on main — published or not. If the build fails,
+# nothing is committed — the run just ends, and today's candidates get
+# reconsidered on a future run via the same dedup logic that normally
+# skips already-covered threads.
+#
+# This never posts to Reddit or creates a Pinterest pin on its own — see
+# docs/CONTENT_PIPELINE.md for why those stay human-triggered.
 
 on:
   schedule:
@@ -74,7 +77,20 @@ jobs:
           POE_IMAGE_MODEL: ${{ vars.POE_IMAGE_MODEL }}
           POE_SEARCH_MODEL: ${{ vars.POE_SEARCH_MODEL }}
 
-      - name: Check for new draft(s)
+      - name: Edit and publish today's draft(s)
+        # Reviews whatever 3-generate-article.mjs just drafted (discovered
+        # via `git status` — see 4-edit-and-publish.mjs) and, once each one
+        # passes, flips it to status: published, draft: false. Non-fatal
+        # per article: a failure on one draft leaves it as-is (still
+        # draft: true) rather than blocking the others or failing the job.
+        run: npm run pipeline:edit
+        env:
+          POE_API_KEY: ${{ secrets.POE_API_KEY }}
+          POE_MODEL: ${{ vars.POE_MODEL }}
+          POE_VISION_MODEL: ${{ vars.POE_VISION_MODEL }}
+          POE_IMAGE_MODEL: ${{ vars.POE_IMAGE_MODEL }}
+
+      - name: Check for new/changed file(s)
         id: check
         run: |
           if git status --porcelain -- src/content/articles src/content/products | grep -q .; then
@@ -95,6 +111,6 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add src/content/articles src/content/products
           git commit \
-            -m 'content: new article draft(s) from pipeline' \
-            -m "Nothing here is published -- every new/updated file has status: draft and draft: true. Review in Pages CMS: verify affiliate links/status on any referenced product, confirm any amazon.com-sourced product image (flagged with a comment in the product's frontmatter) actually matches before it goes live, and spot-check any cited source links, then flip status to published."
+            -m 'content: publish new article(s) from the automated pipeline' \
+            -m "Drafted, edited (hero image text check, link review, internal-link backfill, affiliate-product match), and published automatically — see docs/CONTENT_PIPELINE.md stage 4. Any file still showing status: draft failed part of the editorial pass and needs manual attention in Pages CMS."
           git push origin HEAD:main

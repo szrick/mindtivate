@@ -35,7 +35,7 @@
    settings collections.
 4. Invite editors — they'll get the form UI, no git knowledge required.
 
-## 3. Poe — drafting (stages 2, 3, 5, 6, 7, 8)
+## 3. Poe — drafting (stages 2, 3, 4, 5, 6, 7, 8)
 
 Every drafting step in the pipeline — product research briefs, article
 text, Pinterest pin copy, Reddit comments, newsletter broadcast subjects,
@@ -54,14 +54,19 @@ bot-selection mechanism for all of it.
      authority-source lookup and its amazon.com product-image search
      (see COMPLIANCE.md — every match is unverified until a human
      confirms it). Defaults to `Web-Search`.
-   All three are bot **handles**, not fixed identifiers — check
+   - `POE_VISION_MODEL` — the vision-capable bot stage 4 (the automated
+     editor) uses to check a generated hero image for any visible text
+     baked into it. Defaults to `POE_MODEL` (in turn `Claude-Sonnet-4.5`
+     if that's unset too — vision-capable already, so this only needs
+     setting if you've pointed `POE_MODEL` at something that isn't).
+   All four are bot **handles**, not fixed identifiers — check
    [poe.com](https://poe.com) for what's actually available on your
    account/plan and adjust if a default doesn't resolve.
 3. For the scheduled GitHub Actions (`content-pipeline.yml`,
    `weekly-digest.yml`, `weekly-pinterest-pins.yml`,
    `weekly-reddit-comment-drafts.yml`, `weekly-internal-links.yml`): add
    repo secret `POE_API_KEY` and, optionally, repo variables `POE_MODEL` /
-   `POE_IMAGE_MODEL` / `POE_SEARCH_MODEL`.
+   `POE_IMAGE_MODEL` / `POE_SEARCH_MODEL` / `POE_VISION_MODEL`.
 
 ## 4. Reddit research and (optional) comment posting
 

@@ -15,9 +15,25 @@ function requireApiKey() {
   return apiKey;
 }
 
-export async function askPoe({ system, prompt, maxTokens = 4096, temperature = 0.6, model }) {
+// `images`, when given, is [{ base64, mimeType }] — sent alongside `prompt`
+// as OpenAI-style image_url content parts. Only vision-capable Poe bots
+// (the default POE_MODEL, Claude-Sonnet-4.5, is one) can actually see
+// them; a non-vision bot will just ignore the image parts or error, so
+// callers that need vision should pass an explicit vision-capable
+// `model` if they've pointed POE_MODEL elsewhere.
+export async function askPoe({ system, prompt, maxTokens = 4096, temperature = 0.6, model, images }) {
   const apiKey = requireApiKey();
   const resolvedModel = model || process.env.POE_MODEL || 'Claude-Sonnet-4.5';
+
+  const userContent = images?.length
+    ? [
+        { type: 'text', text: prompt },
+        ...images.map((img) => ({
+          type: 'image_url',
+          image_url: { url: `data:${img.mimeType};base64,${img.base64}` },
+        })),
+      ]
+    : prompt;
 
   const res = await fetch(API_URL, {
     method: 'POST',
@@ -31,7 +47,7 @@ export async function askPoe({ system, prompt, maxTokens = 4096, temperature = 0
       temperature,
       messages: [
         { role: 'system', content: system },
-        { role: 'user', content: prompt },
+        { role: 'user', content: userContent },
       ],
     }),
   });

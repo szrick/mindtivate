@@ -120,7 +120,7 @@ export function insertFrontmatterField(fileContents, key, value, { comment } = {
         .map((line) => `# ${line}`)
         .join(nl) + nl
     : '';
-  const insertion = `${commentBlock}${key}: ${yamlScalar(value)}`;
+  const insertion = `${commentBlock}${key}: ${yamlValue(value)}`;
   const newFrontmatterBlock = `---${nl}${rawFrontmatter}${nl}${insertion}${nl}---${nl}`;
   return fileContents.slice(0, match.index) + newFrontmatterBlock + fileContents.slice(match.index + match[0].length);
 }
@@ -139,7 +139,27 @@ export function upsertFrontmatterField(fileContents, key, value) {
   const idx = lines.findIndex((line) => line.trim().startsWith(`${key}:`));
   if (idx === -1) return insertFrontmatterField(fileContents, key, value);
 
-  lines[idx] = `${key}: ${yamlScalar(value)}`;
+  // The existing value may itself be a multi-line YAML list (an array
+  // previously written by this same module) -- consume any continuation
+  // lines (indented "- item" entries right after the key) along with the
+  // key line itself, so overwriting an array field doesn't leave its old
+  // items behind as orphaned list entries.
+  let end = idx + 1;
+  while (end < lines.length && /^\s+-\s/.test(lines[end])) end++;
+
+  lines.splice(idx, end - idx, `${key}: ${yamlValue(value)}`);
+  const newFrontmatterBlock = `---${nl}${lines.join(nl)}${nl}---${nl}`;
+  return fileContents.slice(0, match.index) + newFrontmatterBlock + fileContents.slice(match.index + match[0].length);
+}
+
+// Removes a single flat frontmatter field entirely (e.g. dropping a hero
+// image that failed QA) -- no-ops if the key isn't present. Same
+// line-level, don't-touch-anything-else approach as insert/upsert above.
+export function removeFrontmatterField(fileContents, key) {
+  const match = fileContents.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/);
+  if (!match) return fileContents;
+  const nl = match[0].includes('\r\n') ? '\r\n' : '\n';
+  const lines = match[1].split(/\r?\n/).filter((line) => !line.trim().startsWith(`${key}:`));
   const newFrontmatterBlock = `---${nl}${lines.join(nl)}${nl}---${nl}`;
   return fileContents.slice(0, match.index) + newFrontmatterBlock + fileContents.slice(match.index + match[0].length);
 }

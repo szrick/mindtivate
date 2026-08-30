@@ -13,6 +13,7 @@
     "pipeline:research": "node scripts/pipeline/1-reddit-research.mjs",
     "pipeline:match": "node scripts/pipeline/2-product-match.mjs",
     "pipeline:draft": "node scripts/pipeline/3-generate-article.mjs",
+    "pipeline:edit": "node scripts/pipeline/4-edit-and-publish.mjs",
     "pipeline:pin": "node scripts/pipeline/5-pinterest-pin.mjs",
     "pipeline:engage": "node scripts/pipeline/6-reddit-engagement-draft.mjs",
     "pipeline:newsletter": "node scripts/pipeline/7-newsletter-broadcast.mjs",
