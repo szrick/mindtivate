@@ -467,7 +467,17 @@ Write the article JSON now.`;
   console.log('Status is "draft" — review in Pages CMS, verify any product/affiliate link and cited sources, then publish.');
 }
 
-run().catch((err) => {
-  console.error(err);
-  process.exitCode = 1;
-});
+// Guarded rather than an unconditional top-level call so this file can
+// also be safely `import`ed for generateHeroImage (stage 4 reuses it to
+// regenerate a hero image that failed the text QA check) without
+// triggering a full drafting run — process.argv[1] only equals this
+// file's own path when it's the actual entrypoint (`node
+// 3-generate-article.mjs`), not when something else imports from it.
+if (import.meta.url === `file://${process.argv[1]}`) {
+  run().catch((err) => {
+    console.error(err);
+    process.exitCode = 1;
+  });
+}
+
+export { generateHeroImage };

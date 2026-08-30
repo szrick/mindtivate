@@ -53,8 +53,8 @@ scripts under `scripts/pipeline/`, run in order:
 | 2 | `npm run pipeline:match` | Turns each pain point into a product research brief (category + search query). |
 | — | *(manual)* | A human researches the brief, applies for the affiliate program, and adds/updates a record in `src/content/products/`. |
 | 3 | `npm run pipeline:draft` | Drafts an article with Poe from a pain point (+ matched product). Always written as `status: draft`. |
-| — | *(manual/CMS)* | Review the draft in Pages CMS, verify the affiliate link, set `status: published`. |
-| — | *(CI)* | `deploy.yml` publishes to GitHub Pages on merge to `main`. |
+| 4 | `npm run pipeline:edit` | Automated editor: checks the hero image for baked-in text, reviews/repairs links, attaches a real affiliate product if one genuinely fits, then sets `status: published`. No human review step for pipeline-authored drafts. |
+| — | *(CI)* | Pushing to `main` triggers Cloudflare's Git integration, which builds and deploys the site. |
 | 5 | `npm run pipeline:pin -- --slug <slug>` | Creates a Pinterest pin linking to the published article. |
 | 6 | `npm run pipeline:engage -- --slug <slug>` | Drafts a Reddit comment referencing the article (never auto-posts — see below). |
 
@@ -65,10 +65,12 @@ site's reputation. Full rationale in
 [docs/COMPLIANCE.md](docs/COMPLIANCE.md).
 
 A scheduled GitHub Action (`.github/workflows/content-pipeline.yml`) runs
-stages 1–3 daily and, once the site still builds with the new file(s)
-added, pushes new drafts straight to `main` (always `status: draft`,
-so nothing goes live) for review in Pages CMS — it never publishes,
-pins, or comments on its own.
+stages 1–4 daily and, once the site still builds with the resulting
+file(s), pushes straight to `main` — no PR, no human review step for
+articles the pipeline itself drafts and edits (a manually-created Pages
+CMS draft is unaffected and stays review-gated). It never pins or
+comments on its own; see `docs/CONTENT_PIPELINE.md` for the full stage 4
+breakdown.
 
 ## Newsletter
 

@@ -233,28 +233,76 @@ product record) and, via the [Poe API](https://poe.com/api_key)
    See COMPLIANCE.md for why this needs a human check (wrong-match risk,
    and rehosting a marketplace image outside Amazon's own API).
 
-## Review
+## 4. Editorial review & auto-publish (`scripts/pipeline/4-edit-and-publish.mjs`)
 
-Open the new file in Pages CMS and check:
+Runs on whatever stage 3 just drafted and, once it's satisfied, flips the
+article straight to `status: published, draft: false` itself — no human
+review step in between for pipeline-authored articles. Four checks, each
+non-fatal on its own (a failed check just leaves that one thing as stage
+3 left it, logged as a warning, rather than blocking the article):
 
-- Does it actually answer the researched question?
-- Is any product mention accurate, and does the linked product record have
-  an approved, correct affiliate URL?
-- **If a product image was pulled from amazon.com**, confirm it's actually
-  the exact product (the match is unverified) before the affiliate link
-  goes live, and consider replacing it with an image sourced through
-  Amazon's Product Advertising API once you're an approved Associate.
-- Do any cited sources actually say what the article claims? The search
-  step finds real URLs, but doesn't verify the article represents them
-  accurately — that's still a human check.
-- Does the tone match — no diet-culture language, no medical claims?
+1. **Hero image text check** — sends the generated hero photo to a
+   vision-capable Poe bot (`POE_VISION_MODEL`, falls back to `POE_MODEL`)
+   and asks whether it has any visible text, words, letters, captions,
+   titles, logos, or watermarks baked into it. If so, regenerates the
+   image once (reusing stage 3's own `generateHeroImage` — same
+   category-based scene hints and ethnicity rotation); if the regenerated
+   image still has text, the hero image is dropped entirely rather than
+   shipped. An article with no hero image is a normal, supported state.
+2. **External link review** — asks Poe to flag any cited source link
+   that isn't genuinely relevant to the specific sentence it's attached
+   to (the link is removed, the sentence text is left as-is), then does
+   a live HTTP check on whatever links remain and strips anything that
+   doesn't actually resolve. Two independent passes: relevance is a
+   judgment call the model makes, reachability is a mechanical check
+   that doesn't depend on the model's opinion.
+3. **Internal link top-up** — same "propose an exact `findText` →
+   `replaceText` pair against a real, current list of published
+   articles" pattern as stage 9 (only applied inline here, so an article
+   doesn't have to wait for stage 9's weekly pass to pick up a newer,
+   genuinely relevant article). Caps out at 2 total internal links, same
+   "0-2 is normal" norm as everywhere else in this pipeline.
+4. **Affiliate product match** — if the article doesn't already have a
+   `featuredProducts` entry, asks Poe whether any product with a real,
+   live affiliate link (`affiliateStatus: approved`/`active`, `affiliateUrl`
+   set) is a genuine, specific fit for this article's actual topic — not
+   just the same broad category — and attaches it
+   (`featuredProducts: [slug]`) if so. `ArticleLayout`/`ProductCallout`
+   already render the "Check current price" affiliate button
+   automatically once `featuredProducts` is set, so this is the only
+   piece needed to make a real affiliate link show up in the article.
 
-Set `status: published` (and `draft: false`) and merge/save.
+If any single article throws partway through processing, nothing is
+written for it — every mutation happens in memory, and the file is only
+written once at the very end — so it's left exactly as stage 3 drafted
+it (still `status: draft`) for manual attention in Pages CMS, rather than
+publishing something half-reviewed.
 
-## 4. Publish
+```bash
+npm run pipeline:edit                        # every newly-drafted (git-untracked)
+                                              # article under src/content/articles
+npm run pipeline:edit -- --slug some-article-slug   # just one article, by slug
+```
 
-Nothing to run — merging to `main` triggers `deploy.yml`, which builds and
-publishes to GitHub Pages. The article also immediately appears in
+With no `--slug`, target discovery is `git status --porcelain` against
+`src/content/articles` — anything showing as untracked (`??`) is treated
+as "drafted this run." That naturally scopes auto-publishing to articles
+the pipeline itself just wrote: a draft a human is mid-editing in Pages
+CMS is already committed to `main`, so it never shows as untracked and
+is never touched by this stage. **A manually-created draft is still
+review-gated exactly as before** — only pipeline-authored articles skip
+the human review step now.
+
+Requires `POE_API_KEY`, and benefits from `POE_VISION_MODEL` set to a
+vision-capable Poe bot for the hero-image text check (falls back to
+`POE_MODEL`, which defaults to `Claude-Sonnet-4.5` — itself
+vision-capable).
+
+## Publish
+
+Nothing further to run — pushing to `main` triggers Cloudflare's Git
+integration, which builds and deploys the site. An article stage 4
+published shows up live immediately, and immediately appears in
 `/rss.xml`.
 
 ## Newsletter signup (automatic)
@@ -389,9 +437,10 @@ stage 7.
 ## 9. Internal link backfill (`scripts/pipeline/9-backfill-internal-links.mjs`)
 
 Stage 3's internal-link candidates are whatever else was already
-published *when that article was drafted* — an early article can end up
-permanently under-linked even once plenty of genuinely relevant articles
-exist later. This stage retroactively fixes that: it finds published
+published *when that article was drafted*, and stage 4's own top-up pass
+only ever runs once, right after drafting — an early article can still
+end up permanently under-linked once plenty of genuinely relevant
+articles exist later. This stage retroactively fixes that: it finds published
 articles with fewer than 2 internal links (the same "0-2 is normal, more
 reads as SEO padding" norm stage 3 uses), oldest first, and asks Poe to
 propose 0-2 new inline links per article against the *current* full list
@@ -418,23 +467,23 @@ change before merging — see the scheduled workflow below.
 
 ## Scheduled automation
 
-`.github/workflows/content-pipeline.yml` runs stages 1–3 daily and, once
-`npm run build` still succeeds with the new file(s) added, commits and
-pushes up to 3 new drafts (the top 3 candidates that day, fewer if
-research turns up less than that) straight to `main` — no PR, no merge
-step. Safe specifically because every drafted article is always written
-with `status: draft` and `draft: true`, which is what keeps it off the
-live site regardless of anything else; landing on `main` just makes it
-show up in Pages CMS immediately, instead of sitting invisible on an
-unmerged PR branch until someone notices and merges it. If the build
-fails (e.g. a malformed draft — Astro validates every article's
-frontmatter against the schema at build time, even draft ones), nothing
-is committed; today's candidates get reconsidered on a future run via
-the same dedup logic that skips already-covered threads. Requires
-`POE_API_KEY` (stages 2 and 3 both run on Poe now) to be set as a
-repository secret — stage 1 itself needs no Reddit credentials, since it
-reads Arctic Shift rather than Reddit's own API. It never touches stages
-5, 6, or 7.
+`.github/workflows/content-pipeline.yml` runs stages 1–4 daily — research,
+product-brief matching, drafting up to 3 candidates, then the automated
+editor (stage 4) reviews and publishes each one — and, once `npm run
+build` still succeeds with the resulting file(s), commits and pushes
+straight to `main`. No PR, no merge step, and (for pipeline-authored
+articles specifically) no human review step either — see stage 4 above
+for what the editor checks before publishing, and how a per-article
+failure there leaves that one article as a draft instead. The
+build-first-abort-otherwise step is still the real safety net regardless
+of publish state: Astro validates every article's frontmatter against
+the schema at build time, so a malformed file would otherwise break the
+live site's build the moment it landed on `main`. If the build fails,
+nothing is committed; today's candidates get reconsidered on a future
+run via the same dedup logic that skips already-covered threads.
+Requires `POE_API_KEY` (stages 2–4 all run on Poe) as a repository
+secret, and benefits from `POE_VISION_MODEL` (see stage 4). It never
+touches stages 5, 6, or 7.
 
 `.github/workflows/weekly-digest.yml` runs stage 8 every Monday. It's
 always safe to run — `weeklyDigestEnabled` being off, or there being
