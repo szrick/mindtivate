@@ -3,13 +3,14 @@ name: Content pipeline (research → draft → edit → publish)
 # Runs the full pipeline unattended: research, draft, an automated
 # editorial pass, then publishes straight to main — no PR, no human
 # review step. Stage 3 always drafts with draft: true first; stage 4
-# (the editor, 4-edit-and-publish.mjs) then checks the hero image for
-# baked-in text, reviews/repairs external and internal links, attaches a
-# real affiliate product if a genuinely relevant one exists, and only
-# then flips the article to status: published, draft: false. If stage 4
-# fails partway through one article, that article is left as a draft
-# rather than published half-reviewed — see the comment at the top of
-# 4-edit-and-publish.mjs.
+# (the editor, 4-edit-and-publish.mjs) then gets the draft critiqued and,
+# if warranted, rewritten by a stronger Poe bot (POE_EDITOR_MODEL), checks
+# the hero image for baked-in text, reviews/repairs external and internal
+# links, attaches a real affiliate product if a genuinely relevant one
+# exists, and only then flips the article to status: published, draft:
+# false. If stage 4 fails partway through one article, that article is
+# left as a draft rather than published half-reviewed — see the comment
+# at the top of 4-edit-and-publish.mjs.
 #
 # The build-first-abort-otherwise step below is the real safety net:
 # Astro validates every article's frontmatter against the content schema
@@ -87,6 +88,7 @@ jobs:
         env:
           POE_API_KEY: ${{ secrets.POE_API_KEY }}
           POE_MODEL: ${{ vars.POE_MODEL }}
+          POE_EDITOR_MODEL: ${{ vars.POE_EDITOR_MODEL }}
           POE_VISION_MODEL: ${{ vars.POE_VISION_MODEL }}
           POE_IMAGE_MODEL: ${{ vars.POE_IMAGE_MODEL }}
 
