@@ -74,6 +74,35 @@ bot-selection mechanism for all of it.
    `POE_IMAGE_MODEL` / `POE_SEARCH_MODEL` / `POE_VISION_MODEL` /
    `POE_EDITOR_MODEL`.
 
+## 3a. Pexels / Unsplash — real stock photos for hero images (optional)
+
+Without either of these, every hero image is AI-generated (via
+`POE_IMAGE_MODEL` above), same as before. Set either or both to mix in
+real, licensed photography — roughly half of hero images will try a
+stock photo first (randomly Pexels or Unsplash, whichever you've
+configured) before falling back to AI generation. See
+`scripts/lib/stockphotos.mjs`.
+
+1. **Pexels**: create a free key at
+   [pexels.com/api](https://www.pexels.com/api/) (instant approval, no
+   attribution legally required by their license — though this site
+   credits the photographer anyway). Add to `.env` as `PEXELS_API_KEY`.
+2. **Unsplash**: register an app at
+   [unsplash.com/developers](https://unsplash.com/developers) and use its
+   **Access Key**. Add to `.env` as `UNSPLASH_ACCESS_KEY`. Unlike Pexels,
+   Unsplash's [API Guidelines](https://help.unsplash.com/en/articles/2511245)
+   *require* crediting the photographer and Unsplash with linked
+   attribution on every photo actually used — `ArticleLayout.astro`
+   already renders this from the `heroImagePhotographer`/
+   `heroImageSource`/etc. fields `stockphotos.mjs` writes, and a
+   download-tracking ping fires automatically per their guidelines. New
+   Unsplash apps start on the **Demo** tier (50 requests/hour — plenty
+   for a few articles a day); apply for **Production** access once
+   you're using it for real to raise that limit.
+3. For the scheduled `content-pipeline.yml` workflow: add repo secrets
+   `PEXELS_API_KEY` / `UNSPLASH_ACCESS_KEY` (optional, independent of
+   each other).
+
 ## 4. Reddit research and (optional) comment posting
 
 These are two separate concerns with two separate setups now.

@@ -99,7 +99,9 @@ export async function searchAuthoritySources({ topic, count = 4 }) {
   }
 }
 
-async function downloadImage(url) {
+// Shared with scripts/lib/stockphotos.mjs (Pexels/Unsplash hero-image
+// sourcing) so both real-photo paths download the same way.
+export async function downloadImage(url) {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Failed to download image from ${url}: ${res.status}`);
   const contentType = res.headers.get('content-type') || 'image/jpeg';
