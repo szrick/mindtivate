@@ -11,6 +11,15 @@ const articles = defineCollection({
       category: z.enum(['Body', 'Food', 'Mind', 'Hormones', 'Love', 'Beauty', 'Sleep', 'Life Stages']),
       heroImage: image().optional(),
       heroImageAlt: z.string().optional(),
+      // Set only when heroImage is a real photo sourced from Pexels/
+      // Unsplash rather than Poe-generated — see
+      // scripts/lib/stockphotos.mjs and ArticleLayout.astro's credit
+      // line. Unsplash's API terms require this attribution; Pexels'
+      // don't, but the same fields render for both.
+      heroImageSource: z.enum(['Pexels', 'Unsplash']).optional(),
+      heroImagePhotographer: z.string().optional(),
+      heroImagePhotographerUrl: z.string().url().optional(),
+      heroImageSourceUrl: z.string().url().optional(),
       status: z.enum(['draft', 'in-review', 'published']).default('draft'),
       draft: z.boolean().default(true),
       author: reference('authors').optional(),

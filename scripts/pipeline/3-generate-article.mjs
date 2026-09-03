@@ -6,7 +6,10 @@
 //
 // Also via Poe: a best-effort search for real authority sources to cite
 // (POE_SEARCH_MODEL) and a generated hero illustration + product image
-// (POE_IMAGE_MODEL). Both are non-fatal — if either fails, drafting
+// (POE_IMAGE_MODEL). The hero image itself is a random mix of AI
+// generation and real, licensed stock photos (Pexels/Unsplash, see
+// scripts/lib/stockphotos.mjs — PEXELS_API_KEY/UNSPLASH_ACCESS_KEY,
+// optional). All of this is non-fatal — if any of it fails, drafting
 // continues without it rather than blocking the whole run.
 //
 // Usage:
@@ -19,6 +22,7 @@
 import { existsSync, readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { loadEnv } from '../lib/env.mjs';
 import { askPoeForJson, searchAuthoritySources, generatePoeImage, findAmazonProductImage } from '../lib/poe.mjs';
+import { findStockPhoto } from '../lib/stockphotos.mjs';
 import { writeMarkdownFile, slugify, readFrontmatter, insertFrontmatterField } from '../lib/frontmatter.mjs';
 import { ARTICLE_TEMPLATES, listTemplateIds } from '../lib/article-templates.mjs';
 
@@ -199,6 +203,22 @@ function warnOnAiClicheLanguage(bodyMarkdown) {
   }
 }
 
+// Rough, keyword-style search query per category — used as a stock-photo
+// fallback query when the draft didn't suggest any topic-specific
+// heroImageIdeas (or none were usable). Deliberately short/concrete
+// rather than a full sentence, since Pexels/Unsplash search works like a
+// keyword search, not a prompt.
+const CATEGORY_STOCK_QUERY_FALLBACK = {
+  Body: 'woman fitness workout',
+  Food: 'healthy meal kitchen',
+  Mind: 'woman journaling calm',
+  Hormones: 'self care tea',
+  Love: 'friends coffee conversation',
+  Beauty: 'skincare routine bathroom',
+  Sleep: 'cozy bed morning light',
+  'Life Stages': 'woman everyday lifestyle',
+};
+
 // Category -> scene hints, so the hero photo is actually about the
 // article's topic rather than one generic image for every piece. Each
 // category has two variants:
@@ -209,6 +229,13 @@ function warnOnAiClicheLanguage(bodyMarkdown) {
 //   explicitly per image instead of left to the model's own judgment.
 // - objectOnly: a person-free alternative (equipment, a meal, a journal
 //   and tea, etc.) so hero images aren't always a photo of a woman.
+// Both are combined with per-article heroImageIdeas (from the drafting
+// JSON response, see buildSystemPrompt) as the full random candidate
+// pool in generateHeroImage below — similar-topic articles no longer
+// recycle the same handful of category-level scenes, since each draft
+// contributes its own topic-specific ideas (e.g. a preschool-behavior
+// article suggesting "a toddler playing with blocks" instead of the
+// generic Life Stages hint every time).
 const HERO_SCENE_HINTS = {
   Body: {
     withPerson:
@@ -261,26 +288,96 @@ function randomEthnicity() {
   return ETHNICITIES[Math.floor(Math.random() * ETHNICITIES.length)];
 }
 
-async function generateHeroImage(title, slug, category) {
+// Random pick, one array-index roll — used for both the AI scene-hint
+// pool and the stock-photo query pool below.
+function pickRandom(list) {
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+// Tries a real, licensed stock photo (Pexels/Unsplash) for roughly half
+// of hero images when at least one is configured — real photography
+// avoids the "AI-generated, not real photography" caveat entirely for
+// whichever images use it (see COMPLIANCE.md), on top of adding variety
+// AI generation alone can't. Prefers a topic-specific idea from `ideas`
+// as the search query when one exists (a search engine works far better
+// on "a toddler playing with wooden blocks" than on a full AI-prompt
+// sentence); falls back to a short category keyword query otherwise.
+// Returns the same shape generateHeroImage does, or null if stock photos
+// aren't configured, weren't rolled this time, or nothing was found.
+async function tryStockPhoto(category, ideas) {
+  const stockConfigured = Boolean(process.env.PEXELS_API_KEY || process.env.UNSPLASH_ACCESS_KEY);
+  if (!stockConfigured || Math.random() >= 0.5) return null;
+
+  const query = ideas.length ? pickRandom(ideas) : CATEGORY_STOCK_QUERY_FALLBACK[category] || 'wellness lifestyle';
+  console.log(`  trying a real stock photo for "${query}"...`);
+  const stockPhoto = await findStockPhoto(query);
+  if (!stockPhoto) {
+    console.log('  no stock photo match found -- falling back to AI generation');
+    return null;
+  }
+
+  console.log(`  found a ${stockPhoto.sourceName} photo by ${stockPhoto.photographer}`);
+  return {
+    ext: stockPhoto.ext,
+    buffer: stockPhoto.buffer,
+    heroImageAlt: `Photo related to "${query}"`,
+    heroImageSource: stockPhoto.sourceName,
+    heroImagePhotographer: stockPhoto.photographer,
+    heroImagePhotographerUrl: stockPhoto.photographerUrl,
+    heroImageSourceUrl: stockPhoto.sourceUrl,
+  };
+}
+
+// `ideas` is an optional array of short, topic-specific visual concepts
+// (from the draft JSON's heroImageIdeas — see buildSystemPrompt) tied to
+// this specific article rather than just its category, e.g. "a toddler
+// playing with wooden blocks" for a preschool-behavior piece or "a
+// pharmacy shelf with medicine bottles" for a medication one. Defaults
+// to [] so this stays safe to call without them (stage 4 reuses this
+// function to regenerate a hero image that failed QA, working from just
+// title/category at that point).
+async function generateHeroImage(title, slug, category, ideas = []) {
   try {
     console.log('Generating hero image...');
-    const hints = HERO_SCENE_HINTS[category];
-    // Roughly 1 in 3 hero images is a person-free object/scene shot
-    // instead of a photo of a woman — see HERO_SCENE_HINTS' comment.
-    const useObjectOnly = Math.random() < 1 / 3;
-    const sceneHint =
-      useObjectOnly || !hints
-        ? (hints?.objectOnly ?? 'objects or a scene related to the topic, no people')
-        : hints.withPerson.replace('{subject}', randomEthnicity());
-    const imagePrompt = `Editorial lifestyle photograph for a women's health and wellness article titled "${title}". Show ${sceneHint}. Candid, documentary-style composition — natural and unposed, not an overly retouched stock-photo look. Natural, warm lighting; soft warm color grading (cream, muted plum, blush undertones) to match an editorial brand palette. Shallow depth of field for an artistic, magazine-quality feel. Absolutely no text, words, letters, numbers, captions, titles, logos, or watermarks anywhere in the image — this must be a clean photograph with zero typography of any kind.`;
-    const { buffer, ext } = await generatePoeImage({ prompt: imagePrompt });
+
+    const stockResult = await tryStockPhoto(category, ideas);
+    let result = stockResult;
+
+    if (!result) {
+      const hints = HERO_SCENE_HINTS[category];
+      // Random pool across the category's own withPerson/objectOnly
+      // hints plus every per-article idea — see the comment above
+      // HERO_SCENE_HINTS for why this replaced a plain person/object
+      // coin flip. Falls back to a generic no-people line only if a
+      // category is somehow unrecognized AND no ideas were given.
+      const candidates = [
+        ...(hints ? [hints.withPerson.replace('{subject}', randomEthnicity()), hints.objectOnly] : []),
+        ...ideas,
+      ].filter(Boolean);
+      const sceneHint = candidates.length ? pickRandom(candidates) : 'objects or a scene related to the topic, no people';
+
+      const imagePrompt = `Editorial lifestyle photograph for a women's health and wellness article titled "${title}". Show ${sceneHint}. Candid, documentary-style composition — natural and unposed, not an overly retouched stock-photo look. Natural, warm lighting; soft warm color grading (cream, muted plum, blush undertones) to match an editorial brand palette. Shallow depth of field for an artistic, magazine-quality feel. Absolutely no text, words, letters, numbers, captions, titles, logos, or watermarks anywhere in the image — this must be a clean photograph with zero typography of any kind.`;
+      const { buffer, ext } = await generatePoeImage({ prompt: imagePrompt });
+      result = { buffer, ext, heroImageAlt: `Lifestyle photo related to "${title}"` };
+    }
 
     const imagesDir = 'src/content/articles/_images';
     mkdirSync(imagesDir, { recursive: true });
-    const imageFileName = `${slug}-hero.${ext}`;
-    writeFileSync(`${imagesDir}/${imageFileName}`, buffer);
+    const imageFileName = `${slug}-hero.${result.ext}`;
+    writeFileSync(`${imagesDir}/${imageFileName}`, result.buffer);
     console.log(`  saved ${imagesDir}/${imageFileName}`);
-    return { heroImage: `./_images/${imageFileName}`, heroImageAlt: `Lifestyle photo related to "${title}"` };
+    return {
+      heroImage: `./_images/${imageFileName}`,
+      heroImageAlt: result.heroImageAlt,
+      ...(result.heroImageSource
+        ? {
+            heroImageSource: result.heroImageSource,
+            heroImagePhotographer: result.heroImagePhotographer,
+            heroImagePhotographerUrl: result.heroImagePhotographerUrl,
+            heroImageSourceUrl: result.heroImageSourceUrl,
+          }
+        : {}),
+    };
   } catch (err) {
     console.warn(`  hero image generation skipped: ${err.message}`);
     return {};
@@ -372,6 +469,17 @@ Respond with strict JSON only, no prose outside the JSON, matching:
   "description": string (max 160 chars, for SEO),
   "category": "Body" | "Food" | "Mind" | "Hormones" | "Love" | "Beauty" | "Sleep" | "Life Stages",
   "tags": string[] (2-5 short tags),
+  "heroImageIdeas": string[] (2-4 short, concrete visual ideas SPECIFIC to
+    this article's actual topic, not just its category -- a real object,
+    setting, or related subject someone would associate with it, not a
+    generic "woman doing wellness" scene. May or may not include a
+    person: e.g. for an article about a toddler's preschool behavior,
+    good ideas are "a toddler playing with wooden blocks" or "a
+    preschool classroom cubby"; for one about a specific medication,
+    "a pharmacy shelf with medicine bottles" or "a hand holding a
+    prescription bottle". Each idea should work standing alone as either
+    an image-generation prompt fragment or a stock-photo search query --
+    a few words to one short phrase, not a full sentence.),
   "bodyMarkdown": string (${template.wordCountTarget} words of markdown, using ## subheadings, no title heading, no frontmatter)
 }`;
 }
@@ -444,7 +552,8 @@ Write the article JSON now.`;
     return;
   }
 
-  const heroImageFields = await generateHeroImage(draft.title, slug, draft.category);
+  const heroImageIdeas = Array.isArray(draft.heroImageIdeas) ? draft.heroImageIdeas.filter(Boolean) : [];
+  const heroImageFields = await generateHeroImage(draft.title, slug, draft.category, heroImageIdeas);
 
   const frontmatter = {
     title: draft.title,

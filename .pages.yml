@@ -44,6 +44,24 @@ content:
       - name: heroImage
         label: Hero image
         type: image
+      - name: heroImageAlt
+        label: Hero image alt text
+        type: string
+      - name: heroImageSource
+        label: Hero image source (if a real stock photo, not AI-generated)
+        type: select
+        options:
+          values: [Pexels, Unsplash]
+      - name: heroImagePhotographer
+        label: Hero image photographer credit
+        type: string
+        description: "Required by Unsplash's API terms whenever heroImageSource is Unsplash — leave blank for an AI-generated hero image."
+      - name: heroImagePhotographerUrl
+        label: Hero image photographer URL
+        type: string
+      - name: heroImageSourceUrl
+        label: Hero image source URL (Pexels/Unsplash photo page)
+        type: string
       - name: status
         label: Status
         type: select

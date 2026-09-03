@@ -77,6 +77,11 @@ jobs:
           POE_MODEL: ${{ vars.POE_MODEL }}
           POE_IMAGE_MODEL: ${{ vars.POE_IMAGE_MODEL }}
           POE_SEARCH_MODEL: ${{ vars.POE_SEARCH_MODEL }}
+          # Optional — real stock photos (Pexels/Unsplash) for roughly
+          # half of hero images when set; falls back to AI generation
+          # entirely if neither is configured. See scripts/lib/stockphotos.mjs.
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
 
       - name: Edit and publish today's draft(s)
         # Reviews whatever 3-generate-article.mjs just drafted (discovered

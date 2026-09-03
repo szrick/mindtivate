@@ -17,8 +17,21 @@ interface Props {
 }
 
 const { article } = Astro.props;
-const { title, description, pubDate, updatedDate, category, heroImage, heroImageAlt, author, featuredProducts } =
-  article.data;
+const {
+  title,
+  description,
+  pubDate,
+  updatedDate,
+  category,
+  heroImage,
+  heroImageAlt,
+  heroImageSource,
+  heroImagePhotographer,
+  heroImagePhotographerUrl,
+  heroImageSourceUrl,
+  author,
+  featuredProducts,
+} = article.data;
 
 const authorEntry = author ? await getEntry(author) : null;
 const products = featuredProducts?.length ? await getEntries(featuredProducts) : [];
@@ -43,7 +56,25 @@ const shareImageUrl = heroImage ? new URL(heroImage.src, Astro.site).toString() 
     </header>
 
     {heroImage && (
-      <img src={heroImage.src} alt={heroImageAlt ?? title} class="article-hero" width="1200" height="675" />
+      <figure class="article-hero-figure">
+        <img src={heroImage.src} alt={heroImageAlt ?? title} class="article-hero" width="1200" height="675" />
+        {heroImageSource && (
+          <figcaption class="hero-credit">
+            Photo by{' '}
+            {heroImagePhotographerUrl ? (
+              <a href={heroImagePhotographerUrl} target="_blank" rel="noopener noreferrer">{heroImagePhotographer}</a>
+            ) : (
+              heroImagePhotographer
+            )}{' '}
+            on{' '}
+            {heroImageSourceUrl ? (
+              <a href={heroImageSourceUrl} target="_blank" rel="noopener noreferrer">{heroImageSource}</a>
+            ) : (
+              heroImageSource
+            )}
+          </figcaption>
+        )}
+      </figure>
     )}
 
     <BookmarkButton
@@ -97,11 +128,21 @@ const shareImageUrl = heroImage ? new URL(heroImage.src, Astro.site).toString() 
     margin-top: 0.6em;
   }
 
+  .article-hero-figure {
+    margin: 1.5rem 0 2rem;
+  }
+
   .article-hero {
     width: 100%;
     aspect-ratio: 16 / 9;
     object-fit: cover;
-    margin: 1.5rem 0 2rem;
+    margin: 0;
+  }
+
+  .hero-credit {
+    margin: 0.4rem 0 0;
+    font-size: 0.78rem;
+    color: var(--color-gray-50);
   }
 
   .article-products {

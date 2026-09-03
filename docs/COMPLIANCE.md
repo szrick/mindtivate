@@ -125,14 +125,23 @@ designed around.
     Program Operating Agreement. Treat a flagged image as a placeholder
     to replace with an API-sourced or manufacturer-provided image before
     `affiliateStatus` reaches `approved`/`active` on a real, live link.
-- **Article hero photos are AI-generated lifestyle images, not real
-  photography of a real person.** `3-generate-article.mjs` generates
-  these via Poe rather than sourcing real stock/editorial photography.
-  This is lower-stakes than the product-image case above — a hero photo
-  isn't claiming to depict a specific real customer or reader the way a
-  product photo claims to depict a specific real item — but it's still
-  worth knowing before publishing: don't caption or reference it in a way
-  that implies it's a real person's photo (e.g. a testimonial), and
-  reviewers should sanity-check it doesn't have obvious AI-image
-  artifacts (distorted hands/faces) that would look unprofessional on a
-  live article.
+- **Article hero photos are either AI-generated or a real, licensed
+  stock photo — check `heroImageSource` in the article's frontmatter to
+  tell which.** When unset, `3-generate-article.mjs` generated the image
+  via Poe rather than sourcing real photography, and the same caveat as
+  before applies: this is lower-stakes than the product-image case
+  above — a hero photo isn't claiming to depict a specific real customer
+  or reader the way a product photo claims to depict a specific real
+  item — but don't caption or reference it in a way that implies it's a
+  real person's photo (e.g. a testimonial), and reviewers should
+  sanity-check it doesn't have obvious AI-image artifacts (distorted
+  hands/faces) that would look unprofessional on a live article. When
+  `heroImageSource` is `Pexels` or `Unsplash` (`scripts/lib/stockphotos.mjs`),
+  it's a real, licensed photo — no AI-artifact concern, but Unsplash's
+  API terms require the photographer/Unsplash credit line
+  `ArticleLayout.astro` renders from `heroImagePhotographer`/
+  `heroImageSource`/etc.; don't strip those fields from an
+  Unsplash-sourced article without also removing the image, and be aware
+  a Pages CMS field not declared in `.pages.yml` gets silently dropped on
+  save (this happened to `heroImageAlt` once already) — all the
+  attribution fields are declared there specifically to avoid a repeat.

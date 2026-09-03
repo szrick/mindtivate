@@ -209,19 +209,40 @@ product record) and, via the [Poe API](https://poe.com/api_key)
    would leave a dangling link. `warnOnUnexpectedInternalLinks` is the
    same non-fatal "trust but verify" check as the citation one, flagging
    any `/articles/` link that doesn't match a real known slug.
-3. **Generates a hero photo** (`POE_IMAGE_MODEL`) for the article
-   (`src/content/articles/_images/<slug>-hero.<ext>`) — an editorial-style
-   lifestyle photograph in a candid, topically-relevant moment (the scene
-   hint is chosen from the article's category — see `HERO_SCENE_HINTS` in
-   the script). About 1 in 3 hero images is a person-free object/scene
-   shot instead of a photo of a woman (`objectOnly` in each category's
-   hint); when a person is shown, her ethnicity is chosen explicitly at
-   random from a fixed list (`ETHNICITIES`/`randomEthnicity()`) rather
-   than left to a vague "diverse" instruction — that wasn't reliably
-   producing variety in practice, and every hero image ended up as the
-   same ethnicity regardless of the instruction. Non-fatal — a failure
-   just means no hero image. These are AI-generated, not real photography
-   of a real person — see COMPLIANCE.md.
+3. **Sources a hero photo** for the article
+   (`src/content/articles/_images/<slug>-hero.<ext>`), either a real
+   stock photo or an AI-generated one:
+   - The draft JSON itself includes `heroImageIdeas` — 2-4 short, visual
+     concepts specific to *this article's actual topic*, not just its
+     category (a preschool-behavior article might suggest "a toddler
+     playing with wooden blocks"; a medication one, "a pharmacy shelf
+     with medicine bottles"). No extra Poe call — it rides along with the
+     same drafting request.
+   - **Real stock photo** (`scripts/lib/stockphotos.mjs`, optional
+     `PEXELS_API_KEY`/`UNSPLASH_ACCESS_KEY`): tried first for roughly
+     half of hero images when at least one is configured. Searches
+     Pexels/Unsplash using a random `heroImageIdeas` entry (falling back
+     to a short category keyword if none exist), picks randomly among the
+     top matches rather than always the top hit, and downloads it. On any
+     miss — not configured, no results, a failed download — falls
+     straight through to AI generation instead. Unsplash results carry
+     required photographer/Unsplash attribution
+     (`heroImageSource`/`heroImagePhotographer`/etc. fields,
+     rendered by `ArticleLayout.astro`); Pexels doesn't require it but
+     gets the same credit line.
+   - **AI-generated** (`POE_IMAGE_MODEL`, `generatePoeImage`) — an
+     editorial-style lifestyle photograph. The scene is picked randomly
+     from a combined pool: the article's category hint with a person
+     (`HERO_SCENE_HINTS`, ethnicity chosen explicitly at random from a
+     fixed list — `ETHNICITIES`/`randomEthnicity()` — rather than left to
+     a vague "diverse" instruction, which wasn't reliably producing
+     variety in practice), the category's person-free object/scene hint,
+     and every one of this article's own `heroImageIdeas`. This is what
+     keeps similar-topic articles (same category) from recycling the same
+     handful of generic scenes.
+   - Both paths are non-fatal — a failure just means no hero image. An
+     AI-generated image is not real photography of a real person — see
+     COMPLIANCE.md; a stock photo is.
 4. **Finds a product image on amazon.com** (`POE_SEARCH_MODEL`) — only if
    `--product` is passed and that product record doesn't already have an
    `image` field. This searches amazon.com for a matching real listing and
