@@ -18,7 +18,8 @@
     "pipeline:engage": "node scripts/pipeline/6-reddit-engagement-draft.mjs",
     "pipeline:newsletter": "node scripts/pipeline/7-newsletter-broadcast.mjs",
     "pipeline:digest": "node scripts/pipeline/8-weekly-digest.mjs",
-    "pipeline:relink": "node scripts/pipeline/9-backfill-internal-links.mjs"
+    "pipeline:relink": "node scripts/pipeline/9-backfill-internal-links.mjs",
+    "pipeline:regen-heroes": "node scripts/pipeline/10-regenerate-hero-images.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.11",

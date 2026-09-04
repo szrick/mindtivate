@@ -1,0 +1,81 @@
+name: Regenerate hero images (manual, one-off backfill)
+
+# Manual-only bulk backfill: regenerates every existing article's hero
+# image using the current hero-image system (independently-randomized
+# scene/composition/lighting/palette/style, or a real Pexels/Unsplash
+# stock photo) and saves it as WebP -- see stage 10,
+# scripts/pipeline/10-regenerate-hero-images.mjs. Not part of the daily
+# content-pipeline.yml run and not on a schedule: this spends a real
+# Poe (and optionally Pexels/Unsplash) API call per article, so it only
+# runs when someone deliberately triggers it, either for the whole
+# catalog or scoped to one article/a limited batch via the inputs below.
+#
+# Same build-first-abort-otherwise safety net as content-pipeline.yml:
+# nothing commits unless the site still builds with the regenerated
+# images and updated frontmatter in place.
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: 'Regenerate just one article (its slug) instead of all of them'
+        required: false
+        type: string
+      limit:
+        description: 'Cap how many articles to regenerate (leave blank for all)'
+        required: false
+        type: string
+
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Regenerate hero images
+        run: |
+          ARGS=""
+          if [ -n "${{ inputs.slug }}" ]; then ARGS="$ARGS --slug ${{ inputs.slug }}"; fi
+          if [ -n "${{ inputs.limit }}" ]; then ARGS="$ARGS --limit ${{ inputs.limit }}"; fi
+          npm run pipeline:regen-heroes -- $ARGS
+        env:
+          POE_API_KEY: ${{ secrets.POE_API_KEY }}
+          POE_MODEL: ${{ vars.POE_MODEL }}
+          POE_IMAGE_MODEL: ${{ vars.POE_IMAGE_MODEL }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+
+      - name: Check for changed file(s)
+        id: check
+        run: |
+          if git status --porcelain -- src/content/articles | grep -q .; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No changed files under src/content/articles — nothing to push."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Validate the site still builds
+        if: steps.check.outputs.changed == 'true'
+        run: npm run build
+
+      - name: Commit and push straight to main
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/content/articles
+          git commit -m 'content: regenerate hero images with the current prompt system'
+          git push origin HEAD:main
