@@ -8,13 +8,14 @@ draft: false
 author: "mindtivate-team"
 sourceSubreddit: r/relationship_advice
 sourceThreadUrl: "https://www.reddit.com/r/relationship_advice/comments/1w4rges/"
-heroImage: "./_images/why-you-can-t-eat-around-your-partner-without-feeling-sick-hero.png"
+heroImage: "./_images/why-you-can-t-eat-around-your-partner-without-feeling-sick-hero.webp"
 heroImageAlt: "Lifestyle photo related to \"Why You Can't Eat Around Your Partner Without Feeling Sick\""
 tags: 
   - anxiety
   - relationships
   - social anxiety
   - eating
+updatedDate: 2026-09-04
 ---
 You're three months into a relationship that's going well—you talk easily, you've resolved conflict like adults, you genuinely like this person. But every time you sit down to eat together, you feel sick. You have to excuse yourself. It's not "the ick," you're not disgusted by how he eats, and neither of you can figure out what's going on.
 

@@ -4,9 +4,9 @@ description: You need deep hydration without strong scents. Here's what to look
   for in a body lotion when fragrance is a migraine trigger and dry skin needs
   real help.
 pubDate: 2026-08-28
-updatedDate: 2026-08-29
+updatedDate: 2026-09-04
 category: Beauty
-heroImage: _images/how-to-choose-body-lotion-for-dry-skin-when-fragrance-triggers-migraines-hero.png
+heroImage: "./_images/how-to-choose-body-lotion-for-dry-skin-when-fragrance-triggers-migraines-hero.webp"
 status: published
 draft: false
 author: mindtivate-team
@@ -17,6 +17,7 @@ tags:
   - fragrance-free
   - migraines
   - body lotion
+heroImageAlt: "Lifestyle photo related to \"How to Choose Body Lotion for Dry Skin When Fragrance Triggers Migraines\""
 ---
 ## The fragrance-hydration dilemma
 

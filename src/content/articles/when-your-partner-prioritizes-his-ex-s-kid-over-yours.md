@@ -8,13 +8,14 @@ draft: false
 author: "mindtivate-team"
 sourceSubreddit: r/relationship_advice
 sourceThreadUrl: "https://www.reddit.com/r/relationship_advice/comments/1w3tru3/"
-heroImage: "./_images/when-your-partner-prioritizes-his-ex-s-kid-over-yours-hero.png"
+heroImage: "./_images/when-your-partner-prioritizes-his-ex-s-kid-over-yours-hero.webp"
 heroImageAlt: "Lifestyle photo related to \"When Your Partner Prioritizes His Ex's Kid Over Yours\""
 tags: 
   - boundaries
   - blended families
   - relationship compatibility
   - communication
+updatedDate: 2026-09-04
 ---
 ## The pattern that signals more than just awkwardness
 

@@ -4,9 +4,9 @@ description: Myoinositol shows promise for PCOS metabolic and menstrual
   symptoms, but the evidence on combining it with metformin is more limited than
   online success stories suggest.
 pubDate: 2026-08-28
-updatedDate: 2026-08-29
+updatedDate: 2026-09-04
 category: Hormones
-heroImage: _images/should-you-add-myoinositol-to-metformin-for-pcos-hero.png
+heroImage: "./_images/should-you-add-myoinositol-to-metformin-for-pcos-hero.webp"
 status: published
 draft: false
 author: mindtivate-team
@@ -17,6 +17,7 @@ tags:
   - myoinositol
   - metformin
   - insulin resistance
+heroImageAlt: "Lifestyle photo related to \"Should You Add Myoinositol to Metformin for PCOS?\""
 ---
 ## The question behind the supplement
 

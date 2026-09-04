@@ -8,13 +8,14 @@ draft: false
 author: "mindtivate-team"
 sourceSubreddit: r/beauty
 sourceThreadUrl: "https://www.reddit.com/r/beauty/comments/1w3mnja/"
-heroImage: "./_images/how-to-manage-stress-sweating-for-a-high-anxiety-event-hero.png"
+heroImage: "./_images/how-to-manage-stress-sweating-for-a-high-anxiety-event-hero.webp"
 heroImageAlt: "Lifestyle photo related to \"How to Manage Stress Sweating for a High-Anxiety Event\""
 tags: 
   - sweating
   - anxiety
   - hyperhidrosis
   - stress response
+updatedDate: 2026-09-04
 ---
 ## When anxiety turns you into a sprinkler
 

@@ -8,13 +8,14 @@ draft: false
 author: "mindtivate-team"
 sourceSubreddit: r/period
 sourceThreadUrl: "https://www.reddit.com/r/period/comments/1vlrjag/"
-heroImage: "./_images/abnormal-bleeding-on-birth-control-when-to-worry-about-pregnancy-hero.png"
+heroImage: "./_images/abnormal-bleeding-on-birth-control-when-to-worry-about-pregnancy-hero.webp"
 heroImageAlt: "Lifestyle photo related to \"Abnormal Bleeding on Birth Control: When to Worry About Pregnancy\""
 tags: 
   - birth control
   - bleeding
   - pregnancy
   - contraception
+updatedDate: 2026-09-04
 ---
 You're eight months into birth control, bleeding irregularly, using condoms, getting negative pregnancy tests — and still worried you might somehow be pregnant. That spiral is exhausting, and you're not alone in it. Abnormal bleeding on hormonal contraception is one of the most common side effects, but when you've heard stories about people who didn't know they were pregnant, it's hard to trust the reassurance.
 

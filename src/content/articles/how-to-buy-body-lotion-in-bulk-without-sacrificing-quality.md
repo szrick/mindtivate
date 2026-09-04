@@ -8,13 +8,14 @@ draft: false
 author: "mindtivate-team"
 sourceSubreddit: r/beauty
 sourceThreadUrl: "https://www.reddit.com/r/beauty/comments/1w2wfqb/"
-heroImage: "./_images/how-to-buy-body-lotion-in-bulk-without-sacrificing-quality-hero.png"
+heroImage: "./_images/how-to-buy-body-lotion-in-bulk-without-sacrificing-quality-hero.webp"
 heroImageAlt: "Lifestyle photo related to \"How to Buy Body Lotion in Bulk Without Sacrificing Quality\""
 tags: 
   - dry skin
   - body lotion
   - skincare budget
   - ichthyosis
+updatedDate: 2026-09-04
 ---
 When you have severely dry skin or ichthyosis, lotion isn't optional—it's a daily necessity. Going through multiple bottles a week adds up fast, and the math gets frustrating when you're comparing per-ounce pricing across drugstore aisles. The question isn't whether you need thick, effective moisturizer. It's how to get enough of it without the cost spiraling.
 

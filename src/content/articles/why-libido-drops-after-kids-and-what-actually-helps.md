@@ -8,13 +8,14 @@ draft: false
 author: "mindtivate-team"
 sourceSubreddit: r/AskWomenOver30
 sourceThreadUrl: "https://www.reddit.com/r/AskWomenOver30/comments/1w48wsn/"
-heroImage: "./_images/why-libido-drops-after-kids-and-what-actually-helps-hero.png"
+heroImage: "./_images/why-libido-drops-after-kids-and-what-actually-helps-hero.webp"
 heroImageAlt: "Lifestyle photo related to \"Why Libido Drops After Kids (and What Actually Helps)\""
 tags: 
   - postpartum
   - libido
   - relationships
   - intimacy
+updatedDate: 2026-09-04
 ---
 You're seven years in, two kids deep, and the desire that used to show up on its own has quietly disappeared. You know it's a problem — your partner knows it's a problem — but knowing doesn't make it easier to fix. Scheduling sex feels mechanical, and spontaneous quickies when he walks in the door sound exhausting when you're touched out, tired, and running on fumes.
 

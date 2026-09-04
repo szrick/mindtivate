@@ -4,9 +4,9 @@ description: Too many rows and presses, not enough of something else? Here's how
   to tell if your routine is actually unbalanced or just more varied than
   before.
 pubDate: 2026-08-25
-updatedDate: 2026-08-27
+updatedDate: 2026-09-04
 category: Body
-heroImage: _images/is-your-workout-routine-bloated-or-just-balanced-hero.png
+heroImage: "./_images/is-your-workout-routine-bloated-or-just-balanced-hero.webp"
 status: published
 draft: false
 author: mindtivate-team
@@ -17,6 +17,7 @@ tags:
   - workout programming
   - exercise selection
   - volume
+heroImageAlt: "Lifestyle photo related to \"Is Your Workout Routine Bloated or Just Balanced?\""
 ---
 ## When variety starts to feel like clutter
 

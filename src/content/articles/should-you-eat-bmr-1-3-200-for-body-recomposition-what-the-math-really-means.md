@@ -8,13 +8,14 @@ draft: true
 author: "mindtivate-team"
 sourceSubreddit: r/xxfitness
 sourceThreadUrl: "https://www.reddit.com/r/xxfitness/comments/1vlw6wi/"
-heroImage: "./_images/should-you-eat-bmr-1-3-200-for-body-recomposition-what-the-math-really-means-hero.png"
-heroImageAlt: "Illustration for \"Should You Eat BMR × 1.3 − 200 for Body Recomposition? What the Math Really Means\""
+heroImage: "./_images/should-you-eat-bmr-1-3-200-for-body-recomposition-what-the-math-really-means-hero.webp"
+heroImageAlt: "Lifestyle photo related to \"Should You Eat BMR × 1.3 − 200 for Body Recomposition? What the Math Really Means\""
 tags: 
   - body recomposition
   - postpartum fitness
   - calorie deficit
   - BMR
+updatedDate: 2026-09-04
 ---
 
 ## What the Formula Actually Does

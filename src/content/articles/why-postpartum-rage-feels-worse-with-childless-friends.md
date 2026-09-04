@@ -8,7 +8,7 @@ draft: false
 author: "mindtivate-team"
 sourceSubreddit: r/beyondthebump
 sourceThreadUrl: "https://www.reddit.com/r/beyondthebump/comments/1w1kbcx/"
-heroImage: "./_images/why-postpartum-rage-feels-worse-with-childless-friends-hero.png"
+heroImage: "./_images/why-postpartum-rage-feels-worse-with-childless-friends-hero.webp"
 heroImageAlt: "Lifestyle photo related to \"Why Postpartum Rage Feels Worse With Childless Friends\""
 tags: 
   - postpartum
@@ -16,6 +16,7 @@ tags:
   - mental health
   - new mothers
   - friendships
+updatedDate: 2026-09-04
 ---
 You've explained your evening routine three times already. Your friend texts again, asking if you want to grab dinner Thursday at 7 — right in the middle of bath, bottle, and bedtime. Instead of just feeling tired or mildly annoyed, you feel a surge of hot, disproportionate anger. You're not imagining it, and you're not alone.
 

@@ -8,8 +8,8 @@ draft: false
 author: "mindtivate-team"
 sourceSubreddit: r/xxfitness
 sourceThreadUrl: "https://www.reddit.com/r/xxfitness/comments/1vlw6wi/"
-heroImage: "./_images/is-evlo-s-bmr-1-3-200-formula-right-for-postpartum-body-recomposition-hero.png"
-heroImageAlt: "Illustration for \"Is EVLO's BMR × 1.3 − 200 Formula Right for Postpartum Body Recomposition?\""
+heroImage: "./_images/is-evlo-s-bmr-1-3-200-formula-right-for-postpartum-body-recomposition-hero.webp"
+heroImageAlt: "Lifestyle photo related to \"Is EVLO's BMR × 1.3 − 200 Formula Right for Postpartum Body Recomposition?\""
 featuredProducts: 
   - "high-support-lifting-sports-bra"
 tags: 
@@ -17,6 +17,7 @@ tags:
   - postpartum fitness
   - calorie deficit
   - EVLO
+updatedDate: 2026-09-04
 ---
 
 ## What the Formula Actually Means

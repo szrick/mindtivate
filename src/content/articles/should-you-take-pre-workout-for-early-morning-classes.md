@@ -4,9 +4,9 @@ description: Pre-workout can help with early morning energy, but the right
   ingredients matter—especially when you're working late nights. Here's what to
   look for.
 pubDate: 2026-08-25
-updatedDate: 2026-08-27
+updatedDate: 2026-09-04
 category: Body
-heroImage: _images/should-you-take-pre-workout-for-early-morning-classes-hero.png
+heroImage: "./_images/should-you-take-pre-workout-for-early-morning-classes-hero.webp"
 status: published
 draft: false
 author: mindtivate-team
@@ -17,6 +17,7 @@ tags:
   - energy
   - supplements
   - morning workouts
+heroImageAlt: "Lifestyle photo related to \"Should You Take Pre-Workout for Early Morning Classes?\""
 ---
 ## The early-morning-class problem
 

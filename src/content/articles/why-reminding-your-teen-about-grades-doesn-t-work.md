@@ -4,9 +4,9 @@ description: Bright kid, no motivation to study. Here's what the research on
   adolescent academic motivation says about why nagging backfires—and what helps
   instead.
 pubDate: 2026-08-28
-updatedDate: 2026-08-29
+updatedDate: 2026-09-04
 category: Mind
-heroImage: _images/why-reminding-your-teen-about-grades-doesn-t-work-hero.png
+heroImage: "./_images/why-reminding-your-teen-about-grades-doesn-t-work-hero.webp"
 status: published
 draft: false
 author: mindtivate-team
@@ -17,6 +17,7 @@ tags:
   - motivation
   - teens
   - habits
+heroImageAlt: "Lifestyle photo related to \"Why Reminding Your Teen About Grades Doesn't Work\""
 ---
 You've been reminding your teenager about the importance of studying for nearly a year. Exams are coming up, you know he's capable, and yet nothing seems to stick. The more you push, the less motivated he appears. If this sounds familiar, you're not alone—and the frustration you're feeling makes sense. But here's the uncomfortable part: the reminders themselves might be part of the problem.
 

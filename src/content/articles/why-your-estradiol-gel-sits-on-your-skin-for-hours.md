@@ -8,13 +8,14 @@ draft: false
 author: "mindtivate-team"
 sourceSubreddit: r/Menopause
 sourceThreadUrl: "https://www.reddit.com/r/Menopause/comments/1w0t4m7/"
-heroImage: "./_images/why-your-estradiol-gel-sits-on-your-skin-for-hours-hero.png"
+heroImage: "./_images/why-your-estradiol-gel-sits-on-your-skin-for-hours-hero.webp"
 heroImageAlt: "Lifestyle photo related to \"Why Your Estradiol Gel Sits on Your Skin for Hours\""
 tags: 
   - menopause
   - hormone therapy
   - estradiol
   - HRT
+updatedDate: 2026-09-04
 ---
 You apply your estradiol gel in the morning, and an hour later you can still see it sitting on top of your skin. The next day in the shower, you notice residue before you even apply the new dose. It's frustrating, and it raises a reasonable question: if the gel isn't absorbing, is it actually working?
 

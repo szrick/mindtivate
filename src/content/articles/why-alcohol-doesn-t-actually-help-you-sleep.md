@@ -3,9 +3,9 @@ title: Why Alcohol Doesn't Actually Help You Sleep
 description: Alcohol may knock you out, but it disrupts deeper sleep stages and
   causes middle-of-the-night waking. Here's what's really happening.
 pubDate: 2026-08-29
-updatedDate: 2026-08-30
+updatedDate: 2026-09-04
 category: Sleep
-heroImage: _images/why-alcohol-doesn-t-actually-help-you-sleep-hero.png
+heroImage: "./_images/why-alcohol-doesn-t-actually-help-you-sleep-hero.webp"
 status: published
 draft: false
 author: mindtivate-team
@@ -16,6 +16,7 @@ tags:
   - alcohol
   - sleep quality
   - CBT-I
+heroImageAlt: "Lifestyle photo related to \"Why Alcohol Doesn't Actually Help You Sleep\""
 ---
 You're exhausted, you've tried everything, and alcohol is the only thing that seems to work — so you're drinking 7-8 drinks most nights just to get six hours of sleep instead of two. It's a brutal choice: rely on something you know isn't great, or lie awake for hours. But here's the hard truth: alcohol isn't actually giving you the restorative sleep your body needs, even when it's knocking you out.
 

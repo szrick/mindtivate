@@ -8,13 +8,14 @@ draft: false
 author: "mindtivate-team"
 sourceSubreddit: r/AskWomenOver30
 sourceThreadUrl: "https://www.reddit.com/r/AskWomenOver30/comments/1w2elia/"
-heroImage: "./_images/what-to-say-when-you-learn-about-a-death-months-later-hero.png"
+heroImage: "./_images/what-to-say-when-you-learn-about-a-death-months-later-hero.webp"
 heroImageAlt: "Lifestyle photo related to \"What to Say When You Learn About a Death Months Later\""
 tags: 
   - grief
   - friendship
   - communication
   - loss
+updatedDate: 2026-09-04
 ---
 ## The problem: discovering a loss long after it happened
 

@@ -4,9 +4,9 @@ description: When you're juggling work, school, wedding planning, and chronic
   health conditions, here's how to structure training and meal prep without
   burning out.
 pubDate: 2026-08-25
-updatedDate: 2026-08-26
+updatedDate: 2026-09-04
 category: Body
-heroImage: _images/how-to-fit-strength-training-meal-prep-into-60-hour-weeks-hero.png
+heroImage: "./_images/how-to-fit-strength-training-meal-prep-into-60-hour-weeks-hero.webp"
 status: published
 draft: false
 author: mindtivate-team
@@ -18,6 +18,7 @@ tags:
   - time management
   - chronic illness
   - body recomposition
+heroImageAlt: "Lifestyle photo related to \"How to Fit Strength Training & Meal Prep Into 60+ Hour Weeks\""
 ---
 ## The real problem isn't motivation—it's capacity
 

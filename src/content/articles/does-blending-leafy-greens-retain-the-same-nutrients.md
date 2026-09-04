@@ -4,9 +4,9 @@ description: Blending spinach or kale into a smoothie keeps the fiber and
   nutrients intact—here's what changes when you drink greens instead of chewing
   them.
 pubDate: 2026-08-30
-updatedDate: 2026-08-30
+updatedDate: 2026-09-04
 category: Food
-heroImage: _images/does-blending-leafy-greens-retain-the-same-nutrients-hero.png
+heroImage: "./_images/does-blending-leafy-greens-retain-the-same-nutrients-hero.webp"
 status: published
 draft: false
 author: mindtivate-team
@@ -17,6 +17,7 @@ tags:
   - smoothies
   - nutrition
   - fiber
+heroImageAlt: "Lifestyle photo related to \"Does Blending Leafy Greens Retain the Same Nutrients?\""
 ---
 You're not eating enough greens, and you're wondering if blending them into a drinkable form will let you consume more without the sit-down-and-chew commitment of a big salad. Short answer: yes, blending works. The nutrients stay intact, and you'll get the fiber too—something you'd lose if you were juicing instead.
 
