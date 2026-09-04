@@ -231,15 +231,35 @@ product record) and, via the [Poe API](https://poe.com/api_key)
      rendered by `ArticleLayout.astro`); Pexels doesn't require it but
      gets the same credit line.
    - **AI-generated** (`POE_IMAGE_MODEL`, `generatePoeImage`) — an
-     editorial-style lifestyle photograph. The scene is picked randomly
-     from a combined pool: the article's category hint with a person
-     (`HERO_SCENE_HINTS`, ethnicity chosen explicitly at random from a
-     fixed list — `ETHNICITIES`/`randomEthnicity()` — rather than left to
-     a vague "diverse" instruction, which wasn't reliably producing
-     variety in practice), the category's person-free object/scene hint,
-     and every one of this article's own `heroImageIdeas`. This is what
-     keeps similar-topic articles (same category) from recycling the same
-     handful of generic scenes.
+     editorial-style lifestyle photograph built from several
+     independently-randomized axes rather than one fixed sentence per
+     category (which was producing near-identical images within a
+     category):
+     - **Scene**: `buildSceneCandidates` in the script assembles a pool
+       from a resolved solo-subject scene (a randomly rolled ethnicity +
+       age range + body type, wearing a category-appropriate clothing
+       style, doing one of several category-specific activities, in one
+       of several category-specific settings — `HERO_SCENE_HINTS`, each
+       a *list* per category, not a single string), a small-group scene
+       for categories where that fits (e.g. two friends over coffee for
+       Love), every one of the category's person-free object/still-life
+       scenes, and every one of this article's own `heroImageIdeas`. One
+       is picked at random. Ethnicity especially is chosen explicitly
+       (`ETHNICITIES`) rather than left to a vague "diverse" instruction,
+       which wasn't reliably producing variety in practice.
+     - **Composition, lighting/mood, color palette, and photographic
+       style** are then rolled independently on top of whichever scene
+       was picked (`COMPOSITIONS`/`LIGHTING_MOODS`/`COLOR_PALETTES`/
+       `STYLE_DESCRIPTORS`) — previously these were the same hardcoded
+       phrase in every single prompt ("candid, documentary-style... cream,
+       muted plum, blush undertones"), which was as much a cause of
+       same-y images as the fixed scene text was.
+     - A single explicit `NEGATIVE_CONSTRAINTS` line covers both content
+       concerns (no sexualized poses, no cliché stock-photo expressions,
+       no extreme bodybuilder physiques, no distorted anatomy) and the
+       existing strong anti-text instruction (zero typography of any
+       kind — a soft "no logos/watermarks" mention wasn't reliably
+       keeping text out of generated images in practice).
    - Both paths are non-fatal — a failure just means no hero image. An
      AI-generated image is not real photography of a real person — see
      COMPLIANCE.md; a stock photo is.
