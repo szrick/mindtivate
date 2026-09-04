@@ -528,6 +528,39 @@ Requires `POE_API_KEY`. Since this edits already-*published* files
 directly (not a new draft), review the diff like any other content
 change before merging — see the scheduled workflow below.
 
+## 10. Hero image regeneration (`scripts/pipeline/10-regenerate-hero-images.mjs`)
+
+A one-off/occasional bulk backfill, not part of the daily pipeline: it
+regenerates *every* existing article's hero image using the current
+hero-image system (stage 3's independently-randomized scene/
+composition/lighting/palette/style, or a real Pexels/Unsplash stock
+photo) and saves it as WebP. Useful after a change to the hero-image
+prompt/scene system itself (like the move from one fixed sentence per
+category to the richer randomized version) — existing articles keep
+whatever image they were originally drafted with until something
+explicitly regenerates it.
+
+For each article with a `heroImage` set, it calls the same
+`generateHeroImage()` stage 3 and stage 4 both use, deletes the old
+image file once the new one is written, and updates `heroImage`,
+`heroImageAlt`, `updatedDate`, and all four attribution fields
+(`heroImageSource`/`heroImagePhotographer`/etc.) — set if the new image
+is a real stock photo, explicitly cleared if it's AI-generated, so a
+stale credit from a previous run never lingers on an image that's no
+longer used. Non-fatal per article: a failure leaves that one article's
+existing hero image untouched rather than blocking the rest of the run.
+
+```bash
+npm run pipeline:regen-heroes                       # every article with a heroImage set
+npm run pipeline:regen-heroes -- --limit 5
+npm run pipeline:regen-heroes -- --slug some-article-slug   # just one article
+```
+
+Requires `POE_API_KEY` (and benefits from `PEXELS_API_KEY`/
+`UNSPLASH_ACCESS_KEY`, same as stage 3). Each run spends a real API call
+per article, so it's manual-only — see `regenerate-hero-images.yml`
+below, no cron.
+
 ## Scheduled automation
 
 `.github/workflows/content-pipeline.yml` runs stages 1–4 daily — research,
@@ -566,6 +599,14 @@ section above).
 `.github/workflows/weekly-internal-links.yml` runs stage 9 every Monday,
 for up to 5 under-linked published articles, and opens a PR with the
 resulting edits (see stage 9's section above).
+
+`.github/workflows/regenerate-hero-images.yml` runs stage 10 —
+**`workflow_dispatch` only, no schedule.** Each run spends a real API
+call per article, so this is deliberately not automated; trigger it
+manually (optionally scoped to one article or a limit via its inputs)
+whenever the hero-image system itself changes enough to be worth
+backfilling onto existing articles. Same build-first-abort-otherwise
+safety net, straight to `main` like `content-pipeline.yml`.
 
 `POE_API_KEY` is required by all of the above and by stage 7 (newsletter
 broadcast drafts) — every drafting step in this pipeline goes through
