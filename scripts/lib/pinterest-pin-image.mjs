@@ -115,7 +115,11 @@ function buildHtml({ heroImageDataUri, logoDataUri, category, headline, subtext 
 
 function toDataUri(filePath) {
   const ext = filePath.split('.').pop().toLowerCase();
-  const mime = ext === 'png' ? 'image/png' : ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' : 'image/svg+xml';
+  const mime =
+    ext === 'png' ? 'image/png' :
+    ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg' :
+    ext === 'webp' ? 'image/webp' :
+    'image/svg+xml';
   return `data:${mime};base64,${readFileSync(filePath).toString('base64')}`;
 }
 

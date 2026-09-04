@@ -7,6 +7,8 @@
 // account and can change — POE_MODEL / POE_IMAGE_MODEL / POE_SEARCH_MODEL
 // let you point at the right one without touching this file.
 
+import sharp from 'sharp';
+
 const API_URL = 'https://api.poe.com/v1/chat/completions';
 
 function requireApiKey() {
@@ -100,14 +102,20 @@ export async function searchAuthoritySources({ topic, count = 4 }) {
 }
 
 // Shared with scripts/lib/stockphotos.mjs (Pexels/Unsplash hero-image
-// sourcing) so both real-photo paths download the same way.
+// sourcing) so both real-photo paths download the same way. Poe's
+// image-gen bots and Pexels/Unsplash all serve PNG or JPEG by default,
+// never WebP themselves, so every downloaded image is transcoded to
+// WebP here -- smaller file size than PNG/JPEG at equivalent visual
+// quality, for faster page loads. sharp is already a transitive
+// dependency of Astro's own image service, so this adds no new install;
+// it's declared directly in package.json since this pipeline relies on
+// it regardless of what Astro happens to bundle.
 export async function downloadImage(url) {
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Failed to download image from ${url}: ${res.status}`);
-  const contentType = res.headers.get('content-type') || 'image/jpeg';
-  const buffer = Buffer.from(await res.arrayBuffer());
-  const ext = contentType.includes('webp') ? 'webp' : contentType.includes('png') ? 'png' : 'jpg';
-  return { buffer, ext };
+  const original = Buffer.from(await res.arrayBuffer());
+  const buffer = await sharp(original).webp({ quality: 82 }).toBuffer();
+  return { buffer, ext: 'webp' };
 }
 
 const IMAGE_MARKDOWN_RE = /!\[[^\]]*\]\((https?:\/\/[^\s)]+)\)/;

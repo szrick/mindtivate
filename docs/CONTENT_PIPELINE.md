@@ -210,8 +210,13 @@ product record) and, via the [Poe API](https://poe.com/api_key)
    same non-fatal "trust but verify" check as the citation one, flagging
    any `/articles/` link that doesn't match a real known slug.
 3. **Sources a hero photo** for the article
-   (`src/content/articles/_images/<slug>-hero.<ext>`), either a real
-   stock photo or an AI-generated one:
+   (`src/content/articles/_images/<slug>-hero.webp`), either a real
+   stock photo or an AI-generated one. Every downloaded image — AI-
+   generated (Poe) or a real stock photo (Pexels/Unsplash) — is
+   transcoded to WebP by `downloadImage()` in `scripts/lib/poe.mjs`
+   (via `sharp`) for a smaller file size and faster page loads than the
+   PNG/JPEG these sources return by default; product images sourced from
+   amazon.com go through the same function and get the same conversion.
    - The draft JSON itself includes `heroImageIdeas` — 2-4 short, visual
      concepts specific to *this article's actual topic*, not just its
      category (a preschool-behavior article might suggest "a toddler
