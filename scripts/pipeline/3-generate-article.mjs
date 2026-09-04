@@ -219,79 +219,268 @@ const CATEGORY_STOCK_QUERY_FALLBACK = {
   'Life Stages': 'woman everyday lifestyle',
 };
 
-// Category -> scene hints, so the hero photo is actually about the
-// article's topic rather than one generic image for every piece. Each
-// category has two variants:
-// - withPerson: a template with a {subject} placeholder, filled in by
-//   randomEthnicity() below. A soft "diverse" instruction on its own
-//   wasn't reliably producing variety in practice — every hero image
-//   ended up as a Black woman regardless — so ethnicity is now chosen
-//   explicitly per image instead of left to the model's own judgment.
-// - objectOnly: a person-free alternative (equipment, a meal, a journal
-//   and tea, etc.) so hero images aren't always a photo of a woman.
-// Both are combined with per-article heroImageIdeas (from the drafting
-// JSON response, see buildSystemPrompt) as the full random candidate
-// pool in generateHeroImage below — similar-topic articles no longer
-// recycle the same handful of category-level scenes, since each draft
-// contributes its own topic-specific ideas (e.g. a preschool-behavior
-// article suggesting "a toddler playing with blocks" instead of the
-// generic Life Stages hint every time).
+// Category -> scene-building pools, so hero photos actually vary within
+// a category instead of every article getting the same one or two fixed
+// sentences. Each category defines:
+// - activities: a LIST of solo-subject poses/actions (was a single fixed
+//   string before — the main reason same-category articles looked
+//   near-identical). One is picked at random and combined with a
+//   randomly-rolled subject descriptor (ethnicity/age/body type) and
+//   clothing style below.
+// - settings: a LIST of places that activity/group scene can happen in.
+// - clothing: a LIST of category-appropriate outfits (kept per-category
+//   rather than global, so a Sleep image never rolls "sports bra and
+//   leggings").
+// - objectOnly: a LIST of person-free alternatives (equipment, a meal, a
+//   journal and tea, etc.), each already a complete, self-contained
+//   scene (no clothing/setting wrapping needed).
+// - group (optional): a LIST of small-group/two-person scene phrases,
+//   only defined where a group genuinely fits the category. Also
+//   already self-contained.
+// All of these plus per-article heroImageIdeas (from the drafting JSON
+// response) feed into one big randomized candidate pool in
+// buildSceneCandidates below, and lighting/mood/composition/color
+// palette/style are then rolled completely independently on top — see
+// generateHeroImage.
 const HERO_SCENE_HINTS = {
   Body: {
-    withPerson:
-      '{subject} mid-set in a strength workout, doing a bodyweight exercise, or in an everyday healthy-routine moment — lifting weights, a push-up or stretch, walking outside, focused and natural',
-    objectOnly:
-      'workout equipment in an inviting home or gym setting — dumbbells, a yoga mat, running shoes by a door, or a water bottle and towel after a workout, natural light, no people',
+    activities: [
+      'mid-set doing a dumbbell squat',
+      'in a deadlift stance with a barbell',
+      'holding a push-up plank position',
+      'mid-swing with a kettlebell',
+      'jumping rope',
+      'running along an outdoor trail',
+      'stretching after a workout',
+      'doing a bodyweight lunge',
+    ],
+    settings: [
+      'a small home gym corner',
+      'a sunny outdoor park path',
+      'a minimal studio with a plain backdrop',
+      'a living room cleared for a workout',
+      'a neighborhood running trail',
+    ],
+    clothing: ['a sports bra and leggings', 'a loose tank top and running shorts', 'a fitted workout set', 'casual athleisure'],
+    objectOnly: [
+      'a pair of dumbbells and a yoga mat on a wood floor, natural light, no people',
+      'running shoes by a front door with a water bottle nearby, no people',
+      'a kettlebell and resistance bands laid out in a home gym corner, no people',
+      'a towel and water bottle on a gym bench after a workout, no people',
+    ],
+    group: [
+      'two women of different ages spotting each other during a strength workout',
+      'a small, diverse group of three women stretching together after a run',
+    ],
   },
   Food: {
-    withPerson: '{subject} preparing or enjoying a wholesome meal in her kitchen, natural light',
-    objectOnly:
-      'a wholesome home-cooked meal or fresh ingredients laid out on a kitchen counter, natural light, no people',
+    activities: [
+      'chopping colorful vegetables at the counter',
+      'plating a wholesome bowl of food',
+      'pouring a smoothie into a glass',
+      'portioning meal-prep containers',
+      'stirring a pot on the stove',
+      'washing fresh produce at the sink',
+    ],
+    settings: ['a bright home kitchen', 'a kitchen island covered in fresh ingredients', 'a sunny breakfast nook', 'an outdoor picnic table'],
+    clothing: ['a simple apron over casual clothes', 'a relaxed home outfit', 'a linen shirt rolled at the sleeves'],
+    objectOnly: [
+      'a wholesome home-cooked meal on a wood table, natural light, no people',
+      'fresh vegetables and herbs laid out on a kitchen counter, no people',
+      'meal-prep containers with colorful, balanced meals, no people',
+      'a smoothie and fresh fruit on a sunny counter, no people',
+    ],
+    group: ['two women cooking together in a home kitchen, laughing over a shared task'],
   },
   Mind: {
-    withPerson:
-      '{subject} in a quiet, grounding moment — journaling, stretching, or sitting with a warm drink, calm and present',
-    objectOnly:
-      'a journal, a warm drink, and soft natural light on a quiet windowsill or desk — a calm, grounding still life, no people',
+    activities: [
+      'writing in a journal',
+      'sitting cross-legged in a quiet meditation moment',
+      'stretching gently on a mat',
+      'reading a book curled up in a chair',
+      'sipping a warm drink while looking out a window',
+      'taking a slow walk outdoors',
+    ],
+    settings: ['a quiet reading nook', 'a sunlit windowsill corner', 'a calm bedroom corner', 'a park bench under trees', 'a cozy living room chair'],
+    clothing: ['a soft cardigan over loungewear', 'a cozy sweater and leggings', 'comfortable everyday clothes'],
+    objectOnly: [
+      'a journal, a warm drink, and soft natural light on a quiet windowsill, no people',
+      'a candle, a folded blanket, and a book on a side table, no people',
+      'a cup of tea and an open journal on a wooden desk, no people',
+    ],
   },
   Hormones: {
-    withPerson:
-      '{subject} in a calm, everyday self-care moment — resting a hand on her stomach, sitting with tea, or a quiet moment checking in with herself, warm natural light',
-    objectOnly: 'a warm cup of tea and a soft blanket in a calm, quiet corner of a home, warm natural light, no people',
+    activities: [
+      'resting a hand gently on her stomach in a quiet moment',
+      'sitting with a warm cup of tea, reflective',
+      'doing a gentle self-care stretch',
+      'looking thoughtfully out a window',
+    ],
+    settings: ['a calm bedroom corner', 'a quiet living room chair', 'a sunlit bathroom counter', 'a cozy reading nook'],
+    clothing: ['a soft robe', 'comfortable loungewear', 'a cozy oversized sweater'],
+    objectOnly: [
+      'a warm cup of tea and a soft blanket in a quiet corner of a home, no people',
+      'a heating pad and a cup of herbal tea on a nightstand, no people',
+      'a journal and a cup of tea on a sunlit windowsill, no people',
+    ],
   },
   Love: {
-    withPerson:
-      '{subject} with a warm, confident expression in a candid moment — journaling, laughing with a friend, or a quiet moment of self-reflection',
-    objectOnly: 'two coffee cups on a table between friends, or a handwritten note and pen, warm natural light, no people',
+    activities: [
+      'laughing with a friend over coffee',
+      'writing a heartfelt note',
+      'sitting in quiet self-reflection',
+      'walking and talking with a friend outdoors',
+      'sharing a warm conversation at a kitchen table',
+    ],
+    settings: ['a cozy café corner', 'a park bench', 'a kitchen table', 'a living room couch', 'a sunny porch'],
+    clothing: ['a relaxed everyday outfit', 'a casual sweater and jeans'],
+    objectOnly: [
+      'two coffee cups on a table between friends, warm natural light, no people',
+      'a handwritten note and pen on a wooden desk, no people',
+      'two mugs and a small plate of pastries on a café table, no people',
+    ],
+    group: [
+      'two women laughing together over coffee at a café table',
+      'a small group of three friends walking and talking outdoors',
+    ],
   },
   Beauty: {
-    withPerson:
-      '{subject} doing a simple skincare or self-care routine — washing her face, applying moisturizer, or a quiet bathroom-mirror moment, natural light',
-    objectOnly: 'simple skincare products arranged on a bathroom shelf or counter, soft natural light, no people',
+    activities: [
+      'washing her face at the bathroom sink',
+      'applying moisturizer in front of a mirror',
+      'brushing her hair',
+      'doing a simple skincare routine at a vanity',
+      'towel-drying her hair after a shower',
+    ],
+    settings: ['a bright bathroom counter', 'a bedroom vanity', 'a sunlit bathroom mirror', 'a simple minimal bathroom'],
+    clothing: ['a soft robe', 'a towel wrapped around her hair', 'comfortable loungewear'],
+    objectOnly: [
+      'simple skincare products arranged on a bathroom shelf, soft natural light, no people',
+      'a hairbrush and hair ties on a vanity table, no people',
+      'a towel and skincare bottles by a bathroom sink, no people',
+    ],
   },
   Sleep: {
-    withPerson: '{subject} resting or gently stretching in a cozy setting, soft morning or evening light',
-    objectOnly: 'a made bed with soft linens in warm morning or evening light, a cozy bedroom scene, no people',
+    activities: [
+      'stretching gently before bed',
+      'reading in bed by lamp light',
+      'waking up and stretching in bed',
+      'resting peacefully under soft linens',
+    ],
+    settings: ['a cozy bedroom', 'a bed with soft morning light', 'a reading nook by a bedside lamp'],
+    clothing: ['soft pajamas', 'a cozy robe', 'comfortable loungewear'],
+    objectOnly: [
+      'a made bed with soft linens in warm morning light, a cozy bedroom scene, no people',
+      'a bedside lamp, a book, and a cup of tea on a nightstand, no people',
+      'a cozy blanket folded at the foot of a bed, no people',
+    ],
   },
   'Life Stages': {
-    withPerson:
-      "{subject} in an everyday moment that reflects where she's at in life — with a baby, mid-workout in her 40s, or simply going about her day, natural and unposed",
-    objectOnly: 'everyday objects that reflect a life stage — a baby item, a well-used planner, or a pair of walking shoes by a door, natural light, no people',
+    activities: [
+      'holding and gently rocking a baby',
+      'mid-workout, focused and strong',
+      'pushing a stroller on a walk',
+      'sitting with a planner, organizing her week',
+      'going about an everyday moment at home',
+    ],
+    settings: ['a nursery corner', 'a living room', 'an outdoor neighborhood path', 'a home office desk', 'a kitchen table'],
+    clothing: ['comfortable everyday clothes', 'casual athleisure', 'a relaxed home outfit'],
+    objectOnly: [
+      'a baby item like a soft blanket or small shoes by a crib, no people',
+      'a well-used planner and pen on a desk, no people',
+      'a pair of walking shoes by a front door, no people',
+    ],
+    group: ['a woman and her toddler playing together on the floor'],
   },
 };
 
-// Explicit ethnicity rotation — see the comment on HERO_SCENE_HINTS above
-// for why this replaced a vague "diverse" instruction.
+// Subject attribute pools — ethnicity, apparent age, and body type are
+// rolled independently of each other and of the category, so "solo"
+// scenes get a fresh, specific subject every time instead of just a
+// rotating ethnicity on an otherwise-identical sentence. A soft "diverse"
+// instruction on its own wasn't reliably producing variety in practice
+// (every hero image ended up as a Black woman regardless), so each axis
+// is chosen explicitly rather than left to the model's own judgment.
 const ETHNICITIES = ['a Black woman', 'a white woman', 'an Asian woman', 'a Latina woman', 'a South Asian woman', 'a Middle Eastern woman'];
+const AGE_RANGES = ['in her early 20s', 'in her 30s', 'in her 40s', 'in her 50s'];
+const BODY_TYPES = ['an athletic build', 'a curvy build', 'a petite frame', 'a tall, lean build', 'an average build'];
 
-function randomEthnicity() {
-  return ETHNICITIES[Math.floor(Math.random() * ETHNICITIES.length)];
+// Composition/camera, lighting+mood, color palette, and style are all
+// rolled independently per image and apply regardless of which scene
+// candidate was picked — previously these were hardcoded identically
+// into every single prompt ("Candid, documentary-style... cream, muted
+// plum, blush undertones..."), which was as much a cause of same-y
+// images as the fixed one-sentence-per-category scenes were.
+const COMPOSITIONS = [
+  'full-body shot, eye-level angle',
+  'three-quarter shot, slightly low angle for an empowering feel',
+  'waist-up framing, eye-level',
+  'close-up on hands and detail, overhead angle',
+  'side-profile shot with negative space to one side for text overlay',
+];
+const LIGHTING_MOODS = [
+  { lighting: 'soft morning window light', mood: 'calm and serene' },
+  { lighting: 'golden hour outdoor light', mood: 'warm and energetic' },
+  { lighting: 'overcast, diffuse daylight', mood: 'clean and fresh' },
+  { lighting: 'warm indoor lamp light', mood: 'cozy and comforting' },
+  { lighting: 'bright, soft natural daylight', mood: 'focused and determined' },
+];
+const COLOR_PALETTES = [
+  'muted sage green, warm beige, and soft white',
+  'cream, muted plum, and blush undertones',
+  'warm terracotta, sand, and ivory',
+  'soft slate blue, warm gray, and cream',
+  'dusty rose, warm taupe, and off-white',
+];
+const STYLE_DESCRIPTORS = [
+  'photorealistic editorial photography, shallow depth of field, natural skin texture, no heavy retouching',
+  'natural documentary-style photography, candid and unposed, shot on a 35mm-equivalent lens',
+  'soft modern lifestyle photography, gentle natural light, minimal styling',
+  'clean, minimal wellness-brand photography, softly blurred background, uncluttered composition',
+];
+// Kept as one explicit, comprehensive line rather than scattered through
+// the prompt — the "zero typography" phrasing here is deliberately
+// strong (a single soft "no logos/watermarks" mention wasn't reliably
+// keeping text out of generated images in practice).
+const NEGATIVE_CONSTRAINTS =
+  'Avoid: overly sexualized poses or clothing, exaggerated stock-photo expressions or fake-looking group laughter, extreme bodybuilder physiques, distorted anatomy or extra limbs, watermarks, logos, or UI elements, and absolutely no text, words, letters, numbers, captions, titles, or typography anywhere in the image — this must be a clean photograph with zero typography of any kind.';
+
+function randomSubjectDescriptor() {
+  return `${pickRandom(ETHNICITIES)} ${pickRandom(AGE_RANGES)}, with ${pickRandom(BODY_TYPES)}`;
 }
 
-// Random pick, one array-index roll — used for both the AI scene-hint
-// pool and the stock-photo query pool below.
+// Random pick, one array-index roll — used for every pool above.
 function pickRandom(list) {
   return list[Math.floor(Math.random() * list.length)];
+}
+
+// Builds the pool of possible "core scene" phrases for one hero image:
+// one resolved solo-subject scene (subject + clothing + activity +
+// setting, each rolled independently), one resolved small-group scene
+// (only if the category defines one), every one of the category's
+// person-free objectOnly scenes, and every one of this article's own
+// topic-specific heroImageIdeas. generateHeroImage picks one at random
+// from the combined pool — see the comment on HERO_SCENE_HINTS above for
+// why a flat "one sentence per category" no longer cuts it.
+function buildSceneCandidates(category, ideas) {
+  const hints = HERO_SCENE_HINTS[category];
+  const candidates = [];
+
+  if (hints) {
+    const subject = randomSubjectDescriptor();
+    const clothing = pickRandom(hints.clothing);
+    const activity = pickRandom(hints.activities);
+    const setting = pickRandom(hints.settings);
+    candidates.push(`${subject}, wearing ${clothing}, ${activity} in ${setting}`);
+
+    if (hints.group) candidates.push(`${pickRandom(hints.group)} in ${pickRandom(hints.settings)}`);
+
+    candidates.push(...hints.objectOnly);
+  }
+
+  candidates.push(...ideas);
+
+  return candidates.length ? candidates : ['objects or a scene related to the topic, no people'];
 }
 
 // Tries a real, licensed stock photo (Pexels/Unsplash) for roughly half
@@ -344,19 +533,19 @@ async function generateHeroImage(title, slug, category, ideas = []) {
     let result = stockResult;
 
     if (!result) {
-      const hints = HERO_SCENE_HINTS[category];
-      // Random pool across the category's own withPerson/objectOnly
-      // hints plus every per-article idea — see the comment above
-      // HERO_SCENE_HINTS for why this replaced a plain person/object
-      // coin flip. Falls back to a generic no-people line only if a
-      // category is somehow unrecognized AND no ideas were given.
-      const candidates = [
-        ...(hints ? [hints.withPerson.replace('{subject}', randomEthnicity()), hints.objectOnly] : []),
-        ...ideas,
-      ].filter(Boolean);
-      const sceneHint = candidates.length ? pickRandom(candidates) : 'objects or a scene related to the topic, no people';
+      // Every axis below is rolled independently: which scene, the
+      // camera/composition, the lighting+mood, the color palette, and
+      // the photographic style. Previously composition/lighting/palette/
+      // style were hardcoded identically into every prompt regardless of
+      // scene — as much a cause of same-y images as the old one-sentence-
+      // per-category scene pool was. See buildSceneCandidates above.
+      const sceneHint = pickRandom(buildSceneCandidates(category, ideas));
+      const composition = pickRandom(COMPOSITIONS);
+      const { lighting, mood } = pickRandom(LIGHTING_MOODS);
+      const palette = pickRandom(COLOR_PALETTES);
+      const style = pickRandom(STYLE_DESCRIPTORS);
 
-      const imagePrompt = `Editorial lifestyle photograph for a women's health and wellness article titled "${title}". Show ${sceneHint}. Candid, documentary-style composition — natural and unposed, not an overly retouched stock-photo look. Natural, warm lighting; soft warm color grading (cream, muted plum, blush undertones) to match an editorial brand palette. Shallow depth of field for an artistic, magazine-quality feel. Absolutely no text, words, letters, numbers, captions, titles, logos, or watermarks anywhere in the image — this must be a clean photograph with zero typography of any kind.`;
+      const imagePrompt = `Editorial lifestyle photograph for a women's health and wellness article titled "${title}". Show ${sceneHint}. The scene uses ${lighting} to create a ${mood} mood. Composition: ${composition}. Color palette: ${palette}. Style: ${style}. ${NEGATIVE_CONSTRAINTS}`;
       const { buffer, ext } = await generatePoeImage({ prompt: imagePrompt });
       result = { buffer, ext, heroImageAlt: `Lifestyle photo related to "${title}"` };
     }
