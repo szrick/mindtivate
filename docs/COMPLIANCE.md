@@ -77,6 +77,20 @@ designed around.
 - `affiliateStatus` on a product record must reach `approved` or `active`
   before `ProductCallout.astro` will render a link at all — don't hand-edit
   around this in content.
+- Even within an article, `ProductCallout.astro` links to `/go/<slug>`
+  (a Worker-side 302 redirect — see `docs/CONTENT_PIPELINE.md` stage 2's
+  "Link cloaking"), not straight to the raw `affiliateUrl`. This is on
+  top of, not instead of, the disclosure requirements above — cloaking a
+  link doesn't reduce the need to disclose it's an affiliate link.
+- CJ-sourced products (`affiliateProgram: CJ Affiliate`,
+  `scripts/lib/cj.mjs`) go to `affiliateStatus: active` automatically,
+  with no per-product human review, because CJ's Product Search API only
+  ever returns products from advertiser programs this account is already
+  approved for, and the link it returns is CJ's own tracked link for
+  that account — unlike the Amazon-image-search case below, there's no
+  "unverified match" step to gate on. Worth an occasional spot check
+  anyway (search relevance can still surface a loosely-related product
+  for a vague brief), just not a required one before publishing.
 
 ## Pinterest
 

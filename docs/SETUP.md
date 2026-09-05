@@ -103,6 +103,45 @@ configured) before falling back to AI generation. See
    `PEXELS_API_KEY` / `UNSPLASH_ACCESS_KEY` (optional, independent of
    each other).
 
+## 3b. CJ Affiliate — automated product sourcing (optional)
+
+Without this, stage 2 (`2-product-match.mjs`) only ever produces a
+research brief (category + search query) for a human to act on manually,
+same as before this existed. With it configured, every brief is first
+tried against CJ's Product Search API; a match creates a real product
+record automatically — real name, real already-tracked affiliate link,
+`affiliateStatus: active` from the start, no manual review step — and
+stage 3 binds it straight into the article it was sourced for. See
+`scripts/lib/cj.mjs` and `scripts/pipeline/2-product-match.mjs`.
+
+**Important limitation, by design:** CJ's API only ever searches
+advertisers your CJ account is already joined and approved for — there is
+no API to join a *new* advertiser program, that's a human decision made
+in CJ's own dashboard (Advertiser Directory → Apply), and approval is the
+advertiser's call, not something a script can do or wait on. When no
+already-joined advertiser matches a brief, the brief falls back to manual
+research exactly as before, and a short list of CJ-network advertisers
+worth considering is appended to
+`scripts/pipeline/output/cj-advertisers-to-join.json` (gitignored,
+working data only — check it locally, or read the job logs on a GitHub
+Actions run).
+
+1. Apply for API access and sign in at
+   [developers.cj.com](https://developers.cj.com/) with your CJ Affiliate
+   publisher credentials.
+2. Create a **Personal Access Token** (Authentication → Personal Access
+   Tokens in the developer portal). Add to `.env` as
+   `CJ_PERSONAL_ACCESS_TOKEN`.
+3. Find your **Company ID** (CID) in your CJ account (Account →
+   Account Information, or similar — CJ's UI names/locations shift over
+   time). Add to `.env` as `CJ_COMPANY_ID`.
+4. For the scheduled `content-pipeline.yml` workflow: add repo secrets
+   `CJ_PERSONAL_ACCESS_TOKEN` / `CJ_COMPANY_ID`.
+5. Join whichever advertiser programs are relevant to Mindtivate's niche
+   in CJ's own dashboard first — auto-sourcing only ever draws from
+   advertisers already joined, so the more you've joined, the more briefs
+   resolve automatically instead of falling back to manual research.
+
 ## 4. Reddit research and (optional) comment posting
 
 These are two separate concerns with two separate setups now.

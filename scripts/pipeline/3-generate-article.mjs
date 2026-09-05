@@ -697,7 +697,14 @@ async function run() {
     return;
   }
 
-  const product = args.product ? loadProduct(args.product) : null;
+  // --product explicitly overrides; otherwise, if stage 2 already
+  // resolved this brief into a real product automatically (via CJ — see
+  // 2-product-match.mjs), bind that product to this article directly
+  // rather than leaving it to stage 4's generic cross-catalog matching,
+  // which judges relevance from the finished article text and might not
+  // pick it even though it was sourced from this exact pain point.
+  const productSlug = args.product || entry.cjProduct?.slug;
+  const product = productSlug ? loadProduct(productSlug) : null;
   if (product) await ensureProductImage(product);
 
   const sources = await findSources(entry);
