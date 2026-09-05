@@ -5,6 +5,7 @@
   "type": "module",
   "description": "Mindtivate — evidence-based fitness, health & wellness content for women, built with Astro and managed with Pages CMS.",
   "scripts": {
+    "prebuild": "node scripts/lib/generate-go-links.mjs",
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro check && astro build",

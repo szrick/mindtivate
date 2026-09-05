@@ -20,7 +20,7 @@ const isLive = ['approved', 'active'].includes(affiliateStatus) && Boolean(affil
     <p class="pitch">{shortPitch}</p>
     {isLive ? (
       <a
-        href={affiliateUrl}
+        href={withBase(`/go/${product.slug}`)}
         class="btn btn-primary"
         rel="sponsored noopener noreferrer"
         target="_blank"

@@ -80,20 +80,46 @@ authenticated Reddit session — see that section below.
 
 For each pain point, asks a model (via the [Poe API](https://poe.com/api_key),
 `scripts/lib/poe.mjs` — set `POE_API_KEY` and optionally `POE_MODEL`) to
-produce a **research brief** — a
-product category and a search query — not a specific product or link.
-Finding a real product and getting into its affiliate program is
-inherently a human step (browsing, comparing, applying, waiting for
-approval), so this stage stops short of it on purpose. Output:
-`scripts/pipeline/output/product-briefs-<timestamp>.json`.
+produce a **research brief** — a product category and a search query —
+not a specific product or link.
 
-**Manual step:** research the brief, apply to the affiliate program
-(Amazon Associates, ShareASale, a direct brand program, etc.), then create
-or update a file in `src/content/products/` — either directly or through
-Pages CMS's "Products" collection — with `affiliateStatus` and
-`affiliateUrl` once approved. Until then, leave `affiliateStatus:
-not-applied` (or `applied`); `ProductCallout.astro` will not render a live
-link for anything less than `approved`/`active`.
+If `CJ_PERSONAL_ACCESS_TOKEN` / `CJ_COMPANY_ID` are set (see docs/SETUP.md
+"CJ Affiliate"), each brief is then tried against CJ's Product Search API
+(`scripts/lib/cj.mjs`), restricted to advertisers this CJ account has
+already joined. A match creates a real product record automatically —
+real name, real already-tracked affiliate link, `affiliateStatus: active`
+— with no manual step, and stage 3 binds it straight into the article
+drafted from the same pain point. Output either way:
+`scripts/pipeline/output/product-briefs-<timestamp>.json`, with a
+`cjProduct: { slug, name }` field on any entry CJ resolved.
+
+CJ's API can't join a *new* advertiser program on its own — that's a
+human decision in CJ's own dashboard, and approval is the advertiser's
+call — so a brief that doesn't match an already-joined advertiser falls
+back to the same manual step as before, plus a short list of CJ-network
+advertisers worth applying to in
+`scripts/pipeline/output/cj-advertisers-to-join.json`.
+
+**Manual step (whenever CJ doesn't resolve a brief):** research the
+brief, apply to the affiliate program (Amazon Associates, ShareASale, a
+new CJ advertiser, a direct brand program, etc.), then create or update a
+file in `src/content/products/` — either directly or through Pages CMS's
+"Products" collection — with `affiliateStatus` and `affiliateUrl` once
+approved. Until then, leave `affiliateStatus: not-applied` (or
+`applied`); `ProductCallout.astro` will not render a live link for
+anything less than `approved`/`active`.
+
+**Link cloaking:** `ProductCallout.astro` never links straight to
+`affiliateUrl` — it links to `/go/<product-slug>`, which the Cloudflare
+Worker (`worker/index.ts`) 302-redirects to the real affiliate URL.
+`worker/go-links.generated.json` (the slug → URL map the Worker reads)
+is regenerated from `src/content/products/*.md` by
+`scripts/lib/generate-go-links.mjs`, which runs automatically before
+every `npm run build` (see package.json's `prebuild` script) — so it
+always reflects the current product records, however they were created
+or edited, with no separate sync step. A rotated or expired affiliate
+link only ever needs updating on the product record itself; the public
+`/go/...` URL never changes.
 
 ## 3. Draft (`scripts/pipeline/3-generate-article.mjs`)
 

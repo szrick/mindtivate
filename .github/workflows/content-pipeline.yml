@@ -60,6 +60,14 @@ jobs:
         env:
           POE_API_KEY: ${{ secrets.POE_API_KEY }}
           POE_MODEL: ${{ vars.POE_MODEL }}
+          # Optional — automatically resolves a brief into a real product
+          # (already-tracked affiliate link, no manual step) whenever it
+          # matches an advertiser this CJ account has already joined.
+          # Without these, this step behaves exactly as before CJ
+          # existed: every brief is left for manual research. See
+          # docs/SETUP.md "CJ Affiliate" and scripts/lib/cj.mjs.
+          CJ_PERSONAL_ACCESS_TOKEN: ${{ secrets.CJ_PERSONAL_ACCESS_TOKEN }}
+          CJ_COMPANY_ID: ${{ secrets.CJ_COMPANY_ID }}
 
       - name: Draft up to 3 articles with Poe
         # --index selects which brief (0 = top candidate) from the latest

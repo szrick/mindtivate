@@ -5,10 +5,10 @@
 // codebase is typed against.
 //
 // Routing is intentionally minimal: two API routes for newsletter signup
-// (double opt-in — see below), everything else falls through to the
-// ASSETS binding (the static site Astro builds into ./dist). This is the
-// only server-side logic Mindtivate has — the site is otherwise fully
-// static.
+// (double opt-in — see below), a /go/<slug> affiliate-link redirect, and
+// everything else falls through to the ASSETS binding (the static site
+// Astro builds into ./dist). This is the only server-side logic
+// Mindtivate has — the site is otherwise fully static.
 //
 // Double opt-in, without a database: a contact is created in Resend
 // immediately on signup but with unsubscribed:true (so it's excluded
@@ -17,6 +17,8 @@
 // the email + expiry itself, HMAC-signed with CONFIRM_SECRET so it can't
 // be forged. Clicking the link (GET /api/confirm) verifies the signature
 // and flips the same contact's unsubscribed to false. No KV/D1 needed.
+
+import goLinks from './go-links.generated.json';
 
 // Minimal local shape for what the Workers runtime actually passes in —
 // avoids a dependency on @cloudflare/workers-types just for this one
@@ -312,6 +314,23 @@ function redirectResponse(request: Request, path: string): Response {
   return Response.redirect(new URL(path, request.url).toString(), 303);
 }
 
+// Affiliate-link cloaking: every product's rendered "Check current price"
+// link (see ProductCallout.astro) points here instead of straight at the
+// affiliate URL, so a rotated/expired link only ever needs updating on
+// the product record -- see scripts/lib/generate-go-links.mjs, which
+// (re)generates go-links.generated.json from src/content/products/*.md
+// before every build. A 302 (not 301) on purpose: affiliate links do
+// change over time, and a temporary redirect avoids the destination
+// getting permanently cached by a browser or crawler.
+function handleGoLink(pathname: string, request: Request): Response {
+  const slug = decodeURIComponent(pathname.replace(/^\/go\//, '').replace(/\/$/, ''));
+  const destination = (goLinks as Record<string, string>)[slug];
+  if (!destination) {
+    return redirectResponse(request, '/');
+  }
+  return Response.redirect(destination, 302);
+}
+
 async function readSubmission(
   request: Request,
 ): Promise<{ email: string; honeypot: string; isJson: boolean }> {
@@ -452,6 +471,9 @@ export default {
     }
     if (url.pathname === '/api/unsubscribe') {
       return handleUnsubscribe(request, env);
+    }
+    if (url.pathname.startsWith('/go/')) {
+      return handleGoLink(url.pathname, request);
     }
     return env.ASSETS.fetch(request);
   },
