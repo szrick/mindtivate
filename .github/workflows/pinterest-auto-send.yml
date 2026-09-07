@@ -1,0 +1,73 @@
+name: Pinterest auto-send approved pins
+
+# Sends any Pinterest pin draft that's already been marked
+# "approved": true in scripts/pipeline/pinterest-pin-drafts/*.json but
+# hasn't been sent yet -- see scripts/pipeline/5-pinterest-pin.mjs's
+# --send-approved. The human gate is still the approval itself (set by
+# hand, reviewing the actual image/copy in a weekly-pinterest-pins.yml
+# PR, same as always); this workflow only automates the "click send"
+# step for whatever's already been approved, capped at 5 per run with a
+# delay between each (see MAX_SENDS_PER_RUN in 5-pinterest-pin.mjs) so a
+# pile of approvals merged at once doesn't turn into a burst-post.
+#
+# Refreshes PINTEREST_ACCESS_TOKEN from PINTEREST_REFRESH_TOKEN at the
+# start of the run when the refresh secrets are configured (see
+# docs/SETUP.md), so this keeps working past the access token's 30-day
+# lifetime without anyone manually regenerating it.
+
+on:
+  schedule:
+    - cron: '0 15 * * *' # daily, 15:00 UTC
+  workflow_dispatch:
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    # Default GITHUB_TOKEN is read-only on this repo; pushing the
+    # updated draft(s) and article(s) straight to main needs write access.
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Send approved, unsent drafts
+        run: npm run pipeline:pin -- --send-approved
+        env:
+          PINTEREST_ACCESS_TOKEN: ${{ secrets.PINTEREST_ACCESS_TOKEN }}
+          PINTEREST_BOARD_ID: ${{ secrets.PINTEREST_BOARD_ID }}
+          # Optional -- only needed for the 30-day-token auto-refresh
+          # described above. Without these, PINTEREST_ACCESS_TOKEN above
+          # is used as-is until it expires.
+          PINTEREST_APP_ID: ${{ secrets.PINTEREST_APP_ID }}
+          PINTEREST_APP_SECRET: ${{ secrets.PINTEREST_APP_SECRET }}
+          PINTEREST_REFRESH_TOKEN: ${{ secrets.PINTEREST_REFRESH_TOKEN }}
+
+      - name: Check for changed draft(s)/article(s)
+        id: check
+        run: |
+          if git status --porcelain -- scripts/pipeline/pinterest-pin-drafts src/content/articles | grep -q .; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No draft/article changes — nothing was sent, or nothing needed sending."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push straight to main
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/pipeline/pinterest-pin-drafts src/content/articles
+          git commit -m 'content: record sent Pinterest pin(s)' \
+            -m 'Sent by pinterest-auto-send.yml for draft(s) already marked approved: true — see the sentAt/pinUrl fields for which.'
+          git push origin HEAD:main

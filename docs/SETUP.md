@@ -238,9 +238,26 @@ program, etc.). Once approved:
    there to fall back to `PINTEREST_BOARD_ID` for it.
 5. For the scheduled drafting workflow
    (`.github/workflows/weekly-pinterest-pins.yml`) to run, add
-   `POE_API_KEY` (see section 3) as a repository secret — it's the only
-   credential that workflow needs; nothing Pinterest-related runs in CI
-   (see `docs/CONTENT_PIPELINE.md`'s Pinterest section for why).
+   `POE_API_KEY` (see section 3) as a repository secret — that workflow
+   only ever drafts, so it's the only credential it needs.
+6. **Optional: automatic sending.** Without this, an approved draft only
+   ever gets sent when you run `--send` locally by hand. To have
+   `.github/workflows/pinterest-auto-send.yml` send anything already
+   marked `"approved": true` automatically (daily), add repo secrets
+   `PINTEREST_ACCESS_TOKEN` and `PINTEREST_BOARD_ID`.
+   - **Also optional, but recommended if you enable auto-send**: add
+     `PINTEREST_APP_ID`, `PINTEREST_APP_SECRET`, and
+     `PINTEREST_REFRESH_TOKEN` (the App ID/Secret from step 2, and the
+     refresh token you got alongside your access token when you
+     generated it) as repo secrets too. With these set,
+     `scripts/lib/pinterest.mjs`'s `refreshAccessToken()` mints a fresh
+     access token at the start of every auto-send run, so it keeps
+     working past `PINTEREST_ACCESS_TOKEN`'s 30-day lifetime without you
+     manually regenerating it — see `docs/CONTENT_PIPELINE.md`'s
+     Pinterest section for the token/refresh-token mechanics. Without
+     these three, auto-send still works, but `PINTEREST_ACCESS_TOKEN`
+     itself will need manually regenerating (same OAuth flow as before)
+     roughly every 30 days.
 
 ## 7. Resend — newsletter signup + new-article emails
 

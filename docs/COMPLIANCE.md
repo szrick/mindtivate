@@ -99,6 +99,13 @@ designed around.
   covers both volume and misleading content. Pin at a sustainable rate
   (a handful of new pins around publish time, not a scripted bulk-pin
   loop) rather than trying to maximize post frequency.
+- `pinterest-auto-send.yml` can send pins unattended, but only ones a
+  human already reviewed and marked `"approved": true` — it never
+  approves anything itself, and caps itself at `MAX_SENDS_PER_RUN` (5)
+  with a delay between sends so it can't turn a pile of approvals into a
+  burst-post. If that cap or cadence ever needs revisiting for real
+  posting volume, adjust `MAX_SENDS_PER_RUN`/`DELAY_BETWEEN_SENDS_MS` in
+  `5-pinterest-pin.mjs` rather than routing around the review step.
 - `--style infographic` pins (`5-pinterest-pin.mjs`) use an AI-generated
   illustration as the background — same "don't caption it in a way that
   implies it's a real photo/person" caveat as an AI-generated article
