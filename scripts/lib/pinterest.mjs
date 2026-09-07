@@ -53,3 +53,50 @@ export function resolveBoardId(category) {
   }
   return process.env.PINTEREST_BOARD_ID || null;
 }
+
+// Mints a fresh access token from a refresh token, so unattended/CI use
+// (pinterest-auto-send.yml) doesn't depend on manually regenerating
+// PINTEREST_ACCESS_TOKEN every 30 days (Pinterest's access-token
+// lifetime). Requires PINTEREST_APP_ID, PINTEREST_APP_SECRET, and
+// PINTEREST_REFRESH_TOKEN (see docs/SETUP.md for how to get all three) —
+// returns null (not an error) when any is missing, so a caller can just
+// fall back to a plain PINTEREST_ACCESS_TOKEN, same as before this
+// existed.
+//
+// Pinterest's refresh token is the "continuous" kind (refreshable
+// indefinitely, not single-use) -- reusing it is expected to keep
+// working as long as it's used at least once within its ~60-day window,
+// rather than being invalidated on first use. If a response ever does
+// come back with a *different* refresh_token than the one sent, that's
+// logged as a warning (never the token value itself) rather than
+// silently swapped in -- this deliberately does not attempt to rewrite
+// the PINTEREST_REFRESH_TOKEN secret on its own; if the old one stops
+// working, a human needs to redo the OAuth flow and update it by hand.
+export async function refreshAccessToken({ appId, appSecret, refreshToken } = {}) {
+  const id = appId || process.env.PINTEREST_APP_ID;
+  const secret = appSecret || process.env.PINTEREST_APP_SECRET;
+  const refresh = refreshToken || process.env.PINTEREST_REFRESH_TOKEN;
+  if (!id || !secret || !refresh) return null;
+
+  const basicAuth = Buffer.from(`${id}:${secret}`).toString('base64');
+  const res = await fetch(`${API_BASE}/oauth/token`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Basic ${basicAuth}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: new URLSearchParams({ grant_type: 'refresh_token', refresh_token: refresh }),
+  });
+
+  if (!res.ok) {
+    throw new Error(`Pinterest token refresh failed: ${res.status} ${await res.text()}`);
+  }
+
+  const data = await res.json();
+  if (data.refresh_token && data.refresh_token !== refresh) {
+    console.warn(
+      'Pinterest returned a new refresh_token on this refresh -- update the PINTEREST_REFRESH_TOKEN secret with it if the current one ever stops working (not logging the value itself).',
+    );
+  }
+  return data.access_token;
+}

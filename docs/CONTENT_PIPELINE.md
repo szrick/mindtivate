@@ -429,8 +429,9 @@ Two-step, human-gated, same shape as stages 6/7 below:
 npm run pipeline:pin -- --slug your-article-slug [--style infographic]
 
 # 2. Review the .png and .json (edit either if you want), set
-#    "approved": true in the .json, then:
-npm run pipeline:pin -- --slug your-article-slug --send
+#    "approved": true in the .json, then either:
+npm run pipeline:pin -- --slug your-article-slug --send    # send just this one, by hand
+#    ...or let pinterest-auto-send.yml (below) pick it up automatically.
 ```
 
 `--send` calls Pinterest directly with the image as base64 data — unlike
@@ -444,18 +445,53 @@ resulting pin URL back onto the article's `pinterestPinUrl` field
 automatically — no manual Pages CMS step needed.
 
 `.github/workflows/weekly-pinterest-pins.yml` runs the **draft step
-only** (never `--send`) every Monday for up to 5 published articles
-missing a `pinterestPinUrl`, opening a PR with the generated images/copy
-— always `--style photo` on the scheduled run. A manual
-`workflow_dispatch` can instead target one specific article (`slug`
-input) and/or style (`style` input, `photo` or `infographic`) — useful
-for trying the infographic style on a single article before deciding
-whether to make it the default for the weekly scan.
+only** (never sends) every Monday for up to 5 published articles missing
+a `pinterestPinUrl`, opening a PR with the generated images/copy —
+always `--style photo` on the scheduled run. A manual `workflow_dispatch`
+can instead target one specific article (`slug` input) and/or style
+(`style` input, `photo` or `infographic`) — useful for trying the
+infographic style on a single article before deciding whether to make it
+the default for the weekly scan.
 Pinterest pins have no built-in "unsent draft" state the way Resend
 broadcasts do, so a real PR diff — the actual pin image, viewable inline
-on GitHub — is the review surface instead. Sending stays a manual, local,
-human-run command on purpose, same as every other step in this pipeline
-that posts something publicly.
+on GitHub — is the review surface instead. The human gate is that
+`"approved": true` step, not the send command itself — see below.
+
+### Sending: manual or automatic
+
+Nothing is ever sent to Pinterest without a human having set
+`"approved": true` on a draft first (in a `weekly-pinterest-pins.yml`
+review PR, same as always). What's optional is *how* an approved draft
+actually gets sent:
+
+- **By hand**: `npm run pipeline:pin -- --slug <slug> --send`, run
+  locally with your own Pinterest credentials.
+- **Automatically**: `.github/workflows/pinterest-auto-send.yml` runs
+  daily, calls `npm run pipeline:pin -- --send-approved`, and sends every
+  draft that's `approved: true` and not yet `sentAt` — capped at
+  `MAX_SENDS_PER_RUN` (5) per run with a delay between each send
+  (`docs/COMPLIANCE.md` warns against a "scripted bulk-pin loop"; this
+  keeps a pile of same-day approvals from turning into a burst of
+  simultaneous posts). Needs `PINTEREST_ACCESS_TOKEN` /
+  `PINTEREST_BOARD_ID` as repo secrets — see `docs/SETUP.md`.
+
+Either path writes `sentAt`/`pinUrl` onto the draft `.json` and
+`pinterestPinUrl` onto the article, so a draft is never sent twice.
+
+**Token refresh**: Pinterest access tokens expire every 30 days. Both
+send paths call `refreshAccessToken()` in `scripts/lib/pinterest.mjs`
+first, which mints a fresh access token from a refresh token when
+`PINTEREST_APP_ID` / `PINTEREST_APP_SECRET` / `PINTEREST_REFRESH_TOKEN`
+are all configured (optional — falls back to whatever
+`PINTEREST_ACCESS_TOKEN` is already set otherwise). Pinterest's refresh
+token is the "continuous" kind — reusing it is expected to keep working
+indefinitely rather than being invalidated after one use, as long as
+it's used at least once within its own ~60-day window, which a daily
+auto-send run comfortably satisfies. This deliberately does not try to
+rewrite the `PINTEREST_REFRESH_TOKEN` secret on its own if Pinterest ever
+issues a new one — it logs a warning (never the token value) instead, so
+a human redoes the OAuth flow and updates the secret by hand if the old
+one ever actually stops working.
 
 ## 6. Reddit engagement (`scripts/pipeline/6-reddit-engagement-draft.mjs`)
 

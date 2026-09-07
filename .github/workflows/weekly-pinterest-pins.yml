@@ -3,8 +3,10 @@ name: Weekly Pinterest pin drafts
 # Finds published articles with no pinterestPinUrl yet and drafts a pin
 # (image + Poe-drafted title/description) for a handful of them each
 # run, opening a PR with the results. Nothing is ever posted to Pinterest
-# from this workflow — see scripts/pipeline/5-pinterest-pin.mjs's header
-# for why the actual send stays a manual, local, human-run step.
+# from this workflow — the actual send only ever happens once a human
+# sets "approved": true on a draft here, either by hand
+# (--send) or picked up automatically by pinterest-auto-send.yml — see
+# scripts/pipeline/5-pinterest-pin.mjs's header.
 
 on:
   schedule:
@@ -86,15 +88,19 @@ jobs:
 
             To review: open each `.png` in this PR's "Files changed" tab,
             check the drafted copy in its `.json`, edit either if you want,
-            then set `"approved": true`. Once this PR is merged, run
-            (with your own Pinterest credentials):
+            then set `"approved": true`. Once this PR is merged, an
+            approved draft gets sent either:
 
-            ```bash
-            npm run pipeline:pin -- --slug <slug> --send
-            ```
+            - automatically, next time `pinterest-auto-send.yml` runs
+              (daily) — if `PINTEREST_ACCESS_TOKEN`/`PINTEREST_BOARD_ID`
+              are configured as repo secrets, or
+            - manually, by running (with your own Pinterest credentials):
+              ```bash
+              npm run pipeline:pin -- --slug <slug> --send
+              ```
 
-            for each approved draft — this records the resulting
-            `pinterestPinUrl` back onto the article automatically.
+            Either way records the resulting `pinterestPinUrl` back onto
+            the article automatically.
           branch: content/pinterest-pin-drafts-${{ github.run_number }}
           add-paths: |
             scripts/pipeline/pinterest-pin-drafts/**

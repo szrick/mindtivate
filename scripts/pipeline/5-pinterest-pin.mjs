@@ -1,10 +1,15 @@
 #!/usr/bin/env node
 // Stage 5: draft and create a Pinterest pin for a published article.
 //
-// Two-step, human-gated (same pattern as stages 6/7): drafting never
-// posts anything. It renders the pin image, asks Poe for the pin's
-// wording, and writes both to scripts/pipeline/pinterest-pin-drafts/ for
-// review. Only --send, after approved:true, actually calls Pinterest.
+// The human gate is drafting -> approved:true, not the send command
+// itself: drafting never posts anything (renders the pin image, asks
+// Poe for the pin's wording, writes both to
+// scripts/pipeline/pinterest-pin-drafts/ for review), and nothing is
+// ever sent without a human having set "approved": true on that draft
+// first. What IS optional is whether the actual send happens locally by
+// hand (--send) or unattended for anything already approved
+// (--send-approved, see pinterest-auto-send.yml) -- either way, Pinterest
+// never sees a draft nobody reviewed.
 //
 // Unlike stages 6/7's drafts (scripts/pipeline/output/, gitignored,
 // purely local), this one's drafts directory is deliberately NOT
@@ -12,13 +17,13 @@
 // schedule and opens a PR with the results, since Pinterest has no
 // built-in "unsent draft" state the way Resend broadcasts do (send:false)
 // — a real image + real copy in a real PR diff is the review surface
-// instead. --send still only ever runs locally, by a human, same as
-// every other "goes out publicly" step in this pipeline.
+// instead.
 //
 // Usage:
 //   npm run pipeline:pin -- --slug some-article-slug                        # draft only, photo style
 //   npm run pipeline:pin -- --slug some-article-slug --style infographic    # draft only, infographic style
-//   npm run pipeline:pin -- --slug some-article-slug --send                 # send, only if approved
+//   npm run pipeline:pin -- --slug some-article-slug --send                 # send one, only if approved
+//   npm run pipeline:pin -- --send-approved                                 # send every approved-but-unsent draft
 //
 // --style infographic: a Nano-Banana-2-Lite-generated illustrated
 // background (POE_INFOGRAPHIC_MODEL) with 3-4 real, always-legible
@@ -31,11 +36,11 @@
 // when omitted -- this is an opt-in alternative, not a replacement, until
 // its quality has been reviewed against real articles.
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { loadEnv } from '../lib/env.mjs';
 import { askPoeForJson, generatePoeImage } from '../lib/poe.mjs';
 import { readFrontmatter, insertFrontmatterField } from '../lib/frontmatter.mjs';
-import { createPin, resolveBoardId } from '../lib/pinterest.mjs';
+import { createPin, resolveBoardId, refreshAccessToken } from '../lib/pinterest.mjs';
 import { renderPinImage, renderInfographicPinImage } from '../lib/pinterest-pin-image.mjs';
 
 loadEnv();
@@ -98,10 +103,11 @@ function buildInfographicImagePrompt(backgroundScene, category) {
 }
 
 function parseArgs(argv) {
-  const args = { send: false, style: 'photo' };
+  const args = { send: false, sendApproved: false, style: 'photo' };
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--slug') args.slug = argv[++i];
     else if (argv[i] === '--send') args.send = true;
+    else if (argv[i] === '--send-approved') args.sendApproved = true;
     else if (argv[i] === '--style') args.style = argv[++i];
   }
   return args;
@@ -118,16 +124,148 @@ function resolveHeroImagePath(heroImage) {
   return `${ARTICLES_DIR}/${cleaned}`;
 }
 
+// If a refresh token is configured (PINTEREST_APP_ID/APP_SECRET/
+// REFRESH_TOKEN — all optional), mint a fresh access token for this
+// process rather than relying on a static PINTEREST_ACCESS_TOKEN that
+// expires every 30 days. createPin/resolveBoardId both already default
+// to reading PINTEREST_ACCESS_TOKEN from the environment, so setting it
+// here once is enough for every send in this run to pick it up. No-op
+// (keeps whatever PINTEREST_ACCESS_TOKEN is already set, if any) when
+// the refresh vars aren't configured -- see docs/SETUP.md.
+async function ensureFreshAccessToken() {
+  try {
+    const token = await refreshAccessToken();
+    if (token) process.env.PINTEREST_ACCESS_TOKEN = token;
+  } catch (err) {
+    console.warn(`Pinterest token refresh skipped: ${err.message}`);
+  }
+}
+
+// Sends one already-drafted, already-approved pin. Throws (with a
+// message describing exactly what's missing/wrong) rather than
+// exitCode-ing directly, so both the single-slug --send path and the
+// bulk --send-approved path can handle a failure their own way (the
+// former exits non-zero, the latter logs and moves on to the next one).
+async function sendDraft(slug) {
+  const articlePath = `${ARTICLES_DIR}/${slug}.md`;
+  const draftPath = `${DRAFTS_DIR}/${slug}.json`;
+  const imagePath = `${DRAFTS_DIR}/${slug}.png`;
+  const link = `${SITE_URL}/articles/${slug}/`;
+
+  if (!existsSync(articlePath)) throw new Error(`No article found at ${articlePath}`);
+  if (!existsSync(draftPath)) throw new Error(`No draft at ${draftPath} yet. Run without --send first to generate one.`);
+
+  const draft = JSON.parse(readFileSync(draftPath, 'utf8'));
+  if (!draft.approved) {
+    throw new Error(`Draft at ${draftPath} is not approved. Review it (and ${imagePath}), set "approved": true first.`);
+  }
+  if (draft.sentAt) {
+    throw new Error(`Draft was already sent at ${draft.sentAt} (pin: ${draft.pinUrl}).`);
+  }
+  if (!existsSync(imagePath)) {
+    throw new Error(`Draft image missing at ${imagePath}. Delete ${draftPath} and re-run without --send to regenerate both.`);
+  }
+
+  const { data: article } = readFrontmatter(readFileSync(articlePath, 'utf8'));
+  const boardId = resolveBoardId(article.category);
+  if (!boardId) {
+    throw new Error(
+      `No Pinterest board configured for category "${article.category}" — set it in scripts/lib/pinterest-boards.json, or set PINTEREST_BOARD_ID as a catch-all.`,
+    );
+  }
+
+  console.log(`Creating Pinterest pin on board ${boardId}: "${draft.pinTitle}"...`);
+  const imageBase64 = readFileSync(imagePath).toString('base64');
+  const pin = await createPin({
+    title: draft.pinTitle,
+    description: draft.pinDescription,
+    link,
+    imageBase64,
+    imageContentType: 'image/png',
+    boardId,
+  });
+
+  const pinUrl = `https://www.pinterest.com/pin/${pin.id}/`;
+  draft.sentAt = new Date().toISOString();
+  draft.pinUrl = pinUrl;
+  writeFileSync(draftPath, JSON.stringify(draft, null, 2));
+
+  const updatedArticle = insertFrontmatterField(readFileSync(articlePath, 'utf8'), 'pinterestPinUrl', pinUrl);
+  writeFileSync(articlePath, updatedArticle);
+
+  console.log(`Created pin: ${pinUrl}`);
+  console.log(`Recorded pinterestPinUrl in ${articlePath}.`);
+  return pinUrl;
+}
+
+// Caps how many pins one run actually sends -- COMPLIANCE.md warns
+// against a "scripted bulk-pin loop" per Pinterest's spam policy, and a
+// pile of drafts all getting approved around the same time (e.g. after
+// merging several review PRs at once) shouldn't turn into a burst of
+// simultaneous posts just because the automation runs on a schedule.
+// Whatever's left over just waits for the next scheduled run.
+const MAX_SENDS_PER_RUN = 5;
+const DELAY_BETWEEN_SENDS_MS = 5000;
+
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+function listApprovedUnsentSlugs() {
+  if (!existsSync(DRAFTS_DIR)) return [];
+  return readdirSync(DRAFTS_DIR)
+    .filter((f) => f.endsWith('.json'))
+    .map((f) => JSON.parse(readFileSync(`${DRAFTS_DIR}/${f}`, 'utf8')))
+    .filter((draft) => draft.approved && !draft.sentAt)
+    .map((draft) => draft.slug);
+}
+
+async function sendApprovedDrafts() {
+  const slugs = listApprovedUnsentSlugs().slice(0, MAX_SENDS_PER_RUN);
+  if (slugs.length === 0) {
+    console.log('No approved, unsent Pinterest pin drafts found.');
+    return;
+  }
+
+  await ensureFreshAccessToken();
+
+  console.log(`Sending ${slugs.length} approved draft(s)...`);
+  for (const [i, slug] of slugs.entries()) {
+    try {
+      await sendDraft(slug);
+    } catch (err) {
+      console.error(`  failed to send "${slug}": ${err.message}`);
+    }
+    if (i < slugs.length - 1) await sleep(DELAY_BETWEEN_SENDS_MS);
+  }
+}
+
 async function run() {
   const args = parseArgs(process.argv.slice(2));
+
+  if (args.sendApproved) {
+    await sendApprovedDrafts();
+    return;
+  }
+
   if (!args.slug) {
     console.error('Usage: npm run pipeline:pin -- --slug <article-slug> [--style photo|infographic] [--send]');
+    console.error('   or: npm run pipeline:pin -- --send-approved');
     process.exitCode = 1;
     return;
   }
   if (args.style !== 'photo' && args.style !== 'infographic') {
     console.error(`Unknown --style "${args.style}". Use "photo" (default) or "infographic".`);
     process.exitCode = 1;
+    return;
+  }
+
+  if (args.send) {
+    await ensureFreshAccessToken();
+    try {
+      await sendDraft(args.slug);
+    } catch (err) {
+      console.error(err.message);
+      process.exitCode = 1;
+    }
     return;
   }
 
@@ -148,62 +286,6 @@ async function run() {
   const draftPath = `${DRAFTS_DIR}/${args.slug}.json`;
   const imagePath = `${DRAFTS_DIR}/${args.slug}.png`;
   const link = `${SITE_URL}/articles/${args.slug}/`;
-
-  if (args.send) {
-    if (!existsSync(draftPath)) {
-      console.error(`No draft at ${draftPath} yet. Run without --send first to generate one.`);
-      process.exitCode = 1;
-      return;
-    }
-    const draft = JSON.parse(readFileSync(draftPath, 'utf8'));
-    if (!draft.approved) {
-      console.error(`Draft at ${draftPath} is not approved. Review it (and ${imagePath}), set "approved": true, then re-run with --send.`);
-      process.exitCode = 1;
-      return;
-    }
-    if (draft.sentAt) {
-      console.error(`Draft was already sent at ${draft.sentAt} (pin: ${draft.pinUrl}). Delete that field (or the whole file) to re-send.`);
-      process.exitCode = 1;
-      return;
-    }
-    if (!existsSync(imagePath)) {
-      console.error(`Draft image missing at ${imagePath}. Delete ${draftPath} and re-run without --send to regenerate both.`);
-      process.exitCode = 1;
-      return;
-    }
-
-    const boardId = resolveBoardId(article.category);
-    if (!boardId) {
-      console.error(
-        `No Pinterest board configured for category "${article.category}" — set it in scripts/lib/pinterest-boards.json, or set PINTEREST_BOARD_ID as a catch-all in .env.`,
-      );
-      process.exitCode = 1;
-      return;
-    }
-
-    console.log(`Creating Pinterest pin on board ${boardId}: "${draft.pinTitle}"...`);
-    const imageBase64 = readFileSync(imagePath).toString('base64');
-    const pin = await createPin({
-      title: draft.pinTitle,
-      description: draft.pinDescription,
-      link,
-      imageBase64,
-      imageContentType: 'image/png',
-      boardId,
-    });
-
-    const pinUrl = `https://www.pinterest.com/pin/${pin.id}/`;
-    draft.sentAt = new Date().toISOString();
-    draft.pinUrl = pinUrl;
-    writeFileSync(draftPath, JSON.stringify(draft, null, 2));
-
-    const updatedArticle = insertFrontmatterField(readFileSync(articlePath, 'utf8'), 'pinterestPinUrl', pinUrl);
-    writeFileSync(articlePath, updatedArticle);
-
-    console.log(`Created pin: ${pinUrl}`);
-    console.log(`Recorded pinterestPinUrl in ${articlePath}.`);
-    return;
-  }
 
   console.log('Drafting Pinterest copy with Poe...');
   const copy = await askPoeForJson({
