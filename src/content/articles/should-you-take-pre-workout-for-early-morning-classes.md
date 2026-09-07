@@ -4,7 +4,7 @@ description: Pre-workout can help with early morning energy, but the right
   ingredients matter—especially when you're working late nights. Here's what to
   look for.
 pubDate: 2026-08-25
-updatedDate: 2026-09-04
+updatedDate: 2026-09-07
 category: Body
 heroImage: "./_images/should-you-take-pre-workout-for-early-morning-classes-hero.webp"
 status: published
@@ -35,9 +35,9 @@ Beyond caffeine, common ingredients include creatine (which supports strength an
 
 ## The late-night-work complication
 
-If you're working late and then taking pre-workout early the next morning, you're dealing with two competing pressures: needing a boost to train, but also needing to protect what little recovery time you have.
+If you're [working late and then taking pre-workout early the next morning](/articles/how-to-fit-strength-training-meal-prep-into-60-hour-weeks/), you're dealing with two competing pressures: needing a boost to train, but also needing to protect what little recovery time you have.
 
-Caffeine has a half-life of about five hours, meaning half of it is still in your system five hours after you take it. A 7 a.m. dose will mostly clear by afternoon, so it's less likely to interfere with sleep than an evening dose would. But if you're chronically under-slept, adding a stimulant every morning can mask how much rest you're actually missing—and over time, that catches up.
+Caffeine has a half-life of about five hours, meaning half of it is still in your system five hours after you take it. A 7 a.m. dose will mostly clear by afternoon, so it's [less likely to interfere with sleep](/articles/why-alcohol-doesn-t-actually-help-you-sleep/) than an evening dose would. But if you're chronically under-slept, adding a stimulant every morning can mask how much rest you're actually missing—and over time, that catches up.
 
 [Mayo Clinic warns](https://mcpress.mayoclinic.org/nutrition-fitness/preworkout-supplements-whats-safe-what-should-you-avoid/) that pre-workout side effects can include trouble sleeping, increased heart rate, and digestive upset, especially at higher doses or in people sensitive to caffeine. If you're already running on fumes, a high-caffeine formula might push you into jittery, anxious territory rather than focused energy.
 
