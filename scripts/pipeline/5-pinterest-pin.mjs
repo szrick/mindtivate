@@ -16,15 +16,27 @@
 // every other "goes out publicly" step in this pipeline.
 //
 // Usage:
-//   npm run pipeline:pin -- --slug some-article-slug          # draft only
-//   npm run pipeline:pin -- --slug some-article-slug --send    # send, only if approved
+//   npm run pipeline:pin -- --slug some-article-slug                        # draft only, photo style
+//   npm run pipeline:pin -- --slug some-article-slug --style infographic    # draft only, infographic style
+//   npm run pipeline:pin -- --slug some-article-slug --send                 # send, only if approved
+//
+// --style infographic: a Nano-Banana-2-Lite-generated illustrated
+// background (POE_INFOGRAPHIC_MODEL) with 3-4 real, always-legible
+// takeaway bullets composited on top — see buildInfographicPrompt below
+// and renderInfographicPinImage in pinterest-pin-image.mjs for why the
+// text is composited rather than trusting the image model to render it:
+// small baked-in text from image-gen models is still unreliable
+// (misspelled/garbled), so the model only ever supplies art, never text.
+// Defaults to the original photo style (article hero + gradient scrim)
+// when omitted -- this is an opt-in alternative, not a replacement, until
+// its quality has been reviewed against real articles.
 
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { loadEnv } from '../lib/env.mjs';
-import { askPoeForJson } from '../lib/poe.mjs';
+import { askPoeForJson, generatePoeImage } from '../lib/poe.mjs';
 import { readFrontmatter, insertFrontmatterField } from '../lib/frontmatter.mjs';
 import { createPin, resolveBoardId } from '../lib/pinterest.mjs';
-import { renderPinImage } from '../lib/pinterest-pin-image.mjs';
+import { renderPinImage, renderInfographicPinImage } from '../lib/pinterest-pin-image.mjs';
 
 loadEnv();
 
@@ -59,11 +71,38 @@ Rules:
 
 Output strict JSON only: {"imageHeadline": "...", "imageSubtext": "...", "pinTitle": "...", "pinDescription": "..."}`;
 
+// Adds two fields on top of SYSTEM_PROMPT's four, and — unlike that one —
+// is given the article's actual body, not just its title/description, so
+// the takeaways are grounded in what the article actually says rather
+// than invented from the headline alone.
+const INFOGRAPHIC_SYSTEM_PROMPT = `${SYSTEM_PROMPT.replace(
+  'Output strict JSON only: {"imageHeadline": "...", "imageSubtext": "...", "pinTitle": "...", "pinDescription": "..."}',
+  '',
+)}
+Also write:
+- takeaways: exactly 3 short, concrete, factually-grounded bullet points
+  from the article's actual content (not generic advice) — each under 55
+  characters, punchy enough to read at a glance on a pin. These render as
+  real on-image text, so they must be accurate to the article, not
+  invented.
+- backgroundScene: a short (1 sentence) description of a real-world
+  scene, object, or setting relevant to the article's topic, suitable as
+  an illustration background — no people's faces close-up (renders
+  poorly at small pin sizes), no text/words/numbers/labels in the scene
+  itself (a separate step overlays real text on top of this art).
+
+Output strict JSON only: {"imageHeadline": "...", "imageSubtext": "...", "pinTitle": "...", "pinDescription": "...", "takeaways": ["...", "...", "..."], "backgroundScene": "..."}`;
+
+function buildInfographicImagePrompt(backgroundScene, category) {
+  return `Flat-illustration, editorial-infographic style artwork for a women's health and wellness Pinterest pin, category: ${category}. Scene: ${backgroundScene}. Warm, inviting color palette (terracotta, plum, cream tones). Clean composition with open, uncluttered space in the lower third for a text overlay to be added afterward. STRICT CONSTRAINT: absolutely no text, no words, no letters, no numbers, no labels, no writing of any kind anywhere in the image -- illustration only.`;
+}
+
 function parseArgs(argv) {
-  const args = { send: false };
+  const args = { send: false, style: 'photo' };
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--slug') args.slug = argv[++i];
     else if (argv[i] === '--send') args.send = true;
+    else if (argv[i] === '--style') args.style = argv[++i];
   }
   return args;
 }
@@ -82,7 +121,12 @@ function resolveHeroImagePath(heroImage) {
 async function run() {
   const args = parseArgs(process.argv.slice(2));
   if (!args.slug) {
-    console.error('Usage: npm run pipeline:pin -- --slug <article-slug> [--send]');
+    console.error('Usage: npm run pipeline:pin -- --slug <article-slug> [--style photo|infographic] [--send]');
+    process.exitCode = 1;
+    return;
+  }
+  if (args.style !== 'photo' && args.style !== 'infographic') {
+    console.error(`Unknown --style "${args.style}". Use "photo" (default) or "infographic".`);
     process.exitCode = 1;
     return;
   }
@@ -93,7 +137,7 @@ async function run() {
     process.exitCode = 1;
     return;
   }
-  const { data: article } = readFrontmatter(readFileSync(articlePath, 'utf8'));
+  const { data: article, body: articleBody } = readFrontmatter(readFileSync(articlePath, 'utf8'));
   if (article.status !== 'published') {
     console.error(`Article status is "${article.status}", not "published". Publish it first.`);
     process.exitCode = 1;
@@ -163,19 +207,40 @@ async function run() {
 
   console.log('Drafting Pinterest copy with Poe...');
   const copy = await askPoeForJson({
-    system: SYSTEM_PROMPT,
-    prompt: `Article title: "${article.title}"\nCategory: ${article.category}\nSEO description: ${article.description}`,
-    maxTokens: 500,
+    system: args.style === 'infographic' ? INFOGRAPHIC_SYSTEM_PROMPT : SYSTEM_PROMPT,
+    prompt:
+      args.style === 'infographic'
+        ? `Article title: "${article.title}"\nCategory: ${article.category}\nSEO description: ${article.description}\n\nArticle body:\n${articleBody.slice(0, 6000)}`
+        : `Article title: "${article.title}"\nCategory: ${article.category}\nSEO description: ${article.description}`,
+    maxTokens: 700,
   });
 
-  console.log('Rendering pin image...');
-  const heroImagePath = resolveHeroImagePath(article.heroImage);
-  const imageBuffer = await renderPinImage({
-    heroImagePath,
-    category: article.category,
-    headline: copy.imageHeadline,
-    subtext: copy.imageSubtext,
-  });
+  let imageBuffer;
+  if (args.style === 'infographic') {
+    console.log('Generating infographic background art with Poe...');
+    const infographicModel = process.env.POE_INFOGRAPHIC_MODEL || 'Nano-Banana-2-Lite';
+    const backgroundImage = await generatePoeImage({
+      prompt: buildInfographicImagePrompt(copy.backgroundScene, article.category),
+      model: infographicModel,
+    });
+
+    console.log('Rendering infographic pin image...');
+    imageBuffer = await renderInfographicPinImage({
+      backgroundImage,
+      category: article.category,
+      headline: copy.imageHeadline,
+      takeaways: copy.takeaways,
+    });
+  } else {
+    console.log('Rendering pin image...');
+    const heroImagePath = resolveHeroImagePath(article.heroImage);
+    imageBuffer = await renderPinImage({
+      heroImagePath,
+      category: article.category,
+      headline: copy.imageHeadline,
+      subtext: copy.imageSubtext,
+    });
+  }
   mkdirSync(DRAFTS_DIR, { recursive: true });
   writeFileSync(imagePath, imageBuffer);
 
@@ -185,6 +250,7 @@ async function run() {
     category: article.category,
     articleLink: link,
     imagePath,
+    style: args.style,
     ...copy,
     approved: false,
     generatedAt: new Date().toISOString(),
