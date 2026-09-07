@@ -416,16 +416,24 @@ Two-step, human-gated, same shape as stages 6/7 below:
 #                   recommended 1000x1500.
 #      infographic  a Nano-Banana-2-Lite-generated illustrated background
 #                   (POE_INFOGRAPHIC_MODEL, default "Nano-Banana-2-Lite" —
-#                   a bot handle, check it's still current at poe.com) with
-#                   3 real, always-legible takeaway bullets composited on
-#                   top, grounded in the article's actual body text. The
-#                   image model is only ever asked for art, never text —
-#                   small baked-in text from image-gen models is still
-#                   unreliable (misspelled/garbled), so the headline and
-#                   takeaways are rendered the same reliable way the photo
-#                   style's text already is. See buildInfographicImagePrompt
-#                   in 5-pinterest-pin.mjs and renderInfographicPinImage in
-#                   pinterest-pin-image.mjs.
+#                   a bot handle, check it's still current at poe.com)
+#                   with a real, always-legible content card composited
+#                   on top, grounded in the article's actual body text.
+#                   Poe picks whichever ONE of four real infographic
+#                   layouts actually fits the article -- "list" (generic
+#                   takeaways, the safe default), "process" (numbered
+#                   steps), "comparison" (two contrasting things,
+#                   side-by-side with a "VS" divider), or "stat" (1-3
+#                   big callout numbers from real figures the article
+#                   states) -- rather than forcing every article into the
+#                   same bullet-list shape. The image model is only ever
+#                   asked for art, never text -- small baked-in text from
+#                   image-gen models is still unreliable
+#                   (misspelled/garbled), so the headline and content card
+#                   are rendered the same reliable way the photo style's
+#                   text already is. See INFOGRAPHIC_SYSTEM_PROMPT /
+#                   buildInfographicImagePrompt in 5-pinterest-pin.mjs and
+#                   renderInfographicPinImage in pinterest-pin-image.mjs.
 npm run pipeline:pin -- --slug your-article-slug [--style infographic]
 
 # 2. Review the .png and .json (edit either if you want), set

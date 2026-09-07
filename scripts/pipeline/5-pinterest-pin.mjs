@@ -76,30 +76,80 @@ Rules:
 
 Output strict JSON only: {"imageHeadline": "...", "imageSubtext": "...", "pinTitle": "...", "pinDescription": "..."}`;
 
-// Adds two fields on top of SYSTEM_PROMPT's four, and — unlike that one —
-// is given the article's actual body, not just its title/description, so
-// the takeaways are grounded in what the article actually says rather
-// than invented from the headline alone.
+// Adds fields on top of SYSTEM_PROMPT's four, and — unlike that one — is
+// given the article's actual body, not just its title/description, so
+// the content is grounded in what the article actually says rather than
+// invented from the headline alone.
+//
+// layoutStyle is the actual variety mechanism: rather than every
+// infographic defaulting to the same generic bullet-list shape, Poe
+// picks whichever of four real infographic layouts
+// (visme.co/blog/types-of-infographics, piktochart.com/blog/types-of-infographics,
+// among other design references) genuinely fits this article's content
+// -- forcing e.g. "comparison" onto an article with nothing to compare
+// would produce a worse pin than just picking "list". `items` uses one
+// shared {label, sublabel?} shape across all four styles so
+// renderInfographicPinImage (pinterest-pin-image.mjs) only needs one
+// generic card layout per style, not bespoke parsing per style.
 const INFOGRAPHIC_SYSTEM_PROMPT = `${SYSTEM_PROMPT.replace(
   'Output strict JSON only: {"imageHeadline": "...", "imageSubtext": "...", "pinTitle": "...", "pinDescription": "..."}',
   '',
 )}
-Also write:
-- takeaways: exactly 3 short, concrete, factually-grounded bullet points
-  from the article's actual content (not generic advice) — each under 55
-  characters, punchy enough to read at a glance on a pin. These render as
-  real on-image text, so they must be accurate to the article, not
-  invented.
+Also decide the infographic's layout and content:
+
+- layoutStyle: pick whichever ONE of these four actually fits this
+  article's content best -- don't force a style the content doesn't
+  support:
+  - "list": general takeaways or tips with no inherent order or
+    contrast. The safe default when nothing else clearly fits.
+  - "process": the content is inherently a sequence of steps done in
+    order (e.g. "how to do X").
+  - "comparison": the content genuinely contrasts exactly two things
+    (two options, before/after, this vs. that) -- only pick this when
+    there really are two sides to show.
+  - "stat": the article centers on 1-3 specific, quotable numbers from
+    real research/data mentioned in the article (a dose, a ratio, a
+    percentage, a duration) -- only pick this when the article actually
+    states real numbers; never invent one to justify this style.
+- items: content matching layoutStyle, each as {"label": string,
+  "sublabel": string (omit/empty for "list" and "process")}:
+  - list: exactly 3 items, label = a short, concrete, factually-grounded
+    takeaway (under 55 characters).
+  - process: 3-4 items, label = one step, in the order they're actually
+    done (under 45 characters each -- a number gets prefixed
+    automatically, don't include one yourself).
+  - comparison: exactly 2 items, label = short name for that side (under
+    20 characters), sublabel = one short supporting phrase for it (under
+    45 characters).
+  - stat: 1-3 items, label = the number/figure itself exactly as stated
+    in the article (e.g. "40:1", "2-4g", "30 days"), sublabel = under 45
+    characters explaining what it means.
+  All item text renders as real on-image text, so it must be accurate to
+  the article, never invented.
 - backgroundScene: a short (1 sentence) description of a real-world
   scene, object, or setting relevant to the article's topic, suitable as
   an illustration background — no people's faces close-up (renders
   poorly at small pin sizes), no text/words/numbers/labels in the scene
   itself (a separate step overlays real text on top of this art).
 
-Output strict JSON only: {"imageHeadline": "...", "imageSubtext": "...", "pinTitle": "...", "pinDescription": "...", "takeaways": ["...", "...", "..."], "backgroundScene": "..."}`;
+Output strict JSON only: {"imageHeadline": "...", "imageSubtext": "...", "pinTitle": "...", "pinDescription": "...", "layoutStyle": "list"|"process"|"comparison"|"stat", "items": [{"label": "...", "sublabel": "..."}], "backgroundScene": "..."}`;
 
-function buildInfographicImagePrompt(backgroundScene, category) {
-  return `Flat-illustration, editorial-infographic style artwork for a women's health and wellness Pinterest pin, category: ${category}. Scene: ${backgroundScene}. Warm, inviting color palette (terracotta, plum, cream tones). Clean composition with open, uncluttered space in the lower third for a text overlay to be added afterward. STRICT CONSTRAINT: absolutely no text, no words, no letters, no numbers, no labels, no writing of any kind anywhere in the image -- illustration only.`;
+// Varies the AI art's own compositional framing to match layoutStyle, on
+// top of the scene Poe picked -- e.g. a "process" article gets a hint of
+// left-to-right progression in how objects are arranged, not just a
+// static grouping. Keeps the "no text at all" constraint absolute
+// regardless of style: the model only ever supplies art, real text is
+// always composited afterward (see renderInfographicPinImage).
+const LAYOUT_COMPOSITION_HINTS = {
+  list: 'Clean, uncluttered composition with a single clear focal grouping.',
+  process: 'Composition suggests a left-to-right sequence or progression -- objects arranged to imply moving from a starting point toward a result.',
+  comparison: 'Composition is visually divided into two distinct zones or two contrasting groupings of objects, suggesting two sides.',
+  stat: 'Composition centers on one bold, singular focal object or symbol representing the key idea, with generous open negative space around it.',
+};
+
+function buildInfographicImagePrompt(backgroundScene, category, layoutStyle) {
+  const compositionHint = LAYOUT_COMPOSITION_HINTS[layoutStyle] || LAYOUT_COMPOSITION_HINTS.list;
+  return `Flat-illustration, editorial-infographic style artwork for a women's health and wellness Pinterest pin, category: ${category}. Scene: ${backgroundScene}. ${compositionHint} Warm, inviting color palette (terracotta, plum, cream tones). Clean composition with open, uncluttered space in the lower third for a text overlay to be added afterward. STRICT CONSTRAINT: absolutely no text, no words, no letters, no numbers, no labels, no writing of any kind anywhere in the image -- illustration only.`;
 }
 
 function parseArgs(argv) {
@@ -294,15 +344,15 @@ async function run() {
       args.style === 'infographic'
         ? `Article title: "${article.title}"\nCategory: ${article.category}\nSEO description: ${article.description}\n\nArticle body:\n${articleBody.slice(0, 6000)}`
         : `Article title: "${article.title}"\nCategory: ${article.category}\nSEO description: ${article.description}`,
-    maxTokens: 700,
+    maxTokens: args.style === 'infographic' ? 900 : 700,
   });
 
   let imageBuffer;
   if (args.style === 'infographic') {
-    console.log('Generating infographic background art with Poe...');
+    console.log(`Generating infographic background art with Poe (layout: ${copy.layoutStyle})...`);
     const infographicModel = process.env.POE_INFOGRAPHIC_MODEL || 'Nano-Banana-2-Lite';
     const backgroundImage = await generatePoeImage({
-      prompt: buildInfographicImagePrompt(copy.backgroundScene, article.category),
+      prompt: buildInfographicImagePrompt(copy.backgroundScene, article.category, copy.layoutStyle),
       model: infographicModel,
     });
 
@@ -311,7 +361,8 @@ async function run() {
       backgroundImage,
       category: article.category,
       headline: copy.imageHeadline,
-      takeaways: copy.takeaways,
+      layoutStyle: copy.layoutStyle,
+      items: copy.items,
     });
   } else {
     console.log('Rendering pin image...');
