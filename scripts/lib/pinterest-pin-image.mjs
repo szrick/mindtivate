@@ -149,16 +149,65 @@ export async function renderPinImage({ heroImagePath, category, headline, subtex
 // Same reasoning as renderPinImage's header comment (exact CSS control,
 // free text wrapping) for why this composites real text over the AI
 // image via Playwright rather than trusting an image-gen model to render
-// legible small text itself — see generateInfographicBackground in
+// legible small text itself — see buildInfographicImagePrompt in
 // scripts/pipeline/5-pinterest-pin.mjs for why the background is AI-only
 // and deliberately excludes text.
-function buildInfographicHtml({ backgroundImageDataUri, logoDataUri, category, headline, takeaways }) {
-  const takeawayItems = takeaways
-    .map(
-      (t) => `<li><span class="bullet-mark">${'✓'}</span><span>${t}</span></li>`,
-    )
-    .join('');
+//
+// Four card layouts, one per `layoutStyle` -- all share the same art
+// zone/badge/headline/brand footer above and below; only the middle
+// content card's markup changes. Poe picks whichever style actually
+// fits the article's content (see INFOGRAPHIC_SYSTEM_PROMPT) rather than
+// this always defaulting to one shape, so a process-shaped article gets
+// numbered steps instead of being forced into a generic bullet list.
+function escapeHtml(str) {
+  return String(str).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+}
 
+function buildCardContent(layoutStyle, items) {
+  if (layoutStyle === 'process') {
+    const rows = items
+      .map(
+        (item, i) =>
+          `<li><span class="marker marker-number">${i + 1}</span><span>${escapeHtml(item.label)}</span></li>`,
+      )
+      .join('');
+    return `<ul class="stack">${rows}</ul>`;
+  }
+
+  if (layoutStyle === 'comparison') {
+    const [a, b] = items;
+    return `
+      <div class="comparison">
+        <div class="comparison-side">
+          <div class="comparison-label">${escapeHtml(a?.label ?? '')}</div>
+          <div class="comparison-sublabel">${escapeHtml(a?.sublabel ?? '')}</div>
+        </div>
+        <div class="comparison-divider">VS</div>
+        <div class="comparison-side">
+          <div class="comparison-label">${escapeHtml(b?.label ?? '')}</div>
+          <div class="comparison-sublabel">${escapeHtml(b?.sublabel ?? '')}</div>
+        </div>
+      </div>`;
+  }
+
+  if (layoutStyle === 'stat') {
+    const rows = items
+      .map(
+        (item) =>
+          `<div class="stat-row"><div class="stat-number">${escapeHtml(item.label)}</div><div class="stat-sublabel">${escapeHtml(item.sublabel ?? '')}</div></div>`,
+      )
+      .join('');
+    return `<div class="stats">${rows}</div>`;
+  }
+
+  // "list" (default/fallback)
+  const rows = items
+    .map((item) => `<li><span class="marker marker-check">${'✓'}</span><span>${escapeHtml(item.label)}</span></li>`)
+    .join('');
+  return `<ul class="stack">${rows}</ul>`;
+}
+
+function buildInfographicHtml({ backgroundImageDataUri, logoDataUri, category, headline, layoutStyle, items }) {
   return `<!doctype html>
 <html><head><meta charset="utf-8">
 <style>
@@ -219,10 +268,10 @@ function buildInfographicHtml({ backgroundImageDataUri, logoDataUri, category, h
     height: 570px;
     padding: 56px 64px 48px;
   }
-  .takeaways {
+  .stack {
     list-style: none;
   }
-  .takeaways li {
+  .stack li {
     display: flex;
     align-items: flex-start;
     gap: 20px;
@@ -232,7 +281,7 @@ function buildInfographicHtml({ backgroundImageDataUri, logoDataUri, category, h
     color: ${BRAND.plum};
     margin-bottom: 28px;
   }
-  .bullet-mark {
+  .marker {
     flex-shrink: 0;
     width: 40px;
     height: 40px;
@@ -245,6 +294,69 @@ function buildInfographicHtml({ backgroundImageDataUri, logoDataUri, category, h
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+  .comparison {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    gap: 24px;
+  }
+  .comparison-side {
+    flex: 1;
+    text-align: center;
+  }
+  .comparison-label {
+    font-family: Georgia, serif;
+    font-weight: 700;
+    font-size: 40px;
+    color: ${BRAND.plum};
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+  .comparison-sublabel {
+    font-family: Arial, sans-serif;
+    font-size: 26px;
+    line-height: 1.4;
+    color: ${BRAND.plum};
+  }
+  .comparison-divider {
+    flex-shrink: 0;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: ${BRAND.terracotta};
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .stats {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 32px;
+    height: 100%;
+  }
+  .stat-row {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+  }
+  .stat-number {
+    font-family: Georgia, serif;
+    font-weight: 700;
+    font-size: 72px;
+    color: ${BRAND.terracotta};
+    flex-shrink: 0;
+  }
+  .stat-sublabel {
+    font-family: Arial, sans-serif;
+    font-size: 30px;
+    line-height: 1.35;
+    color: ${BRAND.plum};
   }
   .brand {
     position: absolute;
@@ -277,7 +389,7 @@ function buildInfographicHtml({ backgroundImageDataUri, logoDataUri, category, h
     <div class="headline">${headline}</div>
   </div>
   <div class="card">
-    <ul class="takeaways">${takeawayItems}</ul>
+    ${buildCardContent(layoutStyle, items)}
     <div class="brand">
       <img src="${logoDataUri}" />
       <span>Mindtivate<span class="dot">.</span></span>
@@ -288,15 +400,16 @@ function buildInfographicHtml({ backgroundImageDataUri, logoDataUri, category, h
 
 /**
  * Renders an infographic-style pin image (AI-generated background art in
- * the top ~62%, a set of real, always-legible takeaway bullets on a
- * solid card below) and returns a PNG Buffer.
- * @param {{ backgroundImage: { buffer: Buffer, ext: string }, category: string, headline: string, takeaways: string[], logoPath?: string }} opts
+ * the top ~62%, a real, always-legible content card below whose layout
+ * matches `layoutStyle`) and returns a PNG Buffer.
+ * @param {{ backgroundImage: { buffer: Buffer, ext: string }, category: string, headline: string, layoutStyle: 'list'|'process'|'comparison'|'stat', items: { label: string, sublabel?: string }[], logoPath?: string }} opts
  */
 export async function renderInfographicPinImage({
   backgroundImage,
   category,
   headline,
-  takeaways,
+  layoutStyle,
+  items,
   logoPath = 'public/logo-icon.png',
 }) {
   const mime = backgroundImage.ext === 'webp' ? 'image/webp' : `image/${backgroundImage.ext}`;
@@ -305,7 +418,8 @@ export async function renderInfographicPinImage({
     logoDataUri: toDataUri(logoPath),
     category,
     headline,
-    takeaways,
+    layoutStyle,
+    items,
   });
 
   const browser = await chromium.launch();
