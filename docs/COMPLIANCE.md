@@ -99,6 +99,15 @@ designed around.
   covers both volume and misleading content. Pin at a sustainable rate
   (a handful of new pins around publish time, not a scripted bulk-pin
   loop) rather than trying to maximize post frequency.
+- `--style infographic` pins (`5-pinterest-pin.mjs`) use an AI-generated
+  illustration as the background — same "don't caption it in a way that
+  implies it's a real photo/person" caveat as an AI-generated article
+  hero image (see the hero-photo note below), and reviewers should
+  sanity-check the art before approving a draft, same as any AI image.
+  The headline and takeaway text on top are never AI-rendered text,
+  though — they're composited afterward from the same reliable renderer
+  the photo-style pin already uses, so there's no misspelled/garbled-text
+  risk to check for there.
 
 ## Newsletter / email
 

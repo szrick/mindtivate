@@ -408,11 +408,25 @@ variables).
 Two-step, human-gated, same shape as stages 6/7 below:
 
 ```bash
-# 1. Draft: renders the pin image (article hero photo + gradient scrim +
-#    category badge + Poe-drafted headline/subtext + logo, at
-#    Pinterest's recommended 1000x1500) and drafts a title/description.
-#    Writes both to scripts/pipeline/pinterest-pin-drafts/<slug>.{png,json}.
-npm run pipeline:pin -- --slug your-article-slug
+# 1. Draft: renders the pin image and drafts a title/description. Writes
+#    both to scripts/pipeline/pinterest-pin-drafts/<slug>.{png,json}.
+#    Two styles, --style photo is the default:
+#      photo        article hero photo + gradient scrim + category badge
+#                   + Poe-drafted headline/subtext + logo, at Pinterest's
+#                   recommended 1000x1500.
+#      infographic  a Nano-Banana-2-Lite-generated illustrated background
+#                   (POE_INFOGRAPHIC_MODEL, default "Nano-Banana-2-Lite" —
+#                   a bot handle, check it's still current at poe.com) with
+#                   3 real, always-legible takeaway bullets composited on
+#                   top, grounded in the article's actual body text. The
+#                   image model is only ever asked for art, never text —
+#                   small baked-in text from image-gen models is still
+#                   unreliable (misspelled/garbled), so the headline and
+#                   takeaways are rendered the same reliable way the photo
+#                   style's text already is. See buildInfographicImagePrompt
+#                   in 5-pinterest-pin.mjs and renderInfographicPinImage in
+#                   pinterest-pin-image.mjs.
+npm run pipeline:pin -- --slug your-article-slug [--style infographic]
 
 # 2. Review the .png and .json (edit either if you want), set
 #    "approved": true in the .json, then:
@@ -431,7 +445,12 @@ automatically — no manual Pages CMS step needed.
 
 `.github/workflows/weekly-pinterest-pins.yml` runs the **draft step
 only** (never `--send`) every Monday for up to 5 published articles
-missing a `pinterestPinUrl`, opening a PR with the generated images/copy.
+missing a `pinterestPinUrl`, opening a PR with the generated images/copy
+— always `--style photo` on the scheduled run. A manual
+`workflow_dispatch` can instead target one specific article (`slug`
+input) and/or style (`style` input, `photo` or `infographic`) — useful
+for trying the infographic style on a single article before deciding
+whether to make it the default for the weekly scan.
 Pinterest pins have no built-in "unsent draft" state the way Resend
 broadcasts do, so a real PR diff — the actual pin image, viewable inline
 on GitHub — is the review surface instead. Sending stays a manual, local,

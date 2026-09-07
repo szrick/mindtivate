@@ -145,3 +145,175 @@ export async function renderPinImage({ heroImagePath, category, headline, subtex
     await browser.close();
   }
 }
+
+// Same reasoning as renderPinImage's header comment (exact CSS control,
+// free text wrapping) for why this composites real text over the AI
+// image via Playwright rather than trusting an image-gen model to render
+// legible small text itself — see generateInfographicBackground in
+// scripts/pipeline/5-pinterest-pin.mjs for why the background is AI-only
+// and deliberately excludes text.
+function buildInfographicHtml({ backgroundImageDataUri, logoDataUri, category, headline, takeaways }) {
+  const takeawayItems = takeaways
+    .map(
+      (t) => `<li><span class="bullet-mark">${'✓'}</span><span>${t}</span></li>`,
+    )
+    .join('');
+
+  return `<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1000px;
+    height: 1500px;
+    position: relative;
+    font-family: Georgia, serif;
+    background: ${BRAND.cream};
+    overflow: hidden;
+  }
+  .art-zone {
+    position: relative;
+    width: 1000px;
+    height: 930px;
+  }
+  .bg {
+    position: absolute;
+    inset: 0;
+    width: 1000px;
+    height: 930px;
+    object-fit: cover;
+  }
+  .scrim {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(47,42,51,0.05) 0%, rgba(47,42,51,0.1) 45%, rgba(47,42,51,0.85) 88%, rgba(47,42,51,0.95) 100%);
+  }
+  .badge {
+    position: absolute;
+    top: 64px;
+    left: 64px;
+    background: ${BRAND.terracotta};
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    border-radius: 999px;
+  }
+  .headline {
+    position: absolute;
+    left: 64px;
+    right: 64px;
+    bottom: 48px;
+    font-family: Georgia, serif;
+    font-weight: 700;
+    font-size: 60px;
+    line-height: 1.16;
+    color: #ffffff;
+  }
+  .card {
+    position: relative;
+    width: 1000px;
+    height: 570px;
+    padding: 56px 64px 48px;
+  }
+  .takeaways {
+    list-style: none;
+  }
+  .takeaways li {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    font-family: Arial, sans-serif;
+    font-size: 32px;
+    line-height: 1.35;
+    color: ${BRAND.plum};
+    margin-bottom: 28px;
+  }
+  .bullet-mark {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: ${BRAND.terracotta};
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .brand {
+    position: absolute;
+    left: 64px;
+    bottom: 48px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .brand img {
+    width: 48px;
+    height: 48px;
+  }
+  .brand span {
+    font-family: Georgia, serif;
+    font-weight: 700;
+    font-size: 30px;
+    color: ${BRAND.plum};
+  }
+  .brand .dot {
+    color: ${BRAND.terracotta};
+  }
+</style>
+</head>
+<body>
+  <div class="art-zone">
+    <img class="bg" src="${backgroundImageDataUri}" />
+    <div class="scrim"></div>
+    <div class="badge">${category}</div>
+    <div class="headline">${headline}</div>
+  </div>
+  <div class="card">
+    <ul class="takeaways">${takeawayItems}</ul>
+    <div class="brand">
+      <img src="${logoDataUri}" />
+      <span>Mindtivate<span class="dot">.</span></span>
+    </div>
+  </div>
+</body></html>`;
+}
+
+/**
+ * Renders an infographic-style pin image (AI-generated background art in
+ * the top ~62%, a set of real, always-legible takeaway bullets on a
+ * solid card below) and returns a PNG Buffer.
+ * @param {{ backgroundImage: { buffer: Buffer, ext: string }, category: string, headline: string, takeaways: string[], logoPath?: string }} opts
+ */
+export async function renderInfographicPinImage({
+  backgroundImage,
+  category,
+  headline,
+  takeaways,
+  logoPath = 'public/logo-icon.png',
+}) {
+  const mime = backgroundImage.ext === 'webp' ? 'image/webp' : `image/${backgroundImage.ext}`;
+  const html = buildInfographicHtml({
+    backgroundImageDataUri: `data:${mime};base64,${backgroundImage.buffer.toString('base64')}`,
+    logoDataUri: toDataUri(logoPath),
+    category,
+    headline,
+    takeaways,
+  });
+
+  const browser = await chromium.launch();
+  try {
+    const page = await browser.newPage({ viewport: { width: 1000, height: 1500 } });
+    await page.setContent(html);
+    return await page.screenshot({ type: 'png' });
+  } finally {
+    await browser.close();
+  }
+}

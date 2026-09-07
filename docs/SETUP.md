@@ -64,7 +64,11 @@ bot-selection mechanism for all of it.
      model than `POE_MODEL`'s drafting default is worth it here, since
      this call's entire job is judging another model's writing quality.
      Defaults to `Claude-Opus-4.5`.
-   All five are bot **handles**, not fixed identifiers — check
+   - `POE_INFOGRAPHIC_MODEL` — the image-gen bot stage 5's
+     `--style infographic` uses for the illustrated background art (see
+     `docs/CONTENT_PIPELINE.md` stage 5). Defaults to `Nano-Banana-2-Lite`.
+     Only needed if you use the infographic pin style.
+   All six are bot **handles**, not fixed identifiers — check
    [poe.com](https://poe.com) for what's actually available on your
    account/plan and adjust if a default doesn't resolve.
 3. For the scheduled GitHub Actions (`content-pipeline.yml`,
@@ -72,7 +76,7 @@ bot-selection mechanism for all of it.
    `weekly-reddit-comment-drafts.yml`, `weekly-internal-links.yml`): add
    repo secret `POE_API_KEY` and, optionally, repo variables `POE_MODEL` /
    `POE_IMAGE_MODEL` / `POE_SEARCH_MODEL` / `POE_VISION_MODEL` /
-   `POE_EDITOR_MODEL`.
+   `POE_EDITOR_MODEL` / `POE_INFOGRAPHIC_MODEL`.
 
 ## 3a. Pexels / Unsplash — real stock photos for hero images (optional)
 

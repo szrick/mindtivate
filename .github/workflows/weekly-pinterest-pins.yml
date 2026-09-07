@@ -10,6 +10,16 @@ on:
   schedule:
     - cron: '0 16 * * 1' # Mondays 16:00 UTC
   workflow_dispatch:
+    inputs:
+      slug:
+        description: 'Draft just this one article slug instead of the usual "up to 5 unpinned" scan (optional)'
+        required: false
+        type: string
+      style:
+        description: 'Pin style: photo (default, hero image + scrim) or infographic (AI-generated art + real composited takeaways) — see 5-pinterest-pin.mjs'
+        required: false
+        type: string
+        default: photo
 
 jobs:
   draft:
@@ -35,21 +45,31 @@ jobs:
       - name: Install Playwright's Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: Draft pins for up to 5 unpinned articles
+      - name: Draft pin(s)
+        # Manual runs can target one specific slug/style (e.g. to try the
+        # infographic style on a single article before it's part of the
+        # regular scan); the scheduled run and any manual run without a
+        # slug input keep the original "top 5 unpinned, photo style"
+        # behavior unchanged.
         run: |
-          mapfile -t slugs < <(node scripts/pipeline/find-unpinned-articles.mjs | head -5)
+          if [ -n "${{ inputs.slug }}" ]; then
+            slugs=("${{ inputs.slug }}")
+          else
+            mapfile -t slugs < <(node scripts/pipeline/find-unpinned-articles.mjs | head -5)
+          fi
           if [ ${#slugs[@]} -eq 0 ]; then
             echo "No published articles missing a Pinterest pin — nothing to draft."
             exit 0
           fi
           for slug in "${slugs[@]}"; do
             echo "::group::Drafting pin for $slug"
-            npm run pipeline:pin -- --slug "$slug"
+            npm run pipeline:pin -- --slug "$slug" --style "${{ inputs.style || 'photo' }}"
             echo "::endgroup::"
           done
         env:
           POE_API_KEY: ${{ secrets.POE_API_KEY }}
           POE_MODEL: ${{ vars.POE_MODEL }}
+          POE_INFOGRAPHIC_MODEL: ${{ vars.POE_INFOGRAPHIC_MODEL }}
 
       - name: Open PR with new pin draft(s)
         uses: peter-evans/create-pull-request@v6
