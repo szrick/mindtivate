@@ -650,6 +650,34 @@ Requires `POE_API_KEY` (and benefits from `PEXELS_API_KEY`/
 per article, so it's manual-only — see `regenerate-hero-images.yml`
 below, no cron.
 
+## 11. Analytics digest (`scripts/pipeline/11-analytics-digest.mjs`)
+
+Another maintenance/utility script, not part of the daily content
+pipeline: emails a daily summary (visits, page views, top pages/
+referrers/countries/device types) of the previous UTC day's Cloudflare
+Web Analytics to `ANALYTICS_DIGEST_EMAIL` via Resend. Not human-gated
+like stages 5-8 — this is a private report to the site owner, never
+published or posted anywhere, so it just sends every run rather than
+waiting on an approval step. If the Cloudflare query itself fails (bad
+token, wrong tag, or the GraphQL schema having drifted — see the NOTE at
+the top of `scripts/lib/cloudflare-analytics.mjs`), it still emails a
+"digest failed" notice with the actual error rather than staying silent,
+and exits non-zero so the GitHub Actions run shows failed too.
+
+```bash
+npm run pipeline:analytics                    # yesterday (UTC)
+npm run pipeline:analytics -- --date 2026-09-06
+```
+
+Requires `CF_API_TOKEN`, `CF_ACCOUNT_TAG`, `CF_SITE_TAG`,
+`ANALYTICS_DIGEST_EMAIL`, `RESEND_API_KEY`, `RESEND_FROM_EMAIL` — see
+`docs/SETUP.md` section 7a for how to get each one. Also requires
+`PUBLIC_CF_BEACON_TOKEN` to be set at **build time** (baked into
+`BaseLayout.astro`'s `<head>`) — without it, no Web Analytics data is
+being collected at all, so the digest would just report zeros
+indefinitely rather than erroring (Cloudflare's API doesn't distinguish
+"no beacon installed" from "a quiet day").
+
 ## Scheduled automation
 
 `.github/workflows/content-pipeline.yml` runs stages 1–4 daily — research,
@@ -678,7 +706,9 @@ above, there's nothing to gate it from running unconditionally.
 `.github/workflows/weekly-pinterest-pins.yml` runs stage 5's **draft
 step only** every Monday, for up to 5 published articles missing a
 `pinterestPinUrl`, and opens a PR with the results (see stage 5's section
-above for why sending stays manual).
+above). `.github/workflows/pinterest-auto-send.yml` runs daily and sends
+any draft already marked `approved: true` (capped at 5/run) — see stage
+5's "Sending: manual or automatic" section.
 
 `.github/workflows/weekly-reddit-comment-drafts.yml` runs stage 6's
 **draft step only** every Monday, for up to 5 published articles missing
@@ -696,6 +726,9 @@ manually (optionally scoped to one article or a limit via its inputs)
 whenever the hero-image system itself changes enough to be worth
 backfilling onto existing articles. Same build-first-abort-otherwise
 safety net, straight to `main` like `content-pipeline.yml`.
+
+`.github/workflows/analytics-digest.yml` runs stage 11 daily at 13:00
+UTC — see stage 11's section above.
 
 `POE_API_KEY` is required by all of the above and by stage 7 (newsletter
 broadcast drafts) — every drafting step in this pipeline goes through

@@ -336,6 +336,52 @@ anything that goes out publicly — see `docs/COMPLIANCE.md`.
    tab) — separate from both the Worker's Cloudflare secrets and your
    local `.env`, since GitHub Actions doesn't share env with either.
 
+## 7a. Cloudflare Web Analytics — daily digest email (optional)
+
+A daily email (visits, page views, top pages/referrers/countries/device
+types) for the previous UTC day, sent via `.github/workflows/analytics-digest.yml`
+(`scripts/pipeline/11-analytics-digest.mjs`). Cookieless and doesn't
+identify individual visitors — see `privacy-policy.astro`'s existing
+"aggregated analytics" language, which this doesn't change. No
+demographics (age/gender) — Cloudflare's analytics doesn't collect that;
+see `docs/CONTENT_PIPELINE.md` if you need that instead.
+
+1. **Enable Web Analytics for the site**: Cloudflare dashboard → **Analytics
+   & Logs** → **Web Analytics** → **Add a site** → enter `mindtivate.com`.
+   This generates a JS snippet containing a **token** — copy just the
+   token value (the part inside `data-cf-beacon='{"token": "..."}'`).
+2. Add that token to `.env` as `PUBLIC_CF_BEACON_TOKEN` (the `PUBLIC_`
+   prefix is required — Astro only exposes `PUBLIC_`-prefixed vars to the
+   browser build; this one has to reach the browser to work at all, and
+   isn't a credential — it's a public identifier baked into every page's
+   HTML by design, same as a Google Analytics measurement ID). Without
+   this set, `BaseLayout.astro` simply omits the beacon script — the site
+   builds and works fine either way.
+3. On the same Web Analytics page, note the site's **Zone/Site tag** —
+   Cloudflare shows this once the site's been added (a 32-character hex
+   ID, distinct from the beacon token). Add to `.env` as `CF_SITE_TAG`.
+4. Find your **Account tag/ID**: Cloudflare dashboard → any domain →
+   right sidebar shows "Account ID". Add to `.env` as `CF_ACCOUNT_TAG`.
+5. Create an API token: **My Profile → API Tokens → Create Token** →
+   custom token with **Account → Account Analytics → Read** permission,
+   scoped to your account. Add to `.env` as `CF_API_TOKEN`.
+6. Decide where the digest should land and add to `.env` as
+   `ANALYTICS_DIGEST_EMAIL` — any inbox you actually check, doesn't need
+   to be an address this site otherwise sends from.
+7. For the scheduled workflow: add repo secrets `CF_API_TOKEN`,
+   `CF_ACCOUNT_TAG`, `CF_SITE_TAG`, `ANALYTICS_DIGEST_EMAIL`, and
+   `RESEND_API_KEY` (see section 7) if not already set, plus repo
+   variable `RESEND_FROM_EMAIL` (also section 7). Runs daily at 13:00
+   UTC; `workflow_dispatch` also accepts an optional `date` input to
+   re-run a specific day manually.
+8. **Rebuild and redeploy** after setting `PUBLIC_CF_BEACON_TOKEN` — it's
+   baked in at build time, so an existing deployed site won't start
+   collecting analytics until the next build picks up the new var (set
+   it as a build-time environment variable in whatever's running
+   `npm run build` for the live deploy — check your Cloudflare Workers
+   project's build settings, not just local `.env`, since that's what
+   actually reaches production).
+
 ## 8. Verify
 
 ```bash

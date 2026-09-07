@@ -25,6 +25,13 @@ const { title, description, image, article = false } = Astro.props;
     <link rel="icon" type="image/svg+xml" href={withBase('/favicon-light.svg')} media="(prefers-color-scheme: dark)" />
     <meta name="generator" content={Astro.generator} />
     <Seo title={title} description={description} image={image} article={article} />
+    {import.meta.env.PUBLIC_CF_BEACON_TOKEN && (
+      <script
+        defer
+        src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon={`{"token": "${import.meta.env.PUBLIC_CF_BEACON_TOKEN}"}`}
+      />
+    )}
   </head>
   <body>
     <Header />

@@ -1,0 +1,49 @@
+name: Daily analytics digest
+
+# Emails a daily Cloudflare Web Analytics summary (visits, page views,
+# top pages/referrers/countries/device types) for the previous UTC day
+# to ANALYTICS_DIGEST_EMAIL via Resend. Not human-gated -- this is a
+# private report to the site owner, not something published or posted
+# anywhere, so it just sends every run. See
+# scripts/pipeline/11-analytics-digest.mjs.
+
+on:
+  schedule:
+    - cron: '0 13 * * *' # 13:00 UTC daily -- previous day's stats, once the day is fully closed out everywhere
+  workflow_dispatch:
+    inputs:
+      date:
+        description: 'Digest a specific UTC date (YYYY-MM-DD) instead of yesterday (optional)'
+        required: false
+        type: string
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Send analytics digest
+        run: |
+          if [ -n "${{ inputs.date }}" ]; then
+            npm run pipeline:analytics -- --date "${{ inputs.date }}"
+          else
+            npm run pipeline:analytics
+          fi
+        env:
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CF_ACCOUNT_TAG: ${{ secrets.CF_ACCOUNT_TAG }}
+          CF_SITE_TAG: ${{ secrets.CF_SITE_TAG }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_FROM_EMAIL: ${{ vars.RESEND_FROM_EMAIL }}
+          ANALYTICS_DIGEST_EMAIL: ${{ secrets.ANALYTICS_DIGEST_EMAIL }}
