@@ -1,8 +1,11 @@
-// Minimal Resend API client (no SDK dependency) — used only by
-// scripts/pipeline/7-newsletter-broadcast.mjs. This is a separate,
-// locally-run counterpart to worker/index.ts's contact-creation call:
-// the Worker adds subscribers to the audience in real time as people
-// sign up, this script sends a broadcast to that same audience.
+// Minimal Resend API client (no SDK dependency) — used by
+// scripts/pipeline/7-newsletter-broadcast.mjs (audience broadcasts) and
+// scripts/pipeline/11-analytics-digest.mjs (a direct single-recipient
+// send, not a broadcast — the analytics digest goes to the site owner
+// only, never the newsletter audience). This is a separate, locally-run
+// counterpart to worker/index.ts's contact-creation call: the Worker
+// adds subscribers to the audience in real time as people sign up, this
+// script sends things to (or about) that same audience.
 
 const API_URL = 'https://api.resend.com';
 
@@ -45,5 +48,17 @@ export async function createBroadcast({ audienceId, from, subject, html, text, n
       name,
       send,
     }),
+  });
+}
+
+/**
+ * Sends a single transactional email directly (Resend's /emails
+ * endpoint) -- not a broadcast, no audience involved. `to` may be a
+ * string or an array of strings.
+ */
+export async function sendEmail({ to, from, subject, html, text }) {
+  return resendFetch('/emails', {
+    method: 'POST',
+    body: JSON.stringify({ to, from, subject, html, text }),
   });
 }
