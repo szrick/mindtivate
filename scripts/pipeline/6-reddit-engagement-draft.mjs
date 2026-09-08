@@ -49,9 +49,49 @@ researched an answer to the thread's question, not a marketer. Rules:
   links (especially to unrelated sites or a competitor) is exactly the
   kind of thing that gets a comment removed as spam, regardless of how
   well-researched the writing itself is.
+- CRITICAL: Do not narrate what you're about to do or think out loud
+  before the comment. Never start with "Let me...", "Based on the
+  search results...", "Based on the article...", "I'll write...",
+  "Here's the comment:", or anything else describing your own process —
+  a human reading this on Reddit only ever sees the comment text itself,
+  never your reasoning about how you produced it. Output must begin
+  directly with the comment's actual first word.
 Output plain text only — the comment body, nothing else. No headings, no
 list of links or sources at the end, no markdown besides the one inline
-link to the article.`;
+link to the article, and no preamble of any kind before it.`;
+
+// Defense in depth on top of the prompt above — a search-capable or
+// reasoning-heavy Poe bot doesn't reliably follow "no preamble, no
+// sources list" instructions (confirmed against real drafts: several
+// came back with leaked meta-commentary like "Let me look at the actual
+// thread..." glued onto the front, and/or a numbered "Learn more:"
+// citation dump at the end despite the prompt explicitly forbidding
+// both). This strips both patterns after the fact so a slip in one
+// generation doesn't require a human to catch and hand-edit it.
+function sanitizeCommentDraft(raw) {
+  let text = raw.trim();
+
+  // Trailing "Learn more:" / "Sources:" / "References:" section, with or
+  // without a "---" divider before it, through to the end of the string.
+  text = text.replace(/\n+-{2,}\s*\n+(?:learn more|sources?|references?)\s*:[\s\S]*$/i, '');
+  text = text.replace(/\n+(?:learn more|sources?|references?)\s*:[\s\S]*$/i, '');
+
+  // Leading meta-commentary paragraph -- narrating the task itself
+  // ("Let me...", "Based on the article/thread/search...", "I'll
+  // write...", "Here's the comment:") rather than being the comment.
+  // Only strips the first paragraph, and only when it both matches one
+  // of these openers AND there's a real paragraph after it to fall back
+  // to -- never risk leaving an empty comment.
+  const firstBreak = text.indexOf('\n\n');
+  const firstParagraph = firstBreak === -1 ? text : text.slice(0, firstBreak);
+  const looksLikeMetaCommentary =
+    /^(let me|based on the (article|thread|search)|i'll write|i will write|here'?s the comment)/i.test(firstParagraph.trim());
+  if (looksLikeMetaCommentary && firstBreak !== -1) {
+    text = text.slice(firstBreak + 2).trim();
+  }
+
+  return text.trim();
+}
 
 function parseArgs(argv) {
   const args = { post: false };
@@ -134,7 +174,17 @@ async function run() {
   const link = `https://mindtivate.com/articles/${args.slug}/`;
   const prompt = `Original thread: ${article.sourceThreadUrl}\nArticle title: "${article.title}"\nArticle summary: ${article.description}\nArticle link: ${link}\n\nWrite the comment.`;
   console.log('Drafting comment with Poe...');
-  const commentMarkdown = (await askPoe({ system: SYSTEM_PROMPT, prompt, maxTokens: 400 })).trim();
+  const rawComment = await askPoe({ system: SYSTEM_PROMPT, prompt, maxTokens: 400 });
+  const commentMarkdown = sanitizeCommentDraft(rawComment);
+
+  const urlCount = (commentMarkdown.match(/https?:\/\/\S+/g) ?? []).length;
+  if (urlCount > 1) {
+    console.warn(
+      `  WARNING: drafted comment has ${urlCount} links (expected exactly 1 -- the article link). Review closely before approving.`,
+    );
+  } else if (urlCount === 0) {
+    console.warn('  WARNING: drafted comment has no link at all -- the article link may have been dropped. Review before approving.');
+  }
 
   const draft = {
     slug: args.slug,
