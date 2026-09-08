@@ -62,15 +62,66 @@ export async function askPoe({ system, prompt, maxTokens = 4096, temperature = 0
   return data.choices?.[0]?.message?.content ?? '';
 }
 
+// Finds the end of the first complete JSON object/array in `str`
+// (starting at its first `{` or `[`) by tracking brace/bracket depth,
+// ignoring anything inside string literals (so a `}` in prose text
+// doesn't miscount). Needed because a "strict JSON only" instruction
+// doesn't always stop a model from adding a trailing aside after the
+// JSON ("...}\n\nLet me know if you'd like any changes!") -- a real,
+// recurring failure mode, not hypothetical: this bit an actual
+// weekly-pinterest-pins.yml run (SyntaxError: Unexpected non-whitespace
+// character after JSON at position 1077). Returns the trimmed
+// leading-brace-to-matching-close slice, or the original string
+// untouched if it can't find a balanced value (JSON.parse's own error
+// below is clear enough at that point).
+function extractFirstJsonValue(str) {
+  const start = str.search(/[{[]/);
+  if (start === -1) return str;
+  const open = str[start];
+  const close = open === '{' ? '}' : ']';
+  let depth = 0;
+  let inString = false;
+  let escapeNext = false;
+  for (let i = start; i < str.length; i++) {
+    const ch = str[i];
+    if (escapeNext) {
+      escapeNext = false;
+      continue;
+    }
+    if (ch === '\\') {
+      escapeNext = true;
+      continue;
+    }
+    if (ch === '"') {
+      inString = !inString;
+      continue;
+    }
+    if (inString) continue;
+    if (ch === open) depth++;
+    else if (ch === close) {
+      depth--;
+      if (depth === 0) return str.slice(start, i + 1);
+    }
+  }
+  return str.slice(start);
+}
+
 /**
  * Ask Poe for strict JSON and parse it. Throws if the response isn't
  * valid JSON (callers should retry or fail loudly rather than publish
- * malformed content).
+ * malformed content) -- the error message includes a slice of the raw
+ * response so a real malformed-JSON case is actually debuggable, not
+ * just "Unexpected token".
  */
 export async function askPoeForJson(args) {
   const raw = await askPoe(args);
-  const cleaned = raw.trim().replace(/^```json\s*/i, '').replace(/```$/, '');
-  return JSON.parse(cleaned);
+  const fenced = raw.trim().replace(/^```json\s*/i, '').replace(/```$/, '').trim();
+  const jsonOnly = extractFirstJsonValue(fenced);
+  try {
+    return JSON.parse(jsonOnly);
+  } catch (err) {
+    throw new Error(`Poe did not return valid JSON (${err.message}). Raw response (first 500 chars): ${raw.slice(0, 500)}`);
+  }
 }
 
 const SEARCH_SYSTEM_PROMPT = `You are a research assistant with live web access. Given a topic, find a
