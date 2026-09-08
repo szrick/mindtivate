@@ -226,7 +226,12 @@ program, etc.). Once approved:
    Food, Mind, Hormones, Love, Beauty, Sleep, Life Stages) — see step 4.
 2. Register an app at
    [developers.pinterest.com](https://developers.pinterest.com) and
-   generate an access token with `pins:write` and `boards:read` scopes.
+   generate an access token with `pins:write`, `pins:read`,
+   `boards:read`, **and** `boards:write` scopes. All four — confirmed
+   against a live account: `pins:write`+`boards:read` alone 401s on the
+   actual pin-creation call with `Missing: ['boards:write', 'pins:read']`;
+   `boards:read` only covers listing/reading boards (enough for `GET
+   /v5/boards`, e.g. to find board IDs), not writing a pin into one.
 3. Add `PINTEREST_ACCESS_TOKEN` and `PINTEREST_BOARD_ID` to `.env`.
    `PINTEREST_BOARD_ID` is the catch-all board — used whenever a category
    has no board of its own configured (step 4).

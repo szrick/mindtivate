@@ -1,5 +1,12 @@
-// Minimal Pinterest API v5 client (no dependency). Requires an app with
-// "pins:write" and "boards:read" scopes — see docs/SETUP.md.
+// Minimal Pinterest API v5 client (no dependency). Requires an access
+// token with "pins:write", "pins:read", "boards:read", AND
+// "boards:write" scopes — see docs/SETUP.md. "pins:write"/"boards:read"
+// alone (Pinterest's own docs suggest this is enough) is NOT: a real
+// createPin call 401'd with "Missing: ['boards:write', 'pins:read']" —
+// boards:read only lets you list/read boards (enough for GET /v5/boards,
+// used to find board IDs), actually writing a pin into one needs
+// boards:write too, and Pinterest's pin-creation endpoint separately
+// wants pins:read. Confirmed against a live account, not just docs.
 
 import { readFileSync } from 'node:fs';
 
