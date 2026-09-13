@@ -6,13 +6,19 @@ category: Body
 status: draft
 draft: true
 author: mindtivate-team
-heroImageAlt: "Lifestyle photo related to \"What Actually Fixes Chronic Neck and Shoulder Pain\""
+heroImageAlt: "Photo related to \"woman fitness workout\""
 tags:
   - neck pain
   - shoulder pain
   - chronic pain
   - strength training
   - posture
+heroImage: "./_images/what-actually-fixes-chronic-neck-and-shoulder-pain-hero.webp"
+updatedDate: 2026-09-13
+heroImageSource: Pexels
+heroImagePhotographer: Tima Miroshnichenko
+heroImagePhotographerUrl: "https://www.pexels.com/@tima-miroshnichenko"
+heroImageSourceUrl: "https://www.pexels.com/photo/a-woman-in-black-tank-top-exercising-in-the-gym-6388464/"
 ---
 ## Why the heating pad keeps letting you down
 
