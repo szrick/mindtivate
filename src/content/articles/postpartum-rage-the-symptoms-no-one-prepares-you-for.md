@@ -6,13 +6,19 @@ category: Mind
 status: draft
 draft: true
 author: mindtivate-team
-heroImageAlt: "Lifestyle photo related to \"Postpartum Rage: The Symptoms No One Prepares You For\""
+heroImageAlt: "Photo related to \"woman journaling calm\""
 tags:
   - postpartum
   - postpartum rage
   - postpartum anxiety
   - new mothers
   - mental health
+heroImage: "./_images/postpartum-rage-the-symptoms-no-one-prepares-you-for-hero.webp"
+updatedDate: 2026-09-13
+heroImageSource: Pexels
+heroImagePhotographer: ROMAN ODINTSOV
+heroImagePhotographerUrl: "https://www.pexels.com/@roman-odintsov"
+heroImageSourceUrl: "https://www.pexels.com/photo/a-woman-holding-a-notebook-11025214/"
 ---
 ## The symptom nobody warned you about
 
