@@ -1,24 +1,25 @@
 ---
 title: "Ozempic vs. Wegovy: Which Is Actually Right for You?"
-description: "Same drug, different doses and FDA approvals. Here's how Ozempic and Wegovy actually differ on dosing, cost, results, and safety for women."
+description: Same drug, different doses and FDA approvals. Here's how Ozempic
+  and Wegovy actually differ on dosing, cost, results, and safety for women.
 pubDate: 2026-09-13
+updatedDate: 2026-09-13
 category: Body
-status: draft
-draft: true
+heroImage: _images/ozempic-vs-wegovy-which-is-actually-right-for-you-hero.webp
+heroImageAlt: Photo related to "woman fitness workout"
+heroImageSource: Pexels
+heroImagePhotographer: Tima Miroshnichenko
+heroImagePhotographerUrl: https://www.pexels.com/@tima-miroshnichenko
+heroImageSourceUrl: https://www.pexels.com/photo/grayscale-photo-of-a-woman-using-battle-ropes-6388387/
+status: published
+draft: false
 author: mindtivate-team
-heroImageAlt: "Photo related to \"woman fitness workout\""
 tags:
   - GLP-1
   - Ozempic
   - Wegovy
   - weight loss
   - semaglutide
-heroImage: "./_images/ozempic-vs-wegovy-which-is-actually-right-for-you-hero.webp"
-updatedDate: 2026-09-13
-heroImageSource: Pexels
-heroImagePhotographer: Tima Miroshnichenko
-heroImagePhotographerUrl: "https://www.pexels.com/@tima-miroshnichenko"
-heroImageSourceUrl: "https://www.pexels.com/photo/grayscale-photo-of-a-woman-using-battle-ropes-6388387/"
 ---
 ## They're the same drug — so why the different names?
 
