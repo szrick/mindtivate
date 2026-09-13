@@ -1,23 +1,24 @@
 ---
 title: Is There a Safest Hormone Therapy for Menopause?
-description: "HRT safety depends on hormone type, dose, route, and when you start — not one yes-or-no answer. Here's how to weigh your own risk-benefit picture."
+description: HRT safety depends on hormone type, dose, route, and when you start
+  — not one yes-or-no answer. Here's how to weigh your own risk-benefit picture.
 pubDate: 2026-09-13
+updatedDate: 2026-09-13
 category: Hormones
+heroImage: _images/is-there-a-safest-hormone-therapy-for-menopause-hero.webp
+heroImageAlt: Photo related to "self care tea"
+heroImageSource: Unsplash
+heroImagePhotographer: Kelly Sikkema
+heroImagePhotographerUrl: https://unsplash.com/@kellysikkema?utm_source=mindtivate&utm_medium=referral
+heroImageSourceUrl: https://unsplash.com/photos/a-woman-holding-a-cup-of-tea-in-her-hands-mkVAGewqvqU?utm_source=mindtivate&utm_medium=referral
 status: draft
 draft: true
 author: mindtivate-team
-heroImageAlt: "Photo related to \"self care tea\""
 tags:
   - menopause
   - hormone therapy
   - HRT
   - hormones
-heroImage: "./_images/is-there-a-safest-hormone-therapy-for-menopause-hero.webp"
-updatedDate: 2026-09-13
-heroImageSource: Unsplash
-heroImagePhotographer: Kelly Sikkema
-heroImagePhotographerUrl: "https://unsplash.com/@kellysikkema?utm_source=mindtivate&utm_medium=referral"
-heroImageSourceUrl: "https://unsplash.com/photos/a-woman-holding-a-cup-of-tea-in-her-hands-mkVAGewqvqU?utm_source=mindtivate&utm_medium=referral"
 ---
 ## Why "is HRT safe" doesn't have one answer
 
