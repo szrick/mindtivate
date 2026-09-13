@@ -39,7 +39,7 @@ function parseArgs(argv) {
   return args;
 }
 
-function listArticlesWithHeroImage() {
+function listAllArticles() {
   return readdirSync(ARTICLES_DIR)
     .filter((f) => f.endsWith('.md'))
     .map((f) => {
@@ -47,8 +47,16 @@ function listArticlesWithHeroImage() {
       const raw = readFileSync(`${ARTICLES_DIR}/${f}`, 'utf8');
       const { data } = readFrontmatter(raw);
       return { slug, filePath: `${ARTICLES_DIR}/${f}`, raw, ...data };
-    })
-    .filter((a) => Boolean(a.heroImage));
+    });
+}
+
+// Used for the bulk (no --slug) path, which is genuinely a "regenerate
+// what's already there" operation -- --slug bypasses this filter (see
+// run() below) since generating a FIRST hero image for an article that
+// doesn't have one yet is also a legitimate use of --slug, not just
+// replacing an existing one.
+function listArticlesWithHeroImage() {
+  return listAllArticles().filter((a) => Boolean(a.heroImage));
 }
 
 function resolveImagePath(slug, heroImageValue) {
@@ -57,16 +65,20 @@ function resolveImagePath(slug, heroImageValue) {
 
 async function regenerateOne(article) {
   console.log(`\n${article.slug}`);
-  const oldImagePath = resolveImagePath(article.slug, article.heroImage);
+  const oldImagePath = article.heroImage ? resolveImagePath(article.slug, article.heroImage) : null;
 
   const result = await generateHeroImage(article.title, article.slug, article.category);
   if (!result.heroImage) {
-    console.warn('  regeneration failed (see warning above) -- leaving the existing hero image in place');
+    console.warn(
+      article.heroImage
+        ? '  regeneration failed (see warning above) -- leaving the existing hero image in place'
+        : '  generation failed (see warning above) -- leaving this article without a hero image',
+    );
     return false;
   }
 
   const newImagePath = resolveImagePath(article.slug, result.heroImage);
-  if (newImagePath !== oldImagePath && existsSync(oldImagePath)) {
+  if (oldImagePath && newImagePath !== oldImagePath && existsSync(oldImagePath)) {
     unlinkSync(oldImagePath);
     console.log(`  removed old hero image: ${oldImagePath}`);
   }
@@ -91,19 +103,27 @@ async function regenerateOne(article) {
 
 async function run() {
   const args = parseArgs(process.argv.slice(2));
-  const all = listArticlesWithHeroImage();
 
   let targets;
+  let candidateCount;
   if (args.slug) {
-    const target = all.find((a) => a.slug === args.slug);
+    // Unfiltered lookup: --slug means "(re)generate THIS article's hero
+    // image," which is just as legitimate for an article that doesn't
+    // have one yet as for replacing an existing one -- the bulk path
+    // below is the one that's specifically about regenerating what's
+    // already there.
+    const target = listAllArticles().find((a) => a.slug === args.slug);
     if (!target) {
-      console.error(`No article with a heroImage found at slug "${args.slug}".`);
+      console.error(`No article found at slug "${args.slug}".`);
       process.exitCode = 1;
       return;
     }
     targets = [target];
+    candidateCount = 1;
   } else {
+    const all = listArticlesWithHeroImage();
     targets = args.limit ? all.slice(0, args.limit) : all;
+    candidateCount = all.length;
   }
 
   if (targets.length === 0) {
@@ -111,7 +131,7 @@ async function run() {
     return;
   }
 
-  console.log(`Regenerating hero images for ${targets.length} of ${all.length} article(s)...`);
+  console.log(`Regenerating hero images for ${targets.length} of ${candidateCount} article(s)...`);
   let updatedCount = 0;
   for (const article of targets) {
     try {
