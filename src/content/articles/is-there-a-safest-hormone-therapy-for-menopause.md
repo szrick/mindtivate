@@ -11,8 +11,8 @@ heroImageSource: Unsplash
 heroImagePhotographer: Kelly Sikkema
 heroImagePhotographerUrl: https://unsplash.com/@kellysikkema?utm_source=mindtivate&utm_medium=referral
 heroImageSourceUrl: https://unsplash.com/photos/a-woman-holding-a-cup-of-tea-in-her-hands-mkVAGewqvqU?utm_source=mindtivate&utm_medium=referral
-status: draft
-draft: true
+status: published
+draft: false
 author: mindtivate-team
 tags:
   - menopause
