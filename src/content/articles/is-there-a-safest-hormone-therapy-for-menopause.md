@@ -6,12 +6,18 @@ category: Hormones
 status: draft
 draft: true
 author: mindtivate-team
-heroImageAlt: "Lifestyle photo related to \"Is There a Safest Hormone Therapy for Menopause?\""
+heroImageAlt: "Photo related to \"self care tea\""
 tags:
   - menopause
   - hormone therapy
   - HRT
   - hormones
+heroImage: "./_images/is-there-a-safest-hormone-therapy-for-menopause-hero.webp"
+updatedDate: 2026-09-13
+heroImageSource: Unsplash
+heroImagePhotographer: Kelly Sikkema
+heroImagePhotographerUrl: "https://unsplash.com/@kellysikkema?utm_source=mindtivate&utm_medium=referral"
+heroImageSourceUrl: "https://unsplash.com/photos/a-woman-holding-a-cup-of-tea-in-her-hands-mkVAGewqvqU?utm_source=mindtivate&utm_medium=referral"
 ---
 ## Why "is HRT safe" doesn't have one answer
 
