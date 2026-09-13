@@ -6,13 +6,19 @@ category: Body
 status: draft
 draft: true
 author: mindtivate-team
-heroImageAlt: "Lifestyle photo related to \"Ozempic vs. Wegovy: Which Is Actually Right for You?\""
+heroImageAlt: "Photo related to \"woman fitness workout\""
 tags:
   - GLP-1
   - Ozempic
   - Wegovy
   - weight loss
   - semaglutide
+heroImage: "./_images/ozempic-vs-wegovy-which-is-actually-right-for-you-hero.webp"
+updatedDate: 2026-09-13
+heroImageSource: Pexels
+heroImagePhotographer: Tima Miroshnichenko
+heroImagePhotographerUrl: "https://www.pexels.com/@tima-miroshnichenko"
+heroImageSourceUrl: "https://www.pexels.com/photo/grayscale-photo-of-a-woman-using-battle-ropes-6388387/"
 ---
 ## They're the same drug — so why the different names?
 
