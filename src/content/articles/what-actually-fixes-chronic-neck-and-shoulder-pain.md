@@ -1,24 +1,26 @@
 ---
-title: "What Actually Fixes Chronic Neck and Shoulder Pain"
-description: "Heat and painkillers only mask chronic neck and shoulder pain. Here's what the evidence says actually creates lasting relief — and why it takes longer."
+title: What Actually Fixes Chronic Neck and Shoulder Pain
+description: Heat and painkillers only mask chronic neck and shoulder pain.
+  Here's what the evidence says actually creates lasting relief — and why it
+  takes longer.
 pubDate: 2026-09-13
+updatedDate: 2026-09-13
 category: Body
-status: draft
-draft: true
+heroImage: _images/what-actually-fixes-chronic-neck-and-shoulder-pain-hero.webp
+heroImageAlt: Photo related to "woman fitness workout"
+heroImageSource: Pexels
+heroImagePhotographer: Tima Miroshnichenko
+heroImagePhotographerUrl: https://www.pexels.com/@tima-miroshnichenko
+heroImageSourceUrl: https://www.pexels.com/photo/a-woman-in-black-tank-top-exercising-in-the-gym-6388464/
+status: published
+draft: false
 author: mindtivate-team
-heroImageAlt: "Photo related to \"woman fitness workout\""
 tags:
   - neck pain
   - shoulder pain
   - chronic pain
   - strength training
   - posture
-heroImage: "./_images/what-actually-fixes-chronic-neck-and-shoulder-pain-hero.webp"
-updatedDate: 2026-09-13
-heroImageSource: Pexels
-heroImagePhotographer: Tima Miroshnichenko
-heroImagePhotographerUrl: "https://www.pexels.com/@tima-miroshnichenko"
-heroImageSourceUrl: "https://www.pexels.com/photo/a-woman-in-black-tank-top-exercising-in-the-gym-6388464/"
 ---
 ## Why the heating pad keeps letting you down
 
