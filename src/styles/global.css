@@ -1,4 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Lato:wght@400;700;900&display=swap');
+/* Font loading lives in BaseLayout.astro's <head> as <link> tags, not a
+   CSS @import here. An @import inside the bundled stylesheet forces the
+   browser to fully parse that stylesheet before it can even discover the
+   fonts.googleapis.com URL, then a second cross-origin round trip to
+   fonts.gstatic.com for the actual font files -- two serial cross-origin
+   handshakes blocking CSSOM construction (and therefore first paint)
+   before either request even starts. <link rel="preconnect"> + <link
+   rel="stylesheet"> lets the browser discover and start both immediately
+   while parsing <head>, in parallel with everything else. This cost is
+   proportionally much larger under mobile network conditions (higher
+   RTT per hop) than on desktop broadband, which is why this specifically
+   showed up as a mobile-only "needs improvement" load time. */
 
 :root {
   /* The site has no dark theme, so opt out of the browser/OS auto-dark
