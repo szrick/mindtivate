@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
 import { withBase } from '../lib/url';
 
 interface Props {
@@ -13,7 +14,7 @@ const isLive = ['approved', 'active'].includes(affiliateStatus) && Boolean(affil
 ---
 
 <aside class="product-callout card" aria-label={`Recommended product: ${name}`}>
-  {image && <img src={image.src} alt={name} width="160" height="160" loading="lazy" />}
+  {image && <Image src={image} alt={name} loading="lazy" widths={[96, 192]} sizes="96px" />}
   <div class="product-callout-body">
     <p class="eyebrow">We recommend</p>
     <h4>{name}</h4>

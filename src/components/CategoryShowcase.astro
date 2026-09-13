@@ -9,6 +9,7 @@
 // page the same scroll container by one viewport-width at a time. Both
 // drive the same scroll position, so they never fight each other.
 import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
 import { toCategorySlug } from '../lib/categories';
 import { withBase } from '../lib/url';
 
@@ -51,7 +52,13 @@ const categorySlug = toCategorySlug(label);
           <li class="showcase-item">
             <a href={withBase(`/articles/${article.slug}`)} class="showcase-card">
               {heroImage && (
-                <img src={heroImage.src} alt={heroImageAlt ?? title} width="400" height="400" loading="lazy" />
+                <Image
+                  src={heroImage}
+                  alt={heroImageAlt ?? title}
+                  loading="lazy"
+                  widths={[200, 240, 400]}
+                  sizes="240px"
+                />
               )}
               <span class="showcase-tag">{label}</span>
               <h3>{title}</h3>
