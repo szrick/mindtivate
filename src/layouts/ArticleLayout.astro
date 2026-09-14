@@ -144,6 +144,16 @@ const shareImageUrl = heroImage ? new URL(heroImage.src, Astro.site).toString() 
 
   .article-hero {
     width: 100%;
+    /* Without this, the box's height comes from the <img> element's own
+       width/height HTML attributes (which astro:assets sets to the
+       source photo's full intrinsic size, e.g. 1880x1253, not a size
+       tied to this box) applied as a presentational hint -- and since
+       that gives `height` a definite value, aspect-ratio's auto-height
+       computation never kicks in (it only applies when height is auto).
+       The real symptom: this box rendered at the photo's raw intrinsic
+       pixel height (over 1000px) instead of a 16:9 box scaled to the
+       container width. */
+    height: auto;
     aspect-ratio: 16 / 9;
     object-fit: cover;
     margin: 0;

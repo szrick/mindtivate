@@ -44,6 +44,14 @@ const formattedDate = pubDate.toLocaleDateString('en-US', {
 
   .article-card img {
     width: 100%;
+    /* height: auto is required alongside aspect-ratio here -- without it,
+       the <img>'s own width/height HTML attributes (astro:assets sets
+       these to the source photo's full intrinsic size) apply as a
+       presentational hint that gives `height` a definite value, which
+       silently defeats aspect-ratio's auto-height computation (it only
+       kicks in when height is auto). See ArticleLayout.astro's .article-hero
+       for the same fix with more detail. */
+    height: auto;
     aspect-ratio: 3 / 2;
     object-fit: cover;
     border-radius: 0;

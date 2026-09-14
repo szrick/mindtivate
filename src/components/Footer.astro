@@ -1,7 +1,9 @@
 ---
+import { Image } from 'astro:assets';
 import { withBase } from '../lib/url';
 import { CATEGORIES, toCategorySlug } from '../lib/categories';
 import CategoryIcon from './CategoryIcon.astro';
+import logoIconLight from '../assets/brand/logo-icon-light.png';
 
 const year = new Date().getFullYear();
 ---
@@ -10,7 +12,16 @@ const year = new Date().getFullYear();
   <div class="container footer-inner">
     <div class="footer-brand">
       <a href={withBase('/')} class="footer-logo" aria-label="Mindtivate home">
-        <img src={withBase('/logo-icon-light.png')} alt="" class="footer-logo-icon" width="32" height="28" />
+        <Image
+          src={logoIconLight}
+          alt=""
+          class="footer-logo-icon"
+          width={34}
+          height={30}
+          densities={[1, 2, 3]}
+          format="webp"
+          loading="lazy"
+        />
         <span class="footer-logo-text">Mindtivate<span class="logo-dot">.</span></span>
       </a>
       <p class="tagline">
