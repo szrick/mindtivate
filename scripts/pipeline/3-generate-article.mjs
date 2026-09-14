@@ -167,12 +167,43 @@ function warnOnUnexpectedInternalLinks(bodyMarkdown, articles) {
 }
 
 // Google truncates search-result titles around ~60 characters — not a
-// hard rule (a longer, clearly better title beats an artificially
-// chopped one), so this warns rather than blocks.
+// hard rule for the on-page title itself (a longer, clearly better
+// headline beats an artificially chopped one), so this warns rather than
+// blocks. The <title> tag is a separate matter -- see resolveSeoTitle
+// below, which guarantees that one stays under the limit regardless.
 function warnOnTitleLength(title) {
-  if (title.length > 65) {
+  if (title.length > 60) {
     console.warn(`  NOTE: title is ${title.length} chars — may get truncated in search results (aim for ~60): "${title}"`);
   }
+}
+
+// Real bug this fixes, not hypothetical: Seo.astro drops the "|
+// Mindtivate" suffix for article pages specifically so the <title> tag
+// is just the headline itself, but a handful of already-published
+// articles still had headlines alone running past 60 characters (up to
+// 95) -- flagged by an SEO crawl (title_tag_too_long). This is the
+// single point both stage 3 (drafting) and stage 4 (the automated
+// editor, which can independently rewrite the title during its revision
+// pass) call before writing a file, so a too-long <title> tag can't slip
+// through either path unattended -- content-pipeline.yml auto-publishes
+// with no human review step in between.
+//
+// Prefers a model-supplied `seoTitle` (a real shortened alternate that
+// preserves the topic, not a mechanical chop) when one was given and
+// actually fits; falls back to trimming at the last word boundary under
+// the limit otherwise, so even a model that ignores the instruction
+// entirely still can't ship a truncated-mid-word or over-length <title>.
+// Returns undefined when the title already fits -- callers should omit
+// the frontmatter field entirely in that case, not write a redundant one.
+function resolveSeoTitle(title, providedSeoTitle, maxLen = 60) {
+  if (title.length <= maxLen) return undefined;
+  if (providedSeoTitle && providedSeoTitle.trim().length > 0 && providedSeoTitle.length <= maxLen) {
+    return providedSeoTitle.trim();
+  }
+  const truncated = title.slice(0, maxLen);
+  const lastSpace = truncated.lastIndexOf(' ');
+  const cut = lastSpace > maxLen * 0.6 ? truncated.slice(0, lastSpace) : truncated;
+  return cut.trim().replace(/[,:;—-]+$/, '');
 }
 
 // Same non-fatal spirit as the citation check above: the system prompt
@@ -606,8 +637,13 @@ question being asked over a flat label ("A Guide to X", "Understanding
 X"). No clickbait or curiosity-gap withholding ("You Won't Believe...")
 — that cuts against the evidence-based tone. Keep it under ~60
 characters where the template's title format allows, since Google
-truncates search results around there; a few extra characters for a
-clearly better, more specific title beats an artificially chopped one.
+truncates search results around there and this is what actually renders
+in the page's <title> tag — a few extra characters for a clearly better,
+more specific title beats an artificially chopped one, but if "title"
+ends up longer than 60 characters anyway, also fill in "seoTitle": a
+shorter alternate (≤60 characters) that preserves the core topic/keyword
+for search results, while "title" itself stays the full, on-page
+headline unchanged. Leave "seoTitle" null when "title" already fits.
 
 SEO: Work the article's actual topic/primary phrase naturally into the
 title and the first 1-2 sentences of the body — a reader or search
@@ -655,6 +691,7 @@ ${template.guidance}
 Respond with strict JSON only, no prose outside the JSON, matching:
 {
   "title": string,
+  "seoTitle": string | null (only when "title" is over ~60 chars -- see TITLE above),
   "description": string (max 160 chars, for SEO),
   "category": "Body" | "Food" | "Mind" | "Hormones" | "Love" | "Beauty" | "Sleep" | "Life Stages",
   "tags": string[] (2-5 short tags),
@@ -751,8 +788,11 @@ Write the article JSON now.`;
   const heroImageIdeas = Array.isArray(draft.heroImageIdeas) ? draft.heroImageIdeas.filter(Boolean) : [];
   const heroImageFields = await generateHeroImage(draft.title, slug, draft.category, heroImageIdeas);
 
+  const seoTitle = resolveSeoTitle(draft.title, draft.seoTitle);
+
   const frontmatter = {
     title: draft.title,
+    ...(seoTitle ? { seoTitle } : {}),
     description: draft.description,
     pubDate: new Date(),
     category: draft.category,
@@ -785,4 +825,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   });
 }
 
-export { generateHeroImage, BASE_VOICE_PROMPT, warnOnAiClicheLanguage };
+export { generateHeroImage, BASE_VOICE_PROMPT, warnOnAiClicheLanguage, resolveSeoTitle };
