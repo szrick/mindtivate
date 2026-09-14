@@ -24,6 +24,10 @@ content:
         label: Title
         type: string
         required: true
+      - name: seoTitle
+        label: "SEO title override (optional)"
+        type: string
+        description: "Only set this if the title above is long enough that '<title above> | Mindtivate' would run past ~60 characters in search results. Overrides just the <title> tag -- the on-page heading always shows the real title."
       - name: description
         label: SEO / preview description
         type: text

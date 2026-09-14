@@ -10,7 +10,14 @@ interface Props {
 
 const { title, description, image, article = false } = Astro.props;
 const siteName = 'Mindtivate';
-const fullTitle = title === siteName ? title : `${title} | ${siteName}`;
+// Article titles skip the "| Mindtivate" suffix -- a real, well-known
+// article title is already descriptive enough for a search snippet on
+// its own, and appending 13 more characters routinely pushed already-
+// long titles well past the ~60-character point search engines start
+// truncating <title> tags at (flagged by an SEO crawl: title_tag_too_long).
+// Non-article pages (nearly all short, generic labels like "Contact" or
+// "Search") keep the suffix for brand context.
+const fullTitle = article || title === siteName ? title : `${title} | ${siteName}`;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const ogImage = image ? new URL(image, Astro.site) : new URL(withBase('/og-default.svg'), Astro.site);
 ---

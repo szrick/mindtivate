@@ -1,5 +1,6 @@
 ---
 title: "Abnormal Bleeding on Birth Control: When to Worry About Pregnancy"
+seoTitle: "Bleeding on Birth Control: When to Worry About Pregnancy"
 description: "Breakthrough bleeding is common on hormonal birth control, but it's hard not to spiral. Here's how to tell the difference between normal side effects and pregnancy."
 pubDate: 2026-09-02
 category: Hormones

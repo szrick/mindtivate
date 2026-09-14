@@ -7,7 +7,7 @@ const allArticles = await getCollection('articles', ({ data }) => data.status ==
 const articles = allArticles.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 ---
 
-<BaseLayout title="All Articles" description="Every Mindtivate article on fitness, nutrition, and mental health for women.">
+<BaseLayout title="All Articles on Women's Health & Wellness" description="Every Mindtivate article on fitness, nutrition, and mental health for women.">
   <section class="section container">
     <p class="eyebrow">All articles</p>
     <h1>Everything we've published</h1>

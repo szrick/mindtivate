@@ -5,6 +5,13 @@ const articles = defineCollection({
   schema: ({ image }) =>
     z.object({
       title: z.string(),
+      // Optional override for the <title> tag only (Seo.astro) -- the
+      // on-page <h1> always renders the real `title` above, unchanged.
+      // Only needed when `title` itself is long enough that appending
+      // "| Mindtivate" pushes the <title> tag past ~60 characters (the
+      // point search engines start truncating it in results) -- see
+      // ArticleLayout.astro.
+      seoTitle: z.string().optional(),
       description: z.string(),
       pubDate: z.coerce.date(),
       updatedDate: z.coerce.date().optional(),

@@ -20,6 +20,7 @@ interface Props {
 const { article } = Astro.props;
 const {
   title,
+  seoTitle,
   description,
   pubDate,
   updatedDate,
@@ -44,7 +45,7 @@ const articleUrl = new URL(withBase(`/articles/${article.slug}/`), Astro.site).t
 const shareImageUrl = heroImage ? new URL(heroImage.src, Astro.site).toString() : undefined;
 ---
 
-<BaseLayout title={title} description={description} image={heroImage?.src} article>
+<BaseLayout title={seoTitle ?? title} description={description} image={heroImage?.src} article>
   <article class="section container article">
     <header class="article-header">
       <a href={withBase(`/category/${categorySlug}`)} class="tag">{category}</a>

@@ -1,5 +1,6 @@
 ---
 title: "Disc Replacement vs. Microdiscectomy: What It Means When Your Surgeon Skips the Smaller Surgery"
+seoTitle: "Disc Replacement vs. Microdiscectomy: What It Means"
 description: "Your surgeon says microdiscectomy won't work and wants disc replacement instead. Here's what that recommendation means and what to ask before deciding."
 pubDate: 2026-09-08
 category: Body
