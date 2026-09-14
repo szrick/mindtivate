@@ -35,7 +35,7 @@ Skin isn't uniform. Thickness, hydration level, temperature, and the specific ar
 
 Some women absorb estradiol gel efficiently on their inner forearms (a common application site); others do better on the upper thighs or abdomen. The FDA labeling notes that application site can influence absorption, which is why your prescriber may suggest rotating areas or trying a different spot if your levels come back low.
 
-Age and skin condition matter too. Thicker, drier skin — common as estrogen declines during [perimenopause](/articles/perimenopause-symptoms-no-one-warns-you-about/) — can slow penetration of any topical product. If you're also dealing with other skin changes (dryness, texture shifts), that's not coincidental.
+Age and skin condition matter too. Thicker, drier skin — common as estrogen declines during perimenopause — can slow penetration of any topical product. If you're also dealing with other skin changes (dryness, texture shifts), that's not coincidental.
 
 ## What microneedling claims to do (and what we don't know yet)
 

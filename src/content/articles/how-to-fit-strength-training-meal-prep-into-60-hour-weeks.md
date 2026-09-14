@@ -42,7 +42,7 @@ Instead, think in terms of components, not full meals. Cook a big batch of prote
 
 Another option: split your prep across two shorter sessions instead of one long one. Thirty minutes on Sunday and thirty minutes on Wednesday is often more sustainable than three hours straight, especially when you're already tired from a long shift or a full day of classes and field hours.
 
-If you're aiming for fat loss and muscle gain, protein is the priority. [Research-backed protein targets for active women](/articles/protein-targets-for-women/) typically land around 0.7–1 gram per pound of body weight. Hitting that target consistently matters more than perfecting every other macro or eating from a complicated recipe.
+If you're aiming for fat loss and muscle gain, protein is the priority. Research-backed protein targets for active women typically land around 0.7–1 gram per pound of body weight. Hitting that target consistently matters more than perfecting every other macro or eating from a complicated recipe.
 
 ## Build decision-making into the system, not into your day
 

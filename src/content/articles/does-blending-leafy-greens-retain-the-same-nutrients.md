@@ -47,8 +47,7 @@ One practical note: some people find that drinking a large volume of blended gre
 
 If the barrier to eating greens is truly the time and effort of chewing through a salad, blending solves that problem. It's a tool, not a magic fix—you're still getting the same vegetables, just in a different form.
 
-But if the real issue is that you don't like vegetables and you're hoping blending will make them disappear entirely, that's harder to sustain long-term. Drinking something you find unpleasant every day takes willpower, and willpower is a limited resource. (If building habits without relying on sheer discipline sounds familiar, [this piece on why willpower alone doesn't build habits](/articles/why-willpower-alone-doesnt-build-habits/) walks through what tends to work better.)
-
+But if the real issue is that you don't like vegetables and you're hoping blending will make them disappear entirely, that's harder to sustain long-term. Drinking something you find unpleasant every day takes willpower, and willpower is a limited resource.
 The [federal Dietary Guidelines](https://www.cdc.gov/breastfeeding-data/media/pdfs/2024/05/Dietary_Guidelines_for_Americans_2020-2025.pdf) classify dark-green vegetables as a distinct subgroup worth eating regularly, and blending is one legitimate way to meet that recommendation—especially if the alternative is skipping greens altogether.
 
 ## The bottom line

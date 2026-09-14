@@ -31,6 +31,16 @@ for (const article of sortedArticles) {
   title="Mindtivate — Evidence-Based Wellness for Women"
   description="Evidence-checked health and wellness guidance for women — sourced from the questions real communities are actually asking."
 >
+  <div class="container home-intro">
+    <p class="eyebrow">Mindtivate</p>
+    <h1>Practical, evidence-checked wellness for women</h1>
+    <p class="home-intro-copy">
+      We start with what women are actually asking in fitness, nutrition, and mental-health
+      communities — not what's trending — then check it against current evidence before it's
+      published. Browse by topic below, or jump straight into what's new.
+    </p>
+  </div>
+
   <section class="section featured-wide slider-section">
     {featuredArticles.length > 0 ? (
       <FeaturedArticles articles={featuredArticles} />
@@ -63,6 +73,21 @@ for (const article of sortedArticles) {
 </BaseLayout>
 
 <style>
+  .home-intro {
+    padding-top: clamp(2rem, 4vw, 3rem);
+    padding-bottom: 0;
+    max-width: 760px;
+  }
+
+  .home-intro h1 {
+    margin-bottom: 0.4em;
+  }
+
+  .home-intro-copy {
+    font-size: 1.05rem;
+    margin-bottom: 0;
+  }
+
   .slider-section {
     /* Half the gap above the hero as below it — most of the featured
        section's height should be the images themselves, not empty space

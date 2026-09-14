@@ -43,7 +43,7 @@ If you're currently tolerating metformin well and it's helping, adding myoinosit
 
 You mentioned wanting to stop birth control. That's worth unpacking separately. Hormonal birth control is often prescribed for PCOS to regulate cycles and manage androgen-related symptoms—it doesn't treat the underlying insulin resistance, but it does suppress ovulation and lower circulating androgens. If you stop it, those symptoms may return, and myoinositol may not fully replace that effect. Some women do see cycle regularity improve with myoinositol alone, but it's not universal, and it can take several months to see a difference.
 
-If you're stopping birth control because of side effects—[mood changes, for example](/articles/how-birth-control-can-affect-mood/)—that's a valid reason to explore alternatives. But if you're stopping it *only* because you want to try myoinositol, it's worth thinking through what you're hoping to gain and what you might lose in symptom control during the transition.
+If you're stopping birth control because of side effects—mood changes, for example—that's a valid reason to explore alternatives. But if you're stopping it *only* because you want to try myoinositol, it's worth thinking through what you're hoping to gain and what you might lose in symptom control during the transition.
 
 ## Should you talk to your doctor first?
 

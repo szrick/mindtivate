@@ -47,12 +47,12 @@ If you're two months out and antiperspirant alone isn't controlling the sweating
 
 **Oral anticholinergic medications** can reduce sweating body-wide by blocking the chemical messenger that activates sweat glands, but they come with side effects (dry mouth, blurred vision, constipation) and aren't typically a first choice for a single event. The Mayo Clinic notes that these are sometimes used for generalized sweating or when other treatments haven't worked.
 
-For anxiety-driven sweating specifically, [addressing the anxiety itself](/articles/how-to-tell-the-difference-between-stress-and-burnout/) can help. Beta-blockers (like propranolol) are sometimes prescribed off-label for performance anxiety—they blunt the physical symptoms of adrenaline (racing heart, shaking, sweating) without sedating you. This is something you'd need to discuss with a doctor, ideally with time to trial it before the wedding day.
+For anxiety-driven sweating specifically, addressing the anxiety itself can help. Beta-blockers (like propranolol) are sometimes prescribed off-label for performance anxiety—they blunt the physical symptoms of adrenaline (racing heart, shaking, sweating) without sedating you. This is something you'd need to discuss with a doctor, ideally with time to trial it before the wedding day.
 
 ## What to do in the next two months
 
 Start with a clinical-strength antiperspirant tonight. Apply it to completely dry underarms (and any other problem areas like your back, if that's where you tend to sweat) before bed for the next week, then see where you are. If you're not seeing enough improvement after two weeks of consistent use, schedule an appointment with a dermatologist to discuss prescription-strength antiperspirant or Botox.
 
-If your sweating is closely tied to social anxiety—and it sounds like it is—consider [talking to your primary care doctor about short-term options for managing the physical symptoms of anxiety](/articles/does-journaling-actually-reduce-anxiety/) around the event itself. That's not about diagnosing or treating an anxiety disorder; it's about acknowledging that your body has a predictable stress response and exploring whether there's a tool that can take the edge off for a high-stakes day.
+If your sweating is closely tied to social anxiety—and it sounds like it is—consider talking to your primary care doctor about short-term options for managing the physical symptoms of anxiety around the event itself. That's not about diagnosing or treating an anxiety disorder; it's about acknowledging that your body has a predictable stress response and exploring whether there's a tool that can take the edge off for a high-stakes day.
 
 You're not overreacting, and you're not alone in this. Stress sweating is common, and there are real, evidence-based ways to manage it—even when the dress shows everything and the stakes feel high.
