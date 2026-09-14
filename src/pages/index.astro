@@ -31,7 +31,11 @@ for (const article of sortedArticles) {
   title="Mindtivate — Evidence-Based Wellness for Women"
   description="Evidence-checked health and wellness guidance for women — sourced from the questions real communities are actually asking."
 >
-  <div class="container home-intro">
+  {/* Visually hidden, not removed outright: the homepage was the only page
+      on the site with no <h1> (an SEO issue flagged by Ubersuggest) --
+      screen readers and search engines still see this heading/copy, it's
+      just not rendered on screen above the featured article anymore. */}
+  <div class="container home-intro visually-hidden">
     <p class="eyebrow">Mindtivate</p>
     <h1>Practical, evidence-checked wellness for women</h1>
     <p class="home-intro-copy">
