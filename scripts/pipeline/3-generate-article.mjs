@@ -576,7 +576,19 @@ async function generateHeroImage(title, slug, category, ideas = []) {
       const palette = pickRandom(COLOR_PALETTES);
       const style = pickRandom(STYLE_DESCRIPTORS);
 
-      const imagePrompt = `Editorial lifestyle photograph for a women's health and wellness article titled "${title}". Show ${sceneHint}. The scene uses ${lighting} to create a ${mood} mood. Composition: ${composition}. Color palette: ${palette}. Style: ${style}. ${NEGATIVE_CONSTRAINTS}`;
+      // Explicit orientation instruction: without one, GPT-Image-1 picks its
+      // own aspect ratio per request and sometimes lands on a 1024x1536
+      // portrait output -- every hero-image display slot on the site
+      // (16:9 article hero, 1:1 category card, 3:2 index card) crops via
+      // CSS object-fit:cover from a single source file, so a portrait
+      // source means the browser downloads far more pixel data than any of
+      // those crops ever show (flagged by PageSpeed Insights' "Improve
+      // image delivery" insight). The stock-photo path already forces this
+      // via Pexels/Unsplash's own `orientation=landscape` param (see
+      // tryStockPhoto above); this is the equivalent for the AI-generation
+      // fallback, which has no such API-level param exposed through Poe's
+      // chat-completions wrapper -- prompt text is the only lever here.
+      const imagePrompt = `Editorial lifestyle photograph for a women's health and wellness article titled "${title}". Show ${sceneHint}. The scene uses ${lighting} to create a ${mood} mood. Composition: ${composition}. Color palette: ${palette}. Style: ${style}. Orientation: wide landscape, 16:9 aspect ratio -- the image must be noticeably wider than it is tall, never square or portrait. ${NEGATIVE_CONSTRAINTS}`;
       const { buffer, ext } = await generatePoeImage({ prompt: imagePrompt });
       result = { buffer, ext, heroImageAlt: `Lifestyle photo related to "${title}"` };
     }
