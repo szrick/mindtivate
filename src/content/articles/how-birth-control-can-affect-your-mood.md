@@ -1,12 +1,15 @@
 ---
 title: How Birth Control Can Affect Your Mood
-description: Feeling like a different person since starting the pill isn't
-  just in your head. Here's what the research actually says about birth
-  control, mood changes, and personality changes.
+description: Feeling like a different person since starting the pill isn't just
+  in your head. Here's what the research actually says about birth control, mood
+  changes, and personality changes.
 pubDate: 2026-09-14
+updatedDate: 2026-09-14
 category: Hormones
-status: draft
-draft: true
+heroImage: _images/how-birth-control-can-affect-your-mood-hero.webp
+heroImageAlt: Lifestyle photo related to "How Birth Control Can Affect Your Mood"
+status: published
+draft: false
 author: mindtivate-team
 tags:
   - birth control
@@ -14,9 +17,6 @@ tags:
   - hormones
   - mental health
   - contraception
-heroImage: "./_images/how-birth-control-can-affect-your-mood-hero.webp"
-heroImageAlt: "Lifestyle photo related to \"How Birth Control Can Affect Your Mood\""
-updatedDate: 2026-09-14
 ---
 ## "I feel like a different person" is a common complaint, not a coincidence
 
