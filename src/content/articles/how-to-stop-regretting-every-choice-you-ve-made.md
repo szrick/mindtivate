@@ -16,6 +16,7 @@ tags:
   - "self-confidence"
   - career
   - mental health
+updatedDate: 2026-09-14
 ---
 ## Why regret starts to feel like a pattern
 
