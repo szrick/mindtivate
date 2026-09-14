@@ -58,6 +58,7 @@ const categorySlug = toCategorySlug(label);
                   loading="lazy"
                   widths={[200, 240, 400]}
                   sizes="240px"
+                  quality={75}
                 />
               )}
               <span class="showcase-tag">{label}</span>
@@ -277,9 +278,41 @@ const categorySlug = toCategorySlug(label);
 </style>
 
 <script>
-  const showcases = document.querySelectorAll<HTMLElement>('.category-showcase');
+  interface Track {
+    track: HTMLUListElement;
+    nav: HTMLElement;
+    prevBtn: HTMLButtonElement;
+    nextBtn: HTMLButtonElement;
+    countEl: HTMLElement;
+  }
 
-  showcases.forEach((section) => {
+  interface ScrollState {
+    scrollable: boolean;
+    totalPages: number;
+    currentPage: number;
+  }
+
+  // Pure read -- no DOM writes -- so callers can gather every row's layout
+  // values before any of them writes, instead of interleaving read/write
+  // per row (see updateAll below).
+  function readState(track: HTMLUListElement): ScrollState {
+    const scrollable = track.scrollWidth > track.clientWidth + 4;
+    if (!scrollable) return { scrollable, totalPages: 1, currentPage: 1 };
+    const totalPages = Math.max(1, Math.ceil(track.scrollWidth / track.clientWidth));
+    const currentPage = Math.min(totalPages, Math.ceil(track.scrollLeft / track.clientWidth) + 1);
+    return { scrollable, totalPages, currentPage };
+  }
+
+  function writeState(t: Track, state: ScrollState) {
+    t.nav.hidden = !state.scrollable;
+    if (!state.scrollable) return;
+    t.countEl.textContent = `${state.currentPage} / ${state.totalPages}`;
+    t.prevBtn.disabled = state.currentPage <= 1;
+    t.nextBtn.disabled = state.currentPage >= state.totalPages;
+  }
+
+  const tracks: Track[] = [];
+  document.querySelectorAll<HTMLElement>('.category-showcase').forEach((section) => {
     const track = section.querySelector<HTMLUListElement>('[data-track]');
     const nav = section.querySelector<HTMLElement>('[data-nav]');
     const prevBtn = section.querySelector<HTMLButtonElement>('[data-prev]');
@@ -287,36 +320,38 @@ const categorySlug = toCategorySlug(label);
     const countEl = section.querySelector<HTMLElement>('[data-count]');
     if (!track || !nav || !prevBtn || !nextBtn || !countEl) return;
 
-    function update() {
-      const scrollable = track!.scrollWidth > track!.clientWidth + 4;
-      nav!.hidden = !scrollable;
-      if (!scrollable) return;
-
-      const totalPages = Math.max(1, Math.ceil(track!.scrollWidth / track!.clientWidth));
-      const currentPage = Math.min(
-        totalPages,
-        Math.ceil(track!.scrollLeft / track!.clientWidth) + 1,
-      );
-      countEl!.textContent = `${currentPage} / ${totalPages}`;
-      prevBtn!.disabled = currentPage <= 1;
-      nextBtn!.disabled = currentPage >= totalPages;
-    }
+    const t: Track = { track, nav, prevBtn, nextBtn, countEl };
+    tracks.push(t);
 
     prevBtn.addEventListener('click', () => {
-      track!.scrollBy({ left: -track!.clientWidth, behavior: 'smooth' });
+      track.scrollBy({ left: -track.clientWidth, behavior: 'smooth' });
     });
 
     nextBtn.addEventListener('click', () => {
-      track!.scrollBy({ left: track!.clientWidth, behavior: 'smooth' });
+      track.scrollBy({ left: track.clientWidth, behavior: 'smooth' });
     });
 
     let scrollTimeout: ReturnType<typeof setTimeout>;
     track.addEventListener('scroll', () => {
       clearTimeout(scrollTimeout);
-      scrollTimeout = setTimeout(update, 80);
+      scrollTimeout = setTimeout(() => writeState(t, readState(track)), 80);
     });
-
-    window.addEventListener('resize', update);
-    update();
   });
+
+  // Batched across every row instead of read-then-write per row (PageSpeed
+  // Insights' "Forced reflow" insight flagged this script by name): reading
+  // one row's scrollWidth/clientWidth right after writing another row's
+  // nav.hidden/textContent forces the browser to flush layout synchronously
+  // on every iteration instead of once. With up to 8 category rows on the
+  // homepage, the old per-row `update()` loop meant up to 8 avoidable
+  // synchronous layout flushes back-to-back on load and on every window
+  // resize. Reading every row's state first, then writing every row,
+  // computes layout once for the whole batch instead of once per row.
+  function updateAll() {
+    const states = tracks.map((t) => readState(t.track));
+    tracks.forEach((t, i) => writeState(t, states[i]));
+  }
+
+  updateAll();
+  window.addEventListener('resize', updateAll);
 </script>
