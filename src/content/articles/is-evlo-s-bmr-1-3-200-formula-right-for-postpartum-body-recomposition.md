@@ -18,9 +18,8 @@ tags:
   - postpartum fitness
   - calorie deficit
   - EVLO
-updatedDate: 2026-09-04
+updatedDate: 2026-09-14
 ---
-
 ## What the Formula Actually Means
 
 Let's unpack EVLO's recommendation: **BMR × 1.3 − 200**. Your basal metabolic rate (BMR) is the energy your body burns at complete rest—just keeping your heart beating, lungs breathing, and cells functioning. Multiplying by 1.3 gives you a rough estimate of your *total daily energy expenditure* (TDEE) if you're lightly active. Subtracting 200 calories creates a modest deficit designed to nudge fat loss while preserving muscle—the hallmark of body recomposition.
@@ -41,11 +40,11 @@ This formula is a starting point, not gospel. A few things to keep in mind:
 
 **It's an estimate.** Activity multipliers like 1.3 are averages. If you're chasing a toddler all day, doing yard work, or on your feet for work, your true TDEE might be higher. If progress stalls after a few weeks or you feel exhausted, you may need *more* food, not less.
 
-**Protein matters.** Body recomposition hinges on adequate protein—[the ISSN recommends](https://pmc.ncbi.nlm.nih.gov/articles/PMC5477153/) 1.4–2.0 grams per kilogram of body weight for individuals doing resistance training, especially during a deficit. If you're eating 1,600 calories but most of it is carbs and fat, you won't see the muscle retention and growth you're hoping for.
+**Protein matters.** Body recomposition hinges on adequate protein—[the ISSN recommends](https://pmc.ncbi.nlm.nih.gov/articles/PMC5477153/) 1.4–2.0 grams per kilogram of body weight for individuals doing resistance training, especially during a deficit. If you need help [translating those macro targets into actual grocery quantities](/articles/how-to-calculate-raw-ingredient-amounts-from-weekly-macros/), that can simplify meal prep. If you're eating 1,600 calories but most of it is carbs and fat, you won't see the muscle retention and growth you're hoping for.
 
 **Progress is slow—and that's okay.** You mentioned you're a month in and already seeing differences. That's a win. In your late thirties and postpartum, hormonal changes (lower estrogen, possible thyroid shifts, cortisol from sleep deprivation) can slow the pace. But slow doesn't mean it's not working. Recomposition often shows up in how your clothes fit, your strength gains, and your energy before the scale budges.
 
-**Listen to your body.** [ACOG advises](https://www.acog.org/womens-health/faqs/exercise-after-pregnancy) that postpartum women can generally resume exercise when they feel ready, but recovery timelines vary. If you're feeling run-down, consider whether you need a diet break or a lighter training week. Sustainability beats perfection every time.
+**Listen to your body.** [ACOG advises](https://www.acog.org/womens-health/faqs/exercise-after-pregnancy) that postpartum women can generally resume exercise when they feel ready, but [recovery timelines vary](/articles/what-research-says-about-postpartum-return-to-exercise/). If you're feeling run-down, consider whether you need a diet break or a lighter training week. Sustainability beats perfection every time.
 
 ## The Bottom Line
 
