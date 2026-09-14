@@ -14,6 +14,9 @@ tags:
   - hormones
   - mental health
   - contraception
+heroImage: "./_images/how-birth-control-can-affect-your-mood-hero.webp"
+heroImageAlt: "Lifestyle photo related to \"How Birth Control Can Affect Your Mood\""
+updatedDate: 2026-09-14
 ---
 ## "I feel like a different person" is a common complaint, not a coincidence
 
