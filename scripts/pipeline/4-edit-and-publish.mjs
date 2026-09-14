@@ -58,7 +58,7 @@ import {
   removeFrontmatterField,
   replaceArticleBody,
 } from '../lib/frontmatter.mjs';
-import { generateHeroImage, BASE_VOICE_PROMPT, warnOnAiClicheLanguage } from './3-generate-article.mjs';
+import { generateHeroImage, BASE_VOICE_PROMPT, warnOnAiClicheLanguage, resolveSeoTitle } from './3-generate-article.mjs';
 
 loadEnv();
 
@@ -180,8 +180,14 @@ same URL, same surrounding meaning. Never add, remove, or alter a link;
 link review and internal-link placement happen in a separate pass right
 after this one, so leave that entirely alone here.
 
+If you change "title" and the new one runs longer than ~60 characters,
+also fill in "seoTitle": a shorter alternate (<=60 characters) that
+preserves the core topic for search results -- "title" itself stays the
+full on-page headline. Leave "seoTitle" null if you didn't touch the
+title, or if your revised title already fits.
+
 Respond with strict JSON only, no prose outside the JSON:
-{"title": string, "description": string, "bodyMarkdown": string}`;
+{"title": string, "seoTitle": string | null, "description": string, "bodyMarkdown": string}`;
 
 function extractAllLinkUrls(body) {
   return [...body.matchAll(/\]\(([^)]+)\)/g)].map((m) => m[1]);
@@ -196,7 +202,7 @@ function extractAllLinkUrls(body) {
 // of the links it was told to preserve (that's logged, not blocked on --
 // the article still ships, but it's worth a human noticing).
 async function critiqueAndRewrite({ title, description, category, body }) {
-  const fallback = { title, description, body };
+  const fallback = { title, description, body, seoTitle: null };
 
   let critique;
   try {
@@ -257,6 +263,7 @@ Write the revised article JSON now.`,
     title: rewrite.title || title,
     description: rewrite.description || description,
     body: rewrite.bodyMarkdown,
+    seoTitle: rewrite.seoTitle || null,
   };
 }
 
@@ -533,6 +540,16 @@ async function processDraftArticle(filePath) {
   let raw = originalRaw;
   if (revised.title !== data.title) raw = upsertFrontmatterField(raw, 'title', revised.title);
   if (revised.description !== data.description) raw = upsertFrontmatterField(raw, 'description', revised.description);
+
+  // Recomputed unconditionally (not just "if title changed") because the
+  // rewrite step can change `title` without going through stage 3's own
+  // resolveSeoTitle call -- this is the last point before publish, so it
+  // has to be the one guaranteeing the <title> tag stays under the limit
+  // regardless of which stage produced the final title. Clears a stale
+  // seoTitle if a rewrite happened to land on a title short enough not to
+  // need one anymore.
+  const seoTitle = resolveSeoTitle(revised.title, revised.seoTitle);
+  raw = seoTitle ? upsertFrontmatterField(raw, 'seoTitle', seoTitle) : removeFrontmatterField(raw, 'seoTitle');
 
   // Everything below operates on the (possibly revised) title/body --
   // the hero image prompt uses the article's title, and link/affiliate
