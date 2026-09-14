@@ -1,7 +1,9 @@
 ---
+import { Image } from 'astro:assets';
 import { CATEGORIES, toCategorySlug } from '../lib/categories';
 import { withBase } from '../lib/url';
 import CategoryIcon from './CategoryIcon.astro';
+import logoIcon from '../assets/brand/logo-icon.png';
 
 // The new category labels (Body, Food, Mind, etc.) are much shorter than
 // the old ones (Strength Training, Bodyweight Fitness), so all 8 fit in
@@ -30,7 +32,16 @@ const navCategories = CATEGORIES;
     </div>
 
     <a href={withBase('/')} class="logo" aria-label="Mindtivate home">
-      <img src={withBase('/logo-icon.png')} alt="" class="logo-icon" width="32" height="28" />
+      <Image
+        src={logoIcon}
+        alt=""
+        class="logo-icon"
+        width={39}
+        height={35}
+        densities={[1, 2, 3]}
+        format="webp"
+        loading="eager"
+      />
       <span class="logo-text">Mindtivate<span class="logo-dot">.</span></span>
     </a>
 

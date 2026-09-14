@@ -33,7 +33,27 @@ const { title, description, image, article = false } = Astro.props;
          connection the browser then can't reuse for the actual fetch. -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Lato:wght@400;700;900&display=swap" />
+    <!-- A plain <link rel="stylesheet"> here still blocks first paint on a
+         cross-origin fetch, even with the preconnects above (PageSpeed
+         Insights flagged this specifically: "Render-blocking requests",
+         ~1.2s estimated savings on mobile). media="print" makes the browser
+         treat it as non-blocking for an on-screen render (it doesn't match
+         the current media type) while still fetching it at normal priority;
+         onload flips it to "all" once it's ready, applying the real fonts.
+         Paired with this URL's existing `display=swap`, text renders
+         immediately in the fallback font and swaps to the web font when it
+         arrives, instead of blocking that first render on the font CSS
+         round-trip. <noscript> covers browsers with JS disabled, where the
+         onload handler would otherwise never fire. -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Lato:wght@400;700;900&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Lato:wght@400;700;900&display=swap" />
+    </noscript>
     <meta name="generator" content={Astro.generator} />
     <Seo title={title} description={description} image={image} article={article} />
     {import.meta.env.PUBLIC_CF_BEACON_TOKEN && (
