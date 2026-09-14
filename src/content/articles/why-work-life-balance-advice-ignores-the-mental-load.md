@@ -4,9 +4,13 @@ description: Most work-life balance advice assumes an even split at home. For
   many women, mental load is the real barrier — here's what the evidence says
   actually helps.
 pubDate: 2026-09-14
+updatedDate: 2026-09-14
 category: Mind
-status: draft
-draft: true
+heroImage: _images/why-work-life-balance-advice-ignores-the-mental-load-hero.webp
+heroImageAlt: Lifestyle photo related to "Why Work-Life Balance Advice Ignores
+  the Mental Load"
+status: published
+draft: false
 author: mindtivate-team
 tags:
   - work-life balance
@@ -14,9 +18,6 @@ tags:
   - burnout
   - boundaries
   - stress
-heroImage: "./_images/why-work-life-balance-advice-ignores-the-mental-load-hero.webp"
-heroImageAlt: "Lifestyle photo related to \"Why Work-Life Balance Advice Ignores the Mental Load\""
-updatedDate: 2026-09-14
 ---
 ## The advice that keeps missing the point
 
