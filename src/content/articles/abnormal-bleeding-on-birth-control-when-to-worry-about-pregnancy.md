@@ -43,6 +43,6 @@ An ultrasound will show whether there's a structural reason for the bleeding and
 
 The anxiety loop — bleeding, testing, googling, testing again — is hard to break, especially when you've heard stories that make it seem like negative tests can't be trusted. But the evidence here is on your side: you're using two methods, your tests are negative, and you don't feel pregnant. That combination makes pregnancy extremely unlikely.
 
-If the bleeding itself is bothersome (heavy enough to interfere with daily life, or accompanied by pain), mention that specifically at your ultrasound appointment. [Hormonal birth control can sometimes affect mood](/articles/how-birth-control-can-affect-mood/), and the anxiety around bleeding and pregnancy scares is worth naming too — not because it's "all in your head," but because it's a real side effect of living with unpredictable bleeding for months.
+If the bleeding itself is bothersome (heavy enough to interfere with daily life, or accompanied by pain), mention that specifically at your ultrasound appointment. Hormonal birth control can sometimes affect mood, and the anxiety around bleeding and pregnancy scares is worth naming too — not because it's "all in your head," but because it's a real side effect of living with unpredictable bleeding for months.
 
 The ultrasound will give you a clear answer. In the meantime, the most likely explanation is that your body is still adjusting to the hormones, not that you're pregnant and don't know it.

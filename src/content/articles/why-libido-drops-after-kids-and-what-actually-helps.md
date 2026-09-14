@@ -53,7 +53,7 @@ There's no single fix here, because the problem isn't single. But a few approach
 
 **Talk to your doctor if this has gone on for years.** Low libido that persists well past the newborn phase — especially if you're also dealing with mood changes, fatigue that doesn't improve with sleep, or other symptoms — can sometimes point to thyroid issues, low iron, or hormonal imbalances that are treatable. It's worth ruling out.
 
-**Consider whether the relationship itself needs attention.** Sometimes low desire is your body's way of telling you something about the relationship that's hard to name directly. If there's unresolved resentment, if you don't feel seen or supported, if the dynamic has shifted in a way that makes you feel more like a caregiver than a partner — that's going to show up in your sex life. [Healthy conflict patterns](/articles/how-to-know-if-youre-in-a-healthy-conflict-pattern/) and the ability to repair after disconnection matter more than most people expect.
+**Consider whether the relationship itself needs attention.** Sometimes low desire is your body's way of telling you something about the relationship that's hard to name directly. If there's unresolved resentment, if you don't feel seen or supported, if the dynamic has shifted in a way that makes you feel more like a caregiver than a partner — that's going to show up in your sex life. Healthy conflict patterns and the ability to repair after disconnection matter more than most people expect.
 
 ## The bottom line
 

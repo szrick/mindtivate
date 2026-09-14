@@ -37,7 +37,7 @@ Increasing your weekly mileage by 1.5 times over three to four weeks is aggressi
 
 First, look at the timing of your evening gym sessions. If you're finishing a workout within two to three hours of bedtime, that's likely contributing. Moving those sessions earlier — even by an hour — or swapping one or two for a morning slot can make a noticeable difference.
 
-Second, give your nervous system a clearer wind-down signal. After an evening workout, a cool shower (not ice-cold, just cooler than body temperature) can help bring your core temp down faster. Dim lighting in the hour before bed and keeping your bedroom cool also support that downshift — [your body needs to drop its core temperature to fall asleep efficiently](/articles/does-a-cooler-room-actually-improve-sleep/).
+Second, give your nervous system a clearer wind-down signal. After an evening workout, a cool shower (not ice-cold, just cooler than body temperature) can help bring your core temp down faster. Dim lighting in the hour before bed and keeping your bedroom cool also support that downshift — your body needs to drop its core temperature to fall asleep efficiently.
 
 Third, consider whether you're actually recovering enough between hard days. If you're stacking long runs, tempo work, and gym sessions without easier days in between, your body never gets a chance to clear the stress response. A true easy day — where your heart rate stays low and you're not chasing a pace or a rep count — isn't wasted time. It's what allows the hard days to work.
 

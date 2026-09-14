@@ -50,10 +50,10 @@ When you feel that flash of rage, a few strategies can help you ride it out with
 
 If you can, step away for a minute — put the baby down safely, go to another room, and take a few long, slow breaths. The goal isn't to suppress the anger or shame yourself for feeling it. It's to give your nervous system a chance to downshift before you respond.
 
-Longer-term, the things that help with postpartum rage are the same things that help with most postpartum mood struggles: [more sleep](/articles/does-a-cooler-room-actually-improve-sleep/) (easier said than done, but even small improvements matter), social support that actually feels supportive, and professional help if the anger persists. Therapy — particularly cognitive-behavioral approaches — can give you tools to manage the intensity and address any underlying depression or anxiety.
+Longer-term, the things that help with postpartum rage are the same things that help with most postpartum mood struggles: more sleep (easier said than done, but even small improvements matter), social support that actually feels supportive, and professional help if the anger persists. Therapy — particularly cognitive-behavioral approaches — can give you tools to manage the intensity and address any underlying depression or anxiety.
 
 ## What to say to friends who aren't getting it
 
-You've already explained yourself more than once, and it's reasonable to feel frustrated that you're still getting requests that don't fit your life right now. One option is to [be more direct than you've been so far](/articles/how-to-set-a-boundary-without-starting-a-fight/): "I can't do evenings or last-minute plans right now. If you want to see me, it needs to be a weekend afternoon with at least a few days' notice."
+You've already explained yourself more than once, and it's reasonable to feel frustrated that you're still getting requests that don't fit your life right now. One option is to be more direct than you've been so far: "I can't do evenings or last-minute plans right now. If you want to see me, it needs to be a weekend afternoon with at least a few days' notice."
 
 You're not obligated to keep explaining. If a friend can't adjust after you've been clear, that's information about what they're able to offer you in this season — and it's okay to let that friendship take up less space for a while. Not every relationship survives a major life transition unchanged, and that's not a failure on your part.
