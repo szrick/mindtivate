@@ -23,6 +23,17 @@ const { title, description, image, article = false } = Astro.props;
     <meta name="color-scheme" content="light" />
     <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} media="(prefers-color-scheme: light)" />
     <link rel="icon" type="image/svg+xml" href={withBase('/favicon-light.svg')} media="(prefers-color-scheme: dark)" />
+    <!-- Moved out of global.css's old `@import url(...)` -- see the comment
+         there. preconnect opens both font-CDN connections (DNS + TCP + TLS)
+         as soon as the browser starts parsing <head>, instead of waiting
+         to discover them only after downloading and parsing the bundled
+         CSS. crossorigin is required on the gstatic preconnect even though
+         this page itself isn't cross-origin with it -- font fetches are
+         always CORS requests, and a preconnect without crossorigin opens a
+         connection the browser then can't reuse for the actual fetch. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Lato:wght@400;700;900&display=swap" />
     <meta name="generator" content={Astro.generator} />
     <Seo title={title} description={description} image={image} article={article} />
     {import.meta.env.PUBLIC_CF_BEACON_TOKEN && (
