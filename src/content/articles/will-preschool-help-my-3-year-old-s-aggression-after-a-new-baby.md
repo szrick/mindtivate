@@ -1,5 +1,6 @@
 ---
 title: Will Preschool Help My 3-Year-Old's Aggression After a New Baby?
+seoTitle: "Will Preschool Help My 3-Year-Old's Aggression?"
 description: Your preschooler's aggression since the baby arrived isn't
   unusual—and preschool can help, but not for the reason you might think.
 pubDate: 2026-08-29

@@ -1,5 +1,6 @@
 ---
 title: Why Ramping Up Marathon Training Can Make You Wired at Bedtime
+seoTitle: "Why Marathon Training Can Make You Wired at Bedtime"
 description: "Increased training load often disrupts sleep — here's why your nervous system stays revved up, and what actually helps you wind down after hard training days."
 pubDate: 2026-09-01
 category: Sleep
