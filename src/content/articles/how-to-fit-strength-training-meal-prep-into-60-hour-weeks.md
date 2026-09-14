@@ -4,7 +4,7 @@ description: When you're juggling work, school, wedding planning, and chronic
   health conditions, here's how to structure training and meal prep without
   burning out.
 pubDate: 2026-08-25
-updatedDate: 2026-09-04
+updatedDate: 2026-09-14
 category: Body
 heroImage: "./_images/how-to-fit-strength-training-meal-prep-into-60-hour-weeks-hero.webp"
 status: published
@@ -42,7 +42,7 @@ Instead, think in terms of components, not full meals. Cook a big batch of prote
 
 Another option: split your prep across two shorter sessions instead of one long one. Thirty minutes on Sunday and thirty minutes on Wednesday is often more sustainable than three hours straight, especially when you're already tired from a long shift or a full day of classes and field hours.
 
-If you're aiming for fat loss and muscle gain, protein is the priority. Research-backed protein targets for active women typically land around 0.7–1 gram per pound of body weight. Hitting that target consistently matters more than perfecting every other macro or eating from a complicated recipe.
+If you're aiming for fat loss and muscle gain, protein is the priority. Research-backed protein targets for active women typically land around 0.7–1 gram per pound of body weight. Hitting that target consistently matters more than perfecting every other macro or eating from a complicated recipe. If you need help [translating those macro targets into actual grocery amounts](/articles/how-to-calculate-raw-ingredient-amounts-from-weekly-macros/), that math can prevent Sunday-prep guesswork.
 
 ## Build decision-making into the system, not into your day
 
