@@ -21,7 +21,7 @@ updatedDate: 2026-09-04
 
 You're the maid of honor. You have a speech. The wedding's outdoors, the dress is backless, and you already know your body's going to sweat through sheer nerves alone—sweat pads aren't an option when the fabric shows everything. This isn't about temperature or exertion; it's about your nervous system deciding that a high-stakes social moment is the perfect time to activate every sweat gland you own.
 
-Stress-induced sweating is a real physiological response, and it's different from the kind of sweating you get from heat or exercise. When you're anxious, your body releases adrenaline, which triggers the sweat glands in your underarms, palms, and sometimes your back and chest—areas rich in apocrine glands that respond to emotional stress more than temperature. For some people, that response is mild. For others, it's drenching.
+If you're wondering how to stop stress sweating before a big moment, start here: stress-induced sweating is a real physiological response, and it's different from the kind of sweating you get from heat or exercise. When you're anxious, your body releases adrenaline, which triggers the sweat glands in your underarms, palms, and sometimes your back and chest—areas rich in apocrine glands that respond to emotional stress more than temperature. For some people, that response is mild. For others, it's drenching.
 
 ## Why this type of sweating is harder to manage
 
