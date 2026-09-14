@@ -59,6 +59,11 @@ const shareImageUrl = heroImage ? new URL(heroImage.src, Astro.site).toString() 
 
     {heroImage && (
       <figure class="article-hero-figure">
+        {/* quality={75}, here and on every other content-photo <Image> site-wide:
+            Sharp's default WebP quality (80) was flagged by PageSpeed Insights'
+            "Improve image delivery" insight -- 75 shaves ~14% off file size with
+            no visible difference at the sizes these actually render (verified by
+            comparing quality 65/70/75/80 side by side on a real hero photo). */}
         <Image
           src={heroImage}
           alt={heroImageAlt ?? title}
@@ -67,6 +72,7 @@ const shareImageUrl = heroImage ? new URL(heroImage.src, Astro.site).toString() 
           sizes={`(min-width: 1120px) 1120px, 100vw`}
           loading="eager"
           fetchpriority="high"
+          quality={75}
         />
         {heroImageSource && (
           <figcaption class="hero-credit">

@@ -24,8 +24,10 @@ const [main, ...side] = articles;
             src={main.data.heroImage}
             alt={main.data.heroImageAlt ?? main.data.title}
             loading="eager"
+            fetchpriority="high"
             widths={[400, 800, 1200]}
             sizes="(max-width: 640px) 100vw, 66vw"
+            quality={75}
           />
         )}
         <div class="featured-scrim"></div>
@@ -49,6 +51,7 @@ const [main, ...side] = articles;
                   loading="lazy"
                   widths={[300, 500, 700]}
                   sizes="(max-width: 640px) 100vw, 33vw"
+                  quality={75}
                 />
               )}
               <div class="featured-scrim"></div>

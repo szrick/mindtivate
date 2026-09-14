@@ -14,7 +14,7 @@ const isLive = ['approved', 'active'].includes(affiliateStatus) && Boolean(affil
 ---
 
 <aside class="product-callout card" aria-label={`Recommended product: ${name}`}>
-  {image && <Image src={image} alt={name} loading="lazy" widths={[96, 192]} sizes="96px" />}
+  {image && <Image src={image} alt={name} loading="lazy" widths={[96, 192]} sizes="96px" quality={75} />}
   <div class="product-callout-body">
     <p class="eyebrow">We recommend</p>
     <h4>{name}</h4>
