@@ -4,9 +4,13 @@ description: The "cleared at 6 weeks" checkup isn't a green light for your old
   workout. Here's what the actual evidence says about a safe, realistic return
   to exercise after birth.
 pubDate: 2026-09-14
+updatedDate: 2026-09-14
 category: Life Stages
-status: draft
-draft: true
+heroImage: _images/what-research-says-about-postpartum-return-to-exercise-hero.webp
+heroImageAlt: Lifestyle photo related to "What Research Says About Postpartum
+  Return to Exercise"
+status: published
+draft: false
 author: mindtivate-team
 tags:
   - postpartum
@@ -14,9 +18,6 @@ tags:
   - pelvic floor
   - running
   - strength training
-heroImage: "./_images/what-research-says-about-postpartum-return-to-exercise-hero.webp"
-heroImageAlt: "Lifestyle photo related to \"What Research Says About Postpartum Return to Exercise\""
-updatedDate: 2026-09-14
 ---
 ## The 6-week checkup isn't the finish line it feels like
 
