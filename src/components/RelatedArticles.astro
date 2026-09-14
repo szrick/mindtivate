@@ -1,5 +1,6 @@
 ---
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
 import { withBase } from '../lib/url';
 
 interface Props {
@@ -33,13 +34,13 @@ const relatedArticles = [...sameCategory, ...rest].slice(0, 5);
         <li>
           <a href={withBase(`/articles/${related.slug}`)} class="related-articles-link">
             {related.data.heroImage && (
-              <img
-                src={related.data.heroImage.src}
+              <Image
+                src={related.data.heroImage}
                 alt=""
-                width="72"
-                height="72"
                 loading="lazy"
                 class="related-articles-thumb"
+                widths={[72, 144]}
+                sizes="72px"
               />
             )}
             <span>{related.data.title}</span>

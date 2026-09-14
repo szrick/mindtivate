@@ -4,6 +4,7 @@
 // stack one after another (see the media query below) — there's no
 // separate mobile-only content, just a different layout of the same set.
 import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
 import { withBase } from '../lib/url';
 
 interface Props {
@@ -19,10 +20,12 @@ const [main, ...side] = articles;
     <a href={withBase(`/articles/${main.slug}`)} class="featured-card featured-main">
       <div class="featured-media">
         {main.data.heroImage && (
-          <img
-            src={main.data.heroImage.src}
+          <Image
+            src={main.data.heroImage}
             alt={main.data.heroImageAlt ?? main.data.title}
             loading="eager"
+            widths={[400, 800, 1200]}
+            sizes="(max-width: 640px) 100vw, 66vw"
           />
         )}
         <div class="featured-scrim"></div>
@@ -40,10 +43,12 @@ const [main, ...side] = articles;
           <a href={withBase(`/articles/${article.slug}`)} class="featured-card featured-side-item">
             <div class="featured-media">
               {article.data.heroImage && (
-                <img
-                  src={article.data.heroImage.src}
+                <Image
+                  src={article.data.heroImage}
                   alt={article.data.heroImageAlt ?? article.data.title}
                   loading="lazy"
+                  widths={[300, 500, 700]}
+                  sizes="(max-width: 640px) 100vw, 33vw"
                 />
               )}
               <div class="featured-scrim"></div>

@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
 import { toCategorySlug } from '../lib/categories';
 import { withBase } from '../lib/url';
 
@@ -19,7 +20,13 @@ const formattedDate = pubDate.toLocaleDateString('en-US', {
 
 <div class="article-card card">
   {heroImage && (
-    <img src={heroImage.src} alt={heroImageAlt ?? title} width="480" height="320" loading="lazy" />
+    <Image
+      src={heroImage}
+      alt={heroImageAlt ?? title}
+      loading="lazy"
+      widths={[280, 480, 600]}
+      sizes="(max-width: 640px) 100vw, 360px"
+    />
   )}
   <div class="article-card-body">
     <a href={withBase(`/category/${categorySlug}`)} class="tag category-link">{category}</a>
