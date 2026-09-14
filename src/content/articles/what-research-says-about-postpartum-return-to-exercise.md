@@ -14,6 +14,9 @@ tags:
   - pelvic floor
   - running
   - strength training
+heroImage: "./_images/what-research-says-about-postpartum-return-to-exercise-hero.webp"
+heroImageAlt: "Lifestyle photo related to \"What Research Says About Postpartum Return to Exercise\""
+updatedDate: 2026-09-14
 ---
 ## The 6-week checkup isn't the finish line it feels like
 
