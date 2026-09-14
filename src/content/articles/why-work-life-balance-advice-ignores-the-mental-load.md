@@ -14,6 +14,9 @@ tags:
   - burnout
   - boundaries
   - stress
+heroImage: "./_images/why-work-life-balance-advice-ignores-the-mental-load-hero.webp"
+heroImageAlt: "Lifestyle photo related to \"Why Work-Life Balance Advice Ignores the Mental Load\""
+updatedDate: 2026-09-14
 ---
 ## The advice that keeps missing the point
 
