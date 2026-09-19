@@ -17,7 +17,7 @@ const [main, ...side] = articles;
 
 {main && (
   <div class="featured-grid">
-    <a href={withBase(`/articles/${main.slug}`)} class="featured-card featured-main">
+    <a href={withBase(`/articles/${main.slug}/`)} class="featured-card featured-main">
       <div class="featured-media">
         {main.data.heroImage && (
           <Image
@@ -42,7 +42,7 @@ const [main, ...side] = articles;
     {side.length > 0 && (
       <div class="featured-side">
         {side.map((article) => (
-          <a href={withBase(`/articles/${article.slug}`)} class="featured-card featured-side-item">
+          <a href={withBase(`/articles/${article.slug}/`)} class="featured-card featured-side-item">
             <div class="featured-media">
               {article.data.heroImage && (
                 <Image

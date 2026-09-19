@@ -28,7 +28,7 @@ const categorySlug = toCategorySlug(label);
       <div class="showcase-header-spacer" aria-hidden="true"></div>
       <h2>{label}</h2>
       <div class="showcase-controls">
-        <a href={withBase(`/category/${categorySlug}`)} class="showcase-all">See all</a>
+        <a href={withBase(`/category/${categorySlug}/`)} class="showcase-all">See all</a>
         <div class="showcase-nav" data-nav hidden>
           <button type="button" class="nav-btn" data-prev aria-label={`Previous ${label} articles`}>
             <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
@@ -50,7 +50,7 @@ const categorySlug = toCategorySlug(label);
         const { title, description, pubDate, heroImage, heroImageAlt } = article.data;
         return (
           <li class="showcase-item">
-            <a href={withBase(`/articles/${article.slug}`)} class="showcase-card">
+            <a href={withBase(`/articles/${article.slug}/`)} class="showcase-card">
               {heroImage && (
                 <Image
                   src={heroImage}

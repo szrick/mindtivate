@@ -62,7 +62,7 @@ const year = new Date().getFullYear();
       <ul class="footer-categories">
         {CATEGORIES.map((c) => (
           <li>
-            <a href={withBase(`/category/${toCategorySlug(c.label)}`)}>
+            <a href={withBase(`/category/${toCategorySlug(c.label)}/`)}>
               <CategoryIcon label={c.label} size="1rem" />
               {c.label}
             </a>
@@ -74,13 +74,13 @@ const year = new Date().getFullYear();
     <div class="footer-col">
       <h4>More about us</h4>
       <ul>
-        <li><a href={withBase('/about-us')}>About us</a></li>
-        <li><a href={withBase('/about')}>Our approach</a></li>
-        <li><a href={withBase('/affiliate-disclosure')}>Affiliate disclosure</a></li>
-        <li><a href={withBase('/contact')}>Contact</a></li>
-        <li><a href={withBase('/terms-and-conditions')}>Terms and conditions</a></li>
-        <li><a href={withBase('/privacy-policy')}>Privacy policy</a></li>
-        <li><a href={withBase('/sitemap')}>Sitemap</a></li>
+        <li><a href={withBase('/about-us/')}>About us</a></li>
+        <li><a href={withBase('/about/')}>Our approach</a></li>
+        <li><a href={withBase('/affiliate-disclosure/')}>Affiliate disclosure</a></li>
+        <li><a href={withBase('/contact/')}>Contact</a></li>
+        <li><a href={withBase('/terms-and-conditions/')}>Terms and conditions</a></li>
+        <li><a href={withBase('/privacy-policy/')}>Privacy policy</a></li>
+        <li><a href={withBase('/sitemap/')}>Sitemap</a></li>
       </ul>
     </div>
   </div>
@@ -90,7 +90,7 @@ const year = new Date().getFullYear();
     <p>
       Content is for informational purposes only and is not medical advice.
       Some links may be affiliate links — see our
-      <a href={withBase('/affiliate-disclosure')}>disclosure</a>.
+      <a href={withBase('/affiliate-disclosure/')}>disclosure</a>.
     </p>
   </div>
 </footer>

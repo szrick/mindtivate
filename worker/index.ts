@@ -234,7 +234,7 @@ const WELCOME_SEQUENCE: WelcomeSequenceStep[] = [
     bodyText:
       "You'll hear from us with practical, evidence-checked guidance on body, food, mind, and hormones — sourced from what women are actually asking, not what's trending. No overwhelm, no guilt, nothing to sell you.",
     ctaText: 'Browse the site',
-    ctaPath: '/articles',
+    ctaPath: '/articles/',
   },
   {
     delayDays: 3,
@@ -254,7 +254,7 @@ const WELCOME_SEQUENCE: WelcomeSequenceStep[] = [
     bodyText:
       "Every article we publish gets checked against the actual evidence before it goes up — not rewritten trend pieces. If something here is ever wrong or worth pushing back on, just reply to this email and tell us.",
     ctaText: 'Read the latest',
-    ctaPath: '/articles',
+    ctaPath: '/articles/',
   },
 ];
 
@@ -468,9 +468,9 @@ async function handleSubscribe(request: Request, env: Env): Promise<Response> {
   }
 
   const fail = (message: string, status: number) =>
-    isJson ? jsonResponse({ error: message }, status) : redirectResponse(request, '/newsletter/error');
+    isJson ? jsonResponse({ error: message }, status) : redirectResponse(request, '/newsletter/error/');
   const succeed = () =>
-    isJson ? jsonResponse({ ok: true, pending: true }) : redirectResponse(request, '/newsletter/thanks');
+    isJson ? jsonResponse({ ok: true, pending: true }) : redirectResponse(request, '/newsletter/thanks/');
 
   // Honeypot: real visitors never fill this hidden field in. Pretend
   // success and drop it silently rather than telling a bot what tripped it.
@@ -511,12 +511,12 @@ async function handleSubscribe(request: Request, env: Env): Promise<Response> {
 async function handleConfirm(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
   const token = new URL(request.url).searchParams.get('token');
   if (!token || !env.CONFIRM_SECRET) {
-    return redirectResponse(request, '/newsletter/confirm-error');
+    return redirectResponse(request, '/newsletter/confirm-error/');
   }
 
   const email = await verifySignedToken(token, env.CONFIRM_SECRET);
   if (!email) {
-    return redirectResponse(request, '/newsletter/confirm-error');
+    return redirectResponse(request, '/newsletter/confirm-error/');
   }
 
   // Checked before confirming, not after: some corporate email scanners
@@ -532,34 +532,34 @@ async function handleConfirm(request: Request, env: Env, ctx: ExecutionContext):
   const res = await resendConfirmContact(email, env);
   if (!res.ok) {
     console.error('Resend contact confirm failed', res.status, await res.text());
-    return redirectResponse(request, '/newsletter/confirm-error');
+    return redirectResponse(request, '/newsletter/confirm-error/');
   }
 
   if (!alreadyConfirmed) {
     ctx.waitUntil(sendWelcomeSequence(email, request, env));
   }
 
-  return redirectResponse(request, '/newsletter/confirmed');
+  return redirectResponse(request, '/newsletter/confirmed/');
 }
 
 async function handleUnsubscribe(request: Request, env: Env): Promise<Response> {
   const token = new URL(request.url).searchParams.get('token');
   if (!token || !env.CONFIRM_SECRET) {
-    return redirectResponse(request, '/newsletter/unsubscribe-error');
+    return redirectResponse(request, '/newsletter/unsubscribe-error/');
   }
 
   const email = await verifySignedToken(token, env.CONFIRM_SECRET);
   if (!email) {
-    return redirectResponse(request, '/newsletter/unsubscribe-error');
+    return redirectResponse(request, '/newsletter/unsubscribe-error/');
   }
 
   const res = await resendUnsubscribeContact(email, env);
   if (!res.ok) {
     console.error('Resend contact unsubscribe failed', res.status, await res.text());
-    return redirectResponse(request, '/newsletter/unsubscribe-error');
+    return redirectResponse(request, '/newsletter/unsubscribe-error/');
   }
 
-  return redirectResponse(request, '/newsletter/unsubscribed');
+  return redirectResponse(request, '/newsletter/unsubscribed/');
 }
 
 export default {
