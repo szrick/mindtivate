@@ -17,7 +17,14 @@ export default defineConfig({
       // Google a mixed signal ("index me" via the sitemap vs. "don't" via
       // the meta tag) and was very likely why one of them got flagged as
       // a Soft 404 in Search Console in the first place.
-      filter: (page) => !['/search/', '/saved/'].some((path) => page.endsWith(path)),
+      //
+      // The /newsletter/* pages are the same class of problem: they're
+      // interstitial confirm/error/thank-you pages only ever reached after
+      // a form submit or an email link click, not content anyone should
+      // land on from search -- also given `noindex` (see each page's
+      // <BaseLayout noindex> prop) and excluded here for the same reason.
+      filter: (page) =>
+        !['/search/', '/saved/'].some((path) => page.endsWith(path)) && !page.includes('/newsletter/'),
     }),
   ],
   output: 'static',
