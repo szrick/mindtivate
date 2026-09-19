@@ -337,6 +337,85 @@ function permanentRedirect(request: Request, path: string): Response {
   return Response.redirect(new URL(path, request.url).toString(), 301);
 }
 
+// These 39 article slugs were real, published articles -- mostly the
+// site's original "sample article" seed content from before the
+// automated pipeline existed -- that were deliberately deleted via Pages
+// CMS (confirmed via git log: every one of these has a "Delete
+// src/content/articles/<slug>.md (via Pages CMS)" commit). Google had
+// them indexed and now reports them as "Not found (404)" in Search
+// Console. A plain 404 isn't wrong here, but Google treats it as
+// ambiguous ("maybe this comes back") and keeps recrawling indefinitely.
+// A 410 Gone is the correct, more precise signal for content that was
+// intentionally and permanently removed -- Google's own guidance is that
+// it gets a URL dropped from the index meaningfully faster than a 404
+// does. This is a static, point-in-time list from the current GSC
+// export, not something that updates itself: deleting another article
+// going forward that shouldn't come back means adding its slug here too.
+const PERMANENTLY_DELETED_ARTICLES = new Set([
+  'beginner-strength-program-that-sticks',
+  'bodyweight-progression-to-first-pull-up',
+  'do-rest-days-actually-need-to-be-fully-sedentary',
+  'do-you-actually-need-a-separate-eye-cream',
+  'do-you-need-electrolytes-if-you-dont-run-marathons',
+  'does-a-cooler-room-actually-improve-sleep',
+  'does-drinking-more-water-actually-improve-skin',
+  'does-journaling-actually-reduce-anxiety',
+  'does-meal-timing-matter-as-much-as-total-intake',
+  'how-birth-control-can-affect-mood',
+  'how-bone-density-changes-through-adulthood',
+  'how-fitness-priorities-should-shift-through-your-30s',
+  'how-hormones-shift-across-the-menstrual-cycle',
+  'how-often-should-you-actually-wash-your-hair',
+  'how-to-know-if-youre-in-a-healthy-conflict-pattern',
+  'how-to-set-a-boundary-without-starting-a-fight',
+  'how-to-tell-the-difference-between-stress-and-burnout',
+  'how-to-warm-up-before-a-strength-session',
+  'is-a-consistent-wake-time-more-important-than-bedtime',
+  'is-napping-good-or-bad-for-nighttime-sleep',
+  'is-soreness-a-sign-a-workout-worked',
+  'pcos-symptoms-that-get-dismissed',
+  'perimenopause-symptoms-no-one-warns-you-about',
+  'protein-targets-for-women',
+  'the-difference-between-a-boundary-and-an-ultimatum',
+  'the-skincare-routine-that-actually-matters',
+  'what-a-normal-menstrual-cycle-length-actually-is',
+  'what-actually-counts-as-a-balanced-meal',
+  'what-actually-helps-with-decision-fatigue',
+  'what-changes-in-your-30s-that-nobody-tells-you',
+  'what-changes-in-your-body-in-your-40s',
+  'what-makes-an-apology-actually-land',
+  'what-spf-number-actually-means',
+  'what-to-expect-in-the-first-year-of-perimenopause',
+  'why-attachment-style-shows-up-more-under-stress',
+  'why-just-be-consistent-doesnt-work',
+  'why-willpower-alone-doesnt-build-habits',
+  'why-you-wake-up-at-the-same-time-every-night',
+  'why-youre-tired-after-8-hours-of-sleep',
+]);
+
+// Same visual language as src/pages/404.astro (a real 404 Response, this
+// isn't -- Workers can't reach into the ASSETS build to reuse that
+// page's compiled HTML at request time, so this is a small inline
+// equivalent) with copy that's actually true for this case: not a broken
+// link, a page that used to exist and won't be back.
+function goneResponse(): Response {
+  const html = `<!doctype html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>Article removed | Mindtivate</title>
+<meta name="robots" content="noindex">
+<style>body{font-family:system-ui,sans-serif;text-align:center;padding:6rem 1.5rem;background:#faf7f2;color:#3d3547}
+a{display:inline-block;margin-top:1.5rem;padding:0.7em 1.6em;background:#6b5b73;color:#fff;text-decoration:none;border-radius:999px}</style>
+</head>
+<body>
+<p style="text-transform:uppercase;letter-spacing:0.05em;font-size:0.85rem;color:#9a8fa3">410</p>
+<h1>This article has been removed</h1>
+<p>It's not a broken link — this article was taken down and isn't coming back.</p>
+<a href="/">Back to home</a>
+</body>
+</html>`;
+  return new Response(html, { status: 410, headers: { 'Content-Type': 'text/html; charset=UTF-8' } });
+}
+
 // Affiliate-link cloaking: every product's rendered "Check current price"
 // link (see ProductCallout.astro) points here instead of straight at the
 // affiliate URL, so a rotated/expired link only ever needs updating on
@@ -501,6 +580,10 @@ export default {
     const oldCategorySlug = url.pathname.match(/^\/category\/([^/]+)\/?$/)?.[1];
     if (oldCategorySlug && OLD_CATEGORY_REDIRECTS[oldCategorySlug]) {
       return permanentRedirect(request, `/category/${OLD_CATEGORY_REDIRECTS[oldCategorySlug]}/`);
+    }
+    const deletedArticleSlug = url.pathname.match(/^\/articles\/([^/]+)\/?$/)?.[1];
+    if (deletedArticleSlug && PERMANENTLY_DELETED_ARTICLES.has(deletedArticleSlug)) {
+      return goneResponse();
     }
     return env.ASSETS.fetch(request);
   },
