@@ -314,6 +314,29 @@ function redirectResponse(request: Request, path: string): Response {
   return Response.redirect(new URL(path, request.url).toString(), 303);
 }
 
+// The category taxonomy was fully replaced on 2026-08-17 (see git log for
+// "Replace the 8 categories with a new taxonomy") -- these 6 old category
+// slugs were live and indexed by Google before that, and have 404'd ever
+// since, showing up in Search Console as persistent "Not found" errors.
+// A real 301 (permanent -- this mapping isn't coming back) settles that:
+// it carries over whatever link equity/bookmarks pointed at the old URL,
+// and lets Google's crawler reclassify these as redirects instead of
+// errors once it recrawls, rather than leaving them as dead ends
+// indefinitely. Love and Beauty were in the old taxonomy too but kept
+// their exact same slugs, so they need no entry here.
+const OLD_CATEGORY_REDIRECTS: Record<string, string> = {
+  'weight-loss': 'body',
+  'strength-training': 'body',
+  'bodyweight-fitness': 'body',
+  nutrition: 'food',
+  'mental-health': 'mind',
+  motivation: 'mind',
+};
+
+function permanentRedirect(request: Request, path: string): Response {
+  return Response.redirect(new URL(path, request.url).toString(), 301);
+}
+
 // Affiliate-link cloaking: every product's rendered "Check current price"
 // link (see ProductCallout.astro) points here instead of straight at the
 // affiliate URL, so a rotated/expired link only ever needs updating on
@@ -474,6 +497,10 @@ export default {
     }
     if (url.pathname.startsWith('/go/')) {
       return handleGoLink(url.pathname, request);
+    }
+    const oldCategorySlug = url.pathname.match(/^\/category\/([^/]+)\/?$/)?.[1];
+    if (oldCategorySlug && OLD_CATEGORY_REDIRECTS[oldCategorySlug]) {
+      return permanentRedirect(request, `/category/${OLD_CATEGORY_REDIRECTS[oldCategorySlug]}/`);
     }
     return env.ASSETS.fetch(request);
   },
