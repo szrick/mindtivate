@@ -6,9 +6,10 @@ interface Props {
   description: string;
   image?: string;
   article?: boolean;
+  noindex?: boolean;
 }
 
-const { title, description, image, article = false } = Astro.props;
+const { title, description, image, article = false, noindex = false } = Astro.props;
 const siteName = 'Mindtivate';
 // Article titles skip the "| Mindtivate" suffix -- a real, well-known
 // article title is already descriptive enough for a search snippet on
@@ -25,6 +26,16 @@ const ogImage = image ? new URL(image, Astro.site) : new URL(withBase('/og-defau
 <title>{fullTitle}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonicalURL} />
+{noindex && (
+  // "follow" (not "nofollow") on purpose -- these are content-free-server-
+  // side, client-JS-only utility pages (search results, saved articles)
+  // that Google was flagging as "Soft 404" since they render essentially
+  // no static text and depend entirely on per-browser state Googlebot
+  // never has. Nothing wrong with Google *crawling* them (there are real
+  // article links inside once JS renders results), just with treating
+  // them as indexable content pages in their own right.
+  <meta name="robots" content="noindex, follow" />
+)}
 
 <meta property="og:type" content={article ? 'article' : 'website'} />
 <meta property="og:site_name" content={siteName} />

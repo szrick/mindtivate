@@ -10,9 +10,10 @@ interface Props {
   description: string;
   image?: string;
   article?: boolean;
+  noindex?: boolean;
 }
 
-const { title, description, image, article = false } = Astro.props;
+const { title, description, image, article = false, noindex = false } = Astro.props;
 ---
 
 <!doctype html>
@@ -55,7 +56,7 @@ const { title, description, image, article = false } = Astro.props;
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Lato:wght@400;700;900&display=swap" />
     </noscript>
     <meta name="generator" content={Astro.generator} />
-    <Seo title={title} description={description} image={image} article={article} />
+    <Seo title={title} description={description} image={image} article={article} noindex={noindex} />
     {import.meta.env.PUBLIC_CF_BEACON_TOKEN && (
       <script
         defer
