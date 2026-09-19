@@ -128,7 +128,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     const heading = document.createElement('h3');
     const link = document.createElement('a');
-    link.href = withBase(`/articles/${bookmark.slug}`);
+    link.href = withBase(`/articles/${bookmark.slug}/`);
     link.textContent = bookmark.title;
     heading.appendChild(link);
     body.appendChild(heading);

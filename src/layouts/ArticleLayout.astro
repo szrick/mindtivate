@@ -48,7 +48,7 @@ const shareImageUrl = heroImage ? new URL(heroImage.src, Astro.site).toString() 
 <BaseLayout title={seoTitle ?? title} description={description} image={heroImage?.src} article>
   <article class="section container article">
     <header class="article-header">
-      <a href={withBase(`/category/${categorySlug}`)} class="tag">{category}</a>
+      <a href={withBase(`/category/${categorySlug}/`)} class="tag">{category}</a>
       <h1>{title}</h1>
       <p class="article-meta">
         {authorEntry && <span>By {authorEntry.data.name}</span>}

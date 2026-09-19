@@ -30,8 +30,8 @@ const formattedDate = pubDate.toLocaleDateString('en-US', {
     />
   )}
   <div class="article-card-body">
-    <a href={withBase(`/category/${categorySlug}`)} class="tag category-link">{category}</a>
-    <h3><a href={withBase(`/articles/${article.slug}`)} class="card-link">{title}</a></h3>
+    <a href={withBase(`/category/${categorySlug}/`)} class="tag category-link">{category}</a>
+    <h3><a href={withBase(`/articles/${article.slug}/`)} class="card-link">{title}</a></h3>
     <p>{description}</p>
     <time datetime={pubDate.toISOString()}>{formattedDate}</time>
   </div>

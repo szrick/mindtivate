@@ -49,7 +49,7 @@ const navCategories = CATEGORIES;
       <ul>
         {navCategories.map((c) => (
           <li>
-            <a href={withBase(`/category/${toCategorySlug(c.label)}`)}>
+            <a href={withBase(`/category/${toCategorySlug(c.label)}/`)}>
               <CategoryIcon label={c.label} size="1.15rem" />
               {c.label}
             </a>
@@ -59,7 +59,7 @@ const navCategories = CATEGORIES;
     </nav>
 
     <div class="header-icons">
-      <a href={withBase('/saved')} class="bookmark-link" data-bookmark-link aria-label="Saved articles">
+      <a href={withBase('/saved/')} class="bookmark-link" data-bookmark-link aria-label="Saved articles">
         <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
           <path
             d="M6 3.5h12a1 1 0 0 1 1 1V21l-7-4-7 4V4.5a1 1 0 0 1 1-1Z"
@@ -89,7 +89,7 @@ const navCategories = CATEGORIES;
   </div>
 
   <div id="header-search-bar" class="header-search-bar" data-header-search-bar hidden>
-    <form class="header-search-form container" action={withBase('/search')} method="get">
+    <form class="header-search-form container" action={withBase('/search/')} method="get">
       <label for="header-search-input" class="visually-hidden">Search articles</label>
       <input
         id="header-search-input"
@@ -107,7 +107,7 @@ const navCategories = CATEGORIES;
     <ul>
       {navCategories.map((c) => (
         <li>
-          <a href={withBase(`/category/${toCategorySlug(c.label)}`)}>
+          <a href={withBase(`/category/${toCategorySlug(c.label)}/`)}>
             <CategoryIcon label={c.label} size="1.15rem" />
             {c.label}
           </a>

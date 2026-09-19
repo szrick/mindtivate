@@ -32,7 +32,7 @@ const relatedArticles = [...sameCategory, ...rest].slice(0, 5);
     <ul class="related-articles-list">
       {relatedArticles.map((related) => (
         <li>
-          <a href={withBase(`/articles/${related.slug}`)} class="related-articles-link">
+          <a href={withBase(`/articles/${related.slug}/`)} class="related-articles-link">
             {related.data.heroImage && (
               <Image
                 src={related.data.heroImage}
