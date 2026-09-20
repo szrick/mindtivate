@@ -352,6 +352,12 @@ const categorySlug = toCategorySlug(label);
     tracks.forEach((t, i) => writeState(t, states[i]));
   }
 
-  updateAll();
-  window.addEventListener('resize', updateAll);
+  // Deferred to the next frame, not called synchronously here -- run in the
+  // same tick as other components' hoisted scripts (e.g. Header's
+  // bookmark-count DOM writes), the geometry reads inside readState() would
+  // force a synchronous layout recalculation instead of reusing the one the
+  // browser computes for its next paint anyway (PageSpeed Insights flagged
+  // this as a forced reflow, attributed to this file).
+  requestAnimationFrame(updateAll);
+  window.addEventListener('resize', () => requestAnimationFrame(updateAll));
 </script>
