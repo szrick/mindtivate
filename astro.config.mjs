@@ -27,5 +27,21 @@ export default defineConfig({
         !['/search/', '/saved/'].some((path) => page.endsWith(path)) && !page.includes('/newsletter/'),
     }),
   ],
+  // Inlines every page's stylesheet directly into its HTML instead of a
+  // separate render-blocking <link rel="stylesheet"> request -- PageSpeed
+  // Insights flagged this on mobile ("Render-blocking requests", "Network
+  // dependency tree"). 'auto' (Vite's default 4 KiB inline threshold) isn't
+  // enough here: Vite's CSS code-splitting bundles this site down to just
+  // two shared chunks (~8 KiB and ~10 KiB raw -- every non-article page
+  // loads the ~10 KiB one, including ArticleLayout's styles it never uses),
+  // both over that threshold. Since almost all real traffic lands here as a
+  // first-time visit from search/Pinterest (not a return visit that would
+  // benefit from the external file's cross-page HTTP cache), avoiding the
+  // extra request on that critical first render outweighs losing that
+  // caching. See git history if per-page CSS splitting ever gets addressed
+  // properly -- inlining the same ~10 KiB across every page isn't free.
+  build: {
+    inlineStylesheets: 'always',
+  },
   output: 'static',
 });
