@@ -127,7 +127,7 @@ function toDataUri(filePath) {
  * Renders the pin image and returns a PNG Buffer.
  * @param {{ heroImagePath: string, category: string, headline: string, subtext: string, logoPath?: string }} opts
  */
-export async function renderPinImage({ heroImagePath, category, headline, subtext, logoPath = 'public/logo-icon.png' }) {
+export async function renderPinImage({ heroImagePath, category, headline, subtext, logoPath = 'src/assets/brand/logo-icon.png' }) {
   const html = buildHtml({
     heroImageDataUri: toDataUri(heroImagePath),
     logoDataUri: toDataUri(logoPath),
@@ -410,7 +410,7 @@ export async function renderInfographicPinImage({
   headline,
   layoutStyle,
   items,
-  logoPath = 'public/logo-icon.png',
+  logoPath = 'src/assets/brand/logo-icon.png',
 }) {
   const mime = backgroundImage.ext === 'webp' ? 'image/webp' : `image/${backgroundImage.ext}`;
   const html = buildInfographicHtml({
