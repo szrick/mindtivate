@@ -22,6 +22,16 @@ on:
         required: false
         type: string
         default: photo
+      limit:
+        description: 'How many unpinned articles to draft this run (only applies without a slug input) — default matches the usual weekly scan'
+        required: false
+        type: string
+        default: '5'
+      autoApprove:
+        description: 'Pre-set "approved": true on every draft this run creates, instead of the usual false — for a deliberate one-time bulk backfill only, not the normal weekly default'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   draft:
@@ -52,12 +62,12 @@ jobs:
         # infographic style on a single article before it's part of the
         # regular scan); the scheduled run and any manual run without a
         # slug input keep the original "top 5 unpinned, photo style"
-        # behavior unchanged.
+        # behavior unchanged (limit defaults to '5').
         run: |
           if [ -n "${{ inputs.slug }}" ]; then
             slugs=("${{ inputs.slug }}")
           else
-            mapfile -t slugs < <(node scripts/pipeline/find-unpinned-articles.mjs | head -5)
+            mapfile -t slugs < <(node scripts/pipeline/find-unpinned-articles.mjs | head -"${{ inputs.limit || '5' }}")
           fi
           if [ ${#slugs[@]} -eq 0 ]; then
             echo "No published articles missing a Pinterest pin — nothing to draft."
@@ -66,6 +76,15 @@ jobs:
           for slug in "${slugs[@]}"; do
             echo "::group::Drafting pin for $slug"
             npm run pipeline:pin -- --slug "$slug" --style "${{ inputs.style || 'photo' }}"
+            if [ "${{ inputs.autoApprove }}" = "true" ]; then
+              node -e "
+                const fs = require('node:fs');
+                const path = 'scripts/pipeline/pinterest-pin-drafts/${slug}.json';
+                const draft = JSON.parse(fs.readFileSync(path, 'utf8'));
+                draft.approved = true;
+                fs.writeFileSync(path, JSON.stringify(draft, null, 2));
+              "
+            fi
             echo "::endgroup::"
           done
         env:
@@ -83,13 +102,14 @@ jobs:
 
             **Nothing has been posted to Pinterest.** Each drafted pin is a
             `.png` (the actual pin image) plus a `.json` (title/description/
-            board category, `"approved": false`) under
-            `scripts/pipeline/pinterest-pin-drafts/`.
+            board category) under `scripts/pipeline/pinterest-pin-drafts/`.
+
+            ${{ inputs.autoApprove == true && 'These were drafted with `"approved": true` already set, per a one-time bulk-backfill request -- review the images/copy below and flip any back to `false` first if one needs changes before it should be allowed to send.' || 'Each starts as `"approved": false`.' }}
 
             To review: open each `.png` in this PR's "Files changed" tab,
             check the drafted copy in its `.json`, edit either if you want,
-            then set `"approved": true`. Once this PR is merged, an
-            approved draft gets sent either:
+            then set `"approved": true` if it isn't already. Once this PR
+            is merged, an approved draft gets sent either:
 
             - automatically, next time `pinterest-auto-send.yml` runs
               (daily) — if `PINTEREST_ACCESS_TOKEN`/`PINTEREST_BOARD_ID`
