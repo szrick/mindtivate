@@ -1,15 +1,16 @@
 name: Daily analytics digest
 
 # Emails a daily Cloudflare Web Analytics summary (visits, page views,
-# top pages/referrers/countries/device types) for the previous UTC day
-# to ANALYTICS_DIGEST_EMAIL via Resend. Not human-gated -- this is a
+# top pages/referrers/countries/device types) plus PageSpeed Insights
+# mobile/desktop performance scores, for the previous UTC day, to
+# ANALYTICS_DIGEST_EMAIL via Resend. Not human-gated -- this is a
 # private report to the site owner, not something published or posted
 # anywhere, so it just sends every run. See
 # scripts/pipeline/11-analytics-digest.mjs.
 
 on:
   schedule:
-    - cron: '0 13 * * *' # 13:00 UTC daily -- previous day's stats, once the day is fully closed out everywhere
+    - cron: '0 23 * * *' # 23:00 UTC daily = 07:00 HKT (UTC+8, no DST) the next morning
   workflow_dispatch:
     inputs:
       date:
@@ -47,3 +48,6 @@ jobs:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           RESEND_FROM_EMAIL: ${{ vars.RESEND_FROM_EMAIL }}
           ANALYTICS_DIGEST_EMAIL: ${{ secrets.ANALYTICS_DIGEST_EMAIL }}
+          # Optional -- PageSpeed Insights works unauthenticated too, this
+          # just avoids the shared unauthenticated quota. See docs/SETUP.md 7a.
+          PAGESPEED_API_KEY: ${{ secrets.PAGESPEED_API_KEY }}

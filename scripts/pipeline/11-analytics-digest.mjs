@@ -20,6 +20,7 @@
 
 import { loadEnv } from '../lib/env.mjs';
 import { fetchDailyStats } from '../lib/cloudflare-analytics.mjs';
+import { fetchPerformanceScores } from '../lib/pagespeed-insights.mjs';
 import { sendEmail } from '../lib/resend.mjs';
 
 loadEnv();
@@ -71,7 +72,53 @@ function renderSection(title, items) {
     </div>`;
 }
 
-function renderHtml({ dateStr, stats }) {
+// PageSpeed Insights' own score-color convention: green >=90, orange
+// 50-89, red <50 -- reusing it here so the number reads the same way it
+// would on pagespeed.web.dev.
+function scoreColor(score) {
+  if (score == null) return BRAND.plum;
+  if (score >= 90) return '#2e7d32';
+  if (score >= 50) return '#e08a00';
+  return '#c0392b';
+}
+
+function renderPerfCard(label, result) {
+  if (!result) {
+    return `<td><div style="font-size:32px;font-weight:bold;color:${BRAND.plum};opacity:0.4;font-family:Georgia,serif;">—</div><div style="font-size:13px;color:${BRAND.plum};font-family:Arial,sans-serif;">${label}</div></td>`;
+  }
+  return `<td style="padding-right:2.5em;">
+    <div style="font-size:32px;font-weight:bold;color:${scoreColor(result.score)};font-family:Georgia,serif;">${result.score ?? '—'}</div>
+    <div style="font-size:13px;color:${BRAND.plum};font-family:Arial,sans-serif;margin-bottom:0.3em;">${label}</div>
+    <div style="font-size:12px;color:${BRAND.plum};opacity:0.65;font-family:Arial,sans-serif;">LCP ${result.lcp} · CLS ${result.cls} · TBT ${result.tbt}</div>
+  </td>`;
+}
+
+function renderPerformanceSectionHtml(perf) {
+  if (perf.error) {
+    return `
+    <div style="margin:1.6em 0;">
+      <p style="margin:0 0 0.5em;font-size:13px;letter-spacing:0.04em;text-transform:uppercase;color:${BRAND.sage};font-family:Arial,sans-serif;font-weight:bold;">PageSpeed performance</p>
+      <p style="margin:0;font-size:13px;color:${BRAND.plum};opacity:0.6;font-family:Arial,sans-serif;">Unavailable today: ${String(perf.error).slice(0, 200)}</p>
+    </div>`;
+  }
+  return `
+    <div style="margin:1.6em 0;">
+      <p style="margin:0 0 0.8em;font-size:13px;letter-spacing:0.04em;text-transform:uppercase;color:${BRAND.sage};font-family:Arial,sans-serif;font-weight:bold;">PageSpeed performance</p>
+      <table role="presentation" cellpadding="0" cellspacing="0">
+        <tr>${renderPerfCard('Mobile', perf.mobile)}${renderPerfCard('Desktop', perf.desktop)}</tr>
+      </table>
+    </div>`;
+}
+
+function renderPerformanceSectionText(perf) {
+  if (perf.error) {
+    return `PageSpeed performance:\n  Unavailable today: ${perf.error}`;
+  }
+  const line = (label, r) => (r ? `  ${label}: ${r.score ?? 'N/A'}/100 (LCP ${r.lcp}, CLS ${r.cls}, TBT ${r.tbt})` : `  ${label}: N/A`);
+  return `PageSpeed performance:\n${line('Mobile', perf.mobile)}\n${line('Desktop', perf.desktop)}`;
+}
+
+function renderHtml({ dateStr, stats, perf }) {
   return `<!doctype html>
 <html>
   <body style="margin:0;padding:32px 24px;background:${BRAND.cream};font-family:Georgia,serif;">
@@ -98,6 +145,8 @@ function renderHtml({ dateStr, stats }) {
       ${renderSection('Top countries', stats.topCountries)}
       ${renderSection('Device types', stats.topDevices)}
 
+      ${renderPerformanceSectionHtml(perf)}
+
       <p style="margin:2em 0 0;font-size:12px;color:${BRAND.plum};opacity:0.6;font-family:Arial,sans-serif;">
         Cloudflare Web Analytics is cookieless and doesn't identify individual visitors —
         counts reflect aggregate traffic only. See ${SITE_URL}.
@@ -107,7 +156,7 @@ function renderHtml({ dateStr, stats }) {
 </html>`;
 }
 
-function renderText({ dateStr, stats }) {
+function renderText({ dateStr, stats, perf }) {
   const list = (items) => (items.length ? items.map((i) => `  - ${i.label} (${i.count})`).join('\n') : '  (no data)');
   return `Mindtivate Analytics — Daily digest — ${dateStr}
 Cloudflare Web Analytics, previous UTC day.
@@ -125,7 +174,9 @@ Top countries:
 ${list(stats.topCountries)}
 
 Device types:
-${list(stats.topDevices)}`;
+${list(stats.topDevices)}
+
+${renderPerformanceSectionText(perf)}`;
 }
 
 function renderFailureEmail(dateStr, err) {
@@ -162,14 +213,29 @@ async function run() {
     const { since, until } = dayWindow(dateStr);
     console.log(`Fetching Cloudflare Web Analytics for ${dateStr} (${since} to ${until})...`);
     const stats = await fetchDailyStats({ since, until });
-
     console.log(`Visits: ${stats.visits}, page views: ${stats.pageviews}`);
+
+    // Best-effort, not wrapped into the outer try/catch's failure-email
+    // path: a PageSpeed Insights hiccup (it's known to occasionally time
+    // out or rate-limit) shouldn't take down the whole digest when the
+    // Cloudflare half worked fine -- the section just reports itself
+    // unavailable instead.
+    let perf;
+    try {
+      console.log(`Fetching PageSpeed Insights scores for ${SITE_URL}...`);
+      perf = await fetchPerformanceScores({ url: SITE_URL });
+      console.log(`PageSpeed: mobile ${perf.mobile.score}, desktop ${perf.desktop.score}`);
+    } catch (perfErr) {
+      console.error(`PageSpeed Insights fetch failed: ${perfErr.message}`);
+      perf = { error: perfErr.message };
+    }
+
     await sendEmail({
       to,
       from,
       subject: `Mindtivate analytics — ${dateStr} (${stats.visits} visits)`,
-      html: renderHtml({ dateStr, stats }),
-      text: renderText({ dateStr, stats }),
+      html: renderHtml({ dateStr, stats, perf }),
+      text: renderText({ dateStr, stats, perf }),
     });
     console.log(`Sent digest to ${to}.`);
   } catch (err) {

@@ -344,7 +344,8 @@ anything that goes out publicly — see `docs/COMPLIANCE.md`.
 ## 7a. Cloudflare Web Analytics — daily digest email (optional)
 
 A daily email (visits, page views, top pages/referrers/countries/device
-types) for the previous UTC day, sent via `.github/workflows/analytics-digest.yml`
+types, plus PageSpeed Insights mobile/desktop performance scores) for
+the previous UTC day, sent via `.github/workflows/analytics-digest.yml`
 (`scripts/pipeline/11-analytics-digest.mjs`). Cookieless and doesn't
 identify individual visitors — see `privacy-policy.astro`'s existing
 "aggregated analytics" language, which this doesn't change. No
@@ -376,9 +377,20 @@ see `docs/CONTENT_PIPELINE.md` if you need that instead.
 7. For the scheduled workflow: add repo secrets `CF_API_TOKEN`,
    `CF_ACCOUNT_TAG`, `CF_SITE_TAG`, `ANALYTICS_DIGEST_EMAIL`, and
    `RESEND_API_KEY` (see section 7) if not already set, plus repo
-   variable `RESEND_FROM_EMAIL` (also section 7). Runs daily at 13:00
-   UTC; `workflow_dispatch` also accepts an optional `date` input to
-   re-run a specific day manually.
+   variable `RESEND_FROM_EMAIL` (also section 7). Runs daily at 23:00
+   UTC (07:00 HKT the next morning); `workflow_dispatch` also accepts an
+   optional `date` input to re-run a specific day manually.
+7a-i. **PageSpeed Insights scores (optional secret)**: the digest also
+   fetches mobile/desktop performance scores for the site root from
+   Google's PageSpeed Insights API. This works with no setup at all — it
+   runs unauthenticated against a shared, low-volume Google quota, which
+   is plenty for the 2 requests/day this needs. If that ever starts
+   getting rate-limited, get a free API key: Google Cloud Console → a
+   project → **APIs & Services → Library** → enable **PageSpeed Insights
+   API** → **Credentials** → **Create credentials → API key**. Add it as
+   repo secret `PAGESPEED_API_KEY`. If this section fails on a given day
+   (Google's API is known to occasionally time out), the rest of the
+   digest still sends — that section just reports itself unavailable.
 8. **Rebuild and redeploy** after setting `PUBLIC_CF_BEACON_TOKEN` — it's
    baked in at build time, so an existing deployed site won't start
    collecting analytics until the next build picks up the new var (set
