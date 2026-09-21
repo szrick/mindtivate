@@ -4,7 +4,7 @@ description: Too many rows and presses, not enough of something else? Here's how
   to tell if your routine is actually unbalanced or just more varied than
   before.
 pubDate: 2026-08-25
-updatedDate: 2026-09-04
+updatedDate: 2026-09-21
 category: Body
 heroImage: "./_images/is-your-workout-routine-bloated-or-just-balanced-hero.webp"
 status: published
@@ -45,7 +45,7 @@ The same logic applies to pressing. If your routine includes flat bench press, i
 
 If rows and presses are taking up a third of your workout, the question becomes: what's filling the other two-thirds, and does it include enough hinge and squat work to support your glute-building goal?
 
-Glute development relies heavily on hip hinge patterns (deadlifts, Romanian deadlifts, hip thrusts) and loaded squat variations (back squats, Bulgarian split squats, goblet squats). If those are getting squeezed out by a fourth row, that's a programming mismatch.
+Glute development relies heavily on [hip hinge patterns](deadlifts, Romanian deadlifts, hip thrusts) and loaded squat variations (back squats, Bulgarian split squats, goblet squats). If you have any lower back concerns, see our guide on [exercise recommendations for L5/S1 injury](/articles/exercise-physio-recommendations-for-l5-s1-injury/) for safe progression strategies. If those are getting squeezed out by a fourth row, that's a programming mismatch.
 
 Similarly, back development isn't just about rows. Your lats respond well to vertical pulling (pull-ups, lat pulldowns), and your upper traps and rear delts benefit from face pulls or reverse flyes. A routine heavy on horizontal rows but light on vertical pull might be overtraining one part of your back while under-serving another.
 
@@ -59,6 +59,6 @@ A more balanced starting point for your goals might look like 10–12 sets of hi
 
 ## Enjoyment still matters—just not as the only filter
 
-You're right that variety beats monotony, and a workout you actually like doing will always outperform a "perfect" program you dread. But variety within a structure—different row variations across the week, rotating squat and hinge exercises, trying new pulling grips—gives you novelty without losing balance.
+You're right that variety beats monotony, and a workout you actually like doing will always outperform a "perfect" program you dread. (For more on making strength training sustainable when time is tight, check out [how to fit strength training into 60+ hour weeks](/articles/how-to-fit-strength-training-meal-prep-into-60-hour-weeks/).) But variety within a structure—different row variations across the week, rotating squat and hinge exercises, trying new pulling grips—gives you novelty without losing balance.
 
 If you love a particular exercise that's technically redundant, keep it. Just make sure it's not crowding out something your goals actually need. A routine can be fun *and* well-designed—those two things aren't in opposition.

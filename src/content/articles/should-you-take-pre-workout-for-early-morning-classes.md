@@ -4,7 +4,7 @@ description: Yes, you can take pre-workout in the morning—but the right
   ingredients matter, especially when you're working late nights. Here's what
   to look for.
 pubDate: 2026-08-25
-updatedDate: 2026-09-04
+updatedDate: 2026-09-21
 category: Body
 heroImage: "./_images/should-you-take-pre-workout-for-early-morning-classes-hero.webp"
 status: published
@@ -37,7 +37,7 @@ Beyond caffeine, common ingredients include creatine (which supports strength an
 
 If you're working late and then taking pre-workout early the next morning, you're dealing with two competing pressures: needing a boost to train, but also needing to protect what little recovery time you have.
 
-Caffeine has a half-life of about five hours, meaning half of it is still in your system five hours after you take it. A 7 a.m. dose will mostly clear by afternoon, so it's less likely to interfere with sleep than an evening dose would. But if you're chronically under-slept, adding a stimulant every morning can mask how much rest you're actually missing—and over time, that catches up.
+Caffeine has a half-life of about five hours, meaning half of it is still in your system five hours after you take it. A 7 a.m. dose will mostly clear by afternoon, so it's less likely to interfere with sleep than an evening dose would. But if you're chronically under-slept, adding a stimulant every morning can mask how much rest you're actually missing—and over time, that catches up. (If you're struggling to fall asleep in the first place, [OTC sleep aids](/articles/otc-sleep-aids-what-actually-works-when-you-can-t-fall-asleep/) may help address the root problem.)
 
 [Mayo Clinic warns](https://mcpress.mayoclinic.org/nutrition-fitness/preworkout-supplements-whats-safe-what-should-you-avoid/) that pre-workout side effects can include trouble sleeping, increased heart rate, and digestive upset, especially at higher doses or in people sensitive to caffeine. If you're already running on fumes, a high-caffeine formula might push you into jittery, anxious territory rather than focused energy.
 
@@ -53,6 +53,6 @@ If a formula includes creatine, that's a bonus for strength over time, but it wo
 
 ## The bigger picture
 
-Pre-workout can be a useful tool for getting yourself to early morning classes when energy is low. But it's not a substitute for sleep, and it won't fix a schedule that's fundamentally unsustainable. If you're relying on it every single day just to function, that's worth examining—not because pre-workout is inherently bad, but because chronic sleep deprivation has downstream effects on recovery, performance, mood, and health that no supplement can fully offset.
+Pre-workout can be a useful tool for getting yourself to early morning classes when energy is low. But [it's not a substitute for sleep](/articles/why-alcohol-doesn-t-actually-help-you-sleep/), and it won't fix a schedule that's fundamentally unsustainable. If you're relying on it every single day just to function, that's worth examining—not because pre-workout is inherently bad, but because chronic sleep deprivation has downstream effects on recovery, performance, mood, and health that no supplement can fully offset.
 
 That said, if you're using it strategically—say, two or three mornings a week when you really want to make that class—it can be the difference between showing up and hitting snooze. Just keep the dose moderate, the ingredient list transparent, and your expectations realistic.
