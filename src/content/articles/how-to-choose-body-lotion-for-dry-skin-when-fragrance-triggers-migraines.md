@@ -5,7 +5,7 @@ description: You need deep hydration without strong scents. Here's what to look
   for in a body lotion when fragrance is a migraine trigger and dry skin needs
   real help.
 pubDate: 2026-08-28
-updatedDate: 2026-09-04
+updatedDate: 2026-09-21
 category: Beauty
 heroImage: "./_images/how-to-choose-body-lotion-for-dry-skin-when-fragrance-triggers-migraines-hero.webp"
 status: published
@@ -57,7 +57,7 @@ When you're shopping for a body moisturizer that won't trigger migraines, here's
 
 Timing matters as much as the product itself. The most effective moment to moisturize is within a few minutes of showering or bathing, while your skin is still slightly damp. Pat yourself dry (don't rub), then apply your moisturizer generously. That damp skin traps water, and the moisturizer seals it in.
 
-If your skin feels tight or itchy by midday, reapply—especially on hands, elbows, knees, and any other areas that get particularly dry. You're not doing anything wrong if one application doesn't last all day; very dry skin often needs multiple layers of moisture throughout the day, particularly in winter or low-humidity environments.
+If your skin feels tight or itchy by midday, reapply—especially on hands, elbows, knees, and any other areas that get particularly dry. You're not doing anything wrong if one application doesn't last all day; very dry skin often needs multiple layers of moisture throughout the day, particularly in winter or low-humidity environments. (If you're going through lotion quickly, [buying body lotion in bulk](/articles/how-to-buy-body-lotion-in-bulk-without-sacrificing-quality/) can make frequent reapplication more affordable.)
 
 ## The bottom line
 

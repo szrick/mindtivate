@@ -4,7 +4,7 @@ description: When you're juggling work, school, wedding planning, and chronic
   health conditions, here's how to structure training and meal prep without
   burning out.
 pubDate: 2026-08-25
-updatedDate: 2026-09-04
+updatedDate: 2026-09-21
 category: Body
 heroImage: "./_images/how-to-fit-strength-training-meal-prep-into-60-hour-weeks-hero.webp"
 status: published
@@ -42,7 +42,7 @@ Instead, think in terms of components, not full meals. Cook a big batch of prote
 
 Another option: split your prep across two shorter sessions instead of one long one. Thirty minutes on Sunday and thirty minutes on Wednesday is often more sustainable than three hours straight, especially when you're already tired from a long shift or a full day of classes and field hours.
 
-If you're aiming for fat loss and muscle gain, protein is the priority. Research-backed protein targets for active women typically land around 0.7–1 gram per pound of body weight. Hitting that target consistently matters more than perfecting every other macro or eating from a complicated recipe.
+If you're aiming for fat loss and muscle gain, protein is the priority. Research-backed protein targets for active women typically land around 0.7–1 gram per pound of body weight. Hitting that target consistently matters more than perfecting every other macro or eating from a complicated recipe. If you need help [translating those macro targets into actual grocery amounts](/articles/how-to-calculate-raw-ingredient-amounts-from-weekly-macros/), the math is simpler than it sounds.
 
 ## Build decision-making into the system, not into your day
 
@@ -62,6 +62,6 @@ The same goes for meal prep. If a thirty-minute cooking session feels like too m
 
 ## Nine months is enough time—if you don't burn out first
 
-You've got nine months until your wedding. That's genuinely enough time to see meaningful changes in body composition *if* the plan you build is one you can actually sustain. The biggest risk isn't that you won't work hard enough—it's that you'll try to do too much, burn out, and lose weeks or months to exhaustion or a flare-up.
+You've got [nine months until your wedding](/articles/cold-feet-on-your-honeymoon-why-marriage-can-feel-wrong-at-first/). That's genuinely enough time to see meaningful changes in body composition *if* the plan you build is one you can actually sustain. The biggest risk isn't that you won't work hard enough—it's that you'll try to do too much, burn out, and lose weeks or months to exhaustion or a flare-up.
 
 Start with the minimum version that keeps you moving forward: two or three strength sessions, one or two short meal-prep windows, and a simple rotation of meals that doesn't require a new recipe every time. You can always add more when you have the capacity. But a plan that survives a bad week is worth more than a perfect plan that collapses the first time something goes wrong.
