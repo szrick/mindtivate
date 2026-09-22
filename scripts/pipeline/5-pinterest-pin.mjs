@@ -41,7 +41,7 @@ import { loadEnv } from '../lib/env.mjs';
 import { askPoeForJson, generatePoeImage } from '../lib/poe.mjs';
 import { readFrontmatter, insertFrontmatterField } from '../lib/frontmatter.mjs';
 import { createPin, resolveBoardId, refreshAccessToken } from '../lib/pinterest.mjs';
-import { renderPinImage, renderInfographicPinImage } from '../lib/pinterest-pin-image.mjs';
+import { renderPinImage, renderInfographicPinImage, pickPinTheme, hashString } from '../lib/pinterest-pin-image.mjs';
 
 loadEnv();
 
@@ -147,9 +147,46 @@ const LAYOUT_COMPOSITION_HINTS = {
   stat: 'Composition centers on one bold, singular focal object or symbol representing the key idea, with generous open negative space around it.',
 };
 
-function buildInfographicImagePrompt(backgroundScene, category, layoutStyle) {
+// Rotated per article (see pickArtStyle) so the AI background art itself
+// varies, not just the composited card -- every infographic was
+// previously getting the same "flat-illustration" instruction, which is
+// most of why a run of them looked visually interchangeable regardless of
+// topic. All five stay in the same editorial-wellness register (no
+// photorealism, no cartoon/meme styles) so a themed pin never reads as
+// off-brand, just as a different real illustration technique.
+const ART_STYLES = [
+  'Flat-illustration, editorial-infographic style, clean bold shapes with minimal internal detail.',
+  'Soft gouache-painted illustration, visible brush texture, gently blended color transitions.',
+  'Minimalist line-art illustration, a single bold accent-color fill against mostly open space, very few objects.',
+  'Textured paper-cutout collage illustration, layered flat shapes with soft drop shadows between layers.',
+  'Loose watercolor-wash illustration, soft bleeding edges, airy and light-filled.',
+];
+
+// Ties the AI art's own color language to the theme the composited card
+// will use (see pickPinTheme in pinterest-pin-image.mjs), so the two
+// halves of the same pin read as one cohesive image instead of the art
+// defaulting to terracotta while the card happens to land on sage.
+const THEME_PALETTE_HINTS = {
+  'terracotta-flush': 'Warm, inviting color palette (terracotta, plum, cream tones).',
+  'terracotta-block': 'Warm, inviting color palette (terracotta, plum, cream tones).',
+  'terracotta-floating': 'Warm, inviting color palette (terracotta, plum, cream tones).',
+  'sage-flush': 'Calming, natural color palette (sage green, plum, cream tones).',
+  'sage-floating': 'Calming, natural color palette (sage green, plum, cream tones).',
+  'plum-block': 'Rich, moody color palette (deep plum, terracotta accent, warm cream tones).',
+};
+
+/** Deterministically picks one of ART_STYLES for a given article slug -- a
+ * different hash salt than pickPinTheme's so art style and card theme vary
+ * independently instead of always moving in lockstep. */
+function pickArtStyle(slug) {
+  return ART_STYLES[hashString(`art:${slug}`) % ART_STYLES.length];
+}
+
+function buildInfographicImagePrompt(backgroundScene, category, layoutStyle, slug, theme) {
   const compositionHint = LAYOUT_COMPOSITION_HINTS[layoutStyle] || LAYOUT_COMPOSITION_HINTS.list;
-  return `Flat-illustration, editorial-infographic style artwork for a women's health and wellness Pinterest pin, category: ${category}. Scene: ${backgroundScene}. ${compositionHint} Warm, inviting color palette (terracotta, plum, cream tones). Clean composition with open, uncluttered space in the lower third for a text overlay to be added afterward. STRICT CONSTRAINT: absolutely no text, no words, no letters, no numbers, no labels, no writing of any kind anywhere in the image -- illustration only.`;
+  const artStyle = pickArtStyle(slug);
+  const paletteHint = THEME_PALETTE_HINTS[theme.id] || THEME_PALETTE_HINTS['terracotta-flush'];
+  return `${artStyle} For a women's health and wellness Pinterest pin, category: ${category}. Scene: ${backgroundScene}. ${compositionHint} ${paletteHint} Clean composition with open, uncluttered space in the lower third for a text overlay to be added afterward. STRICT CONSTRAINT: absolutely no text, no words, no letters, no numbers, no labels, no writing of any kind anywhere in the image -- illustration only.`;
 }
 
 function parseArgs(argv) {
@@ -348,11 +385,13 @@ async function run() {
   });
 
   let imageBuffer;
+  let pinTheme;
   if (args.style === 'infographic') {
-    console.log(`Generating infographic background art with Poe (layout: ${copy.layoutStyle})...`);
+    pinTheme = pickPinTheme(args.slug);
+    console.log(`Generating infographic background art with Poe (layout: ${copy.layoutStyle}, theme: ${pinTheme.id})...`);
     const infographicModel = process.env.POE_INFOGRAPHIC_MODEL || 'Nano-Banana-2-Lite';
     const backgroundImage = await generatePoeImage({
-      prompt: buildInfographicImagePrompt(copy.backgroundScene, article.category, copy.layoutStyle),
+      prompt: buildInfographicImagePrompt(copy.backgroundScene, article.category, copy.layoutStyle, args.slug, pinTheme),
       model: infographicModel,
     });
 
@@ -363,6 +402,7 @@ async function run() {
       headline: copy.imageHeadline,
       layoutStyle: copy.layoutStyle,
       items: copy.items,
+      theme: pinTheme,
     });
   } else {
     console.log('Rendering pin image...');
@@ -384,6 +424,7 @@ async function run() {
     articleLink: link,
     imagePath,
     style: args.style,
+    ...(pinTheme ? { visualTheme: pinTheme.id } : {}),
     ...copy,
     approved: false,
     generatedAt: new Date().toISOString(),

@@ -18,6 +18,42 @@ const BRAND = {
   cream: '#f2e9db',
 };
 
+// Six visual themes for the infographic style, all built from the site's
+// actual brand tokens (src/styles/global.css's --color-terracotta/-dark,
+// --color-sage/-dark, --color-plum, --color-cream/-deep) rather than
+// invented colors -- real variety (light vs. dark cards, a bold solid-color
+// card vs. a floating white one, terracotta vs. sage accents) while every
+// pin still unmistakably reads as Mindtivate. Picked deterministically per
+// article (see pickPinTheme) so a re-run for the same slug is stable, but
+// different articles land on different looks -- see the request this
+// answers: pins were all defaulting to the one terracotta/cream combo.
+const THEMES = [
+  { id: 'terracotta-flush', accent: '#d97a5f', cardBg: '#f2e9db', cardText: '#2f2a33', pageBg: '#fbf6ef', cardShape: 'flush' },
+  { id: 'sage-flush', accent: '#7c9473', cardBg: '#f2e9db', cardText: '#2f2a33', pageBg: '#fbf6ef', cardShape: 'flush' },
+  { id: 'plum-block', accent: '#d97a5f', cardBg: '#2f2a33', cardText: '#fbf6ef', pageBg: '#fbf6ef', cardShape: 'flush' },
+  { id: 'terracotta-block', accent: '#2f2a33', cardBg: '#d97a5f', cardText: '#ffffff', pageBg: '#fbf6ef', cardShape: 'flush' },
+  { id: 'sage-floating', accent: '#5f7457', cardBg: '#ffffff', cardText: '#2f2a33', pageBg: '#fbf6ef', cardShape: 'floating' },
+  { id: 'terracotta-floating', accent: '#b85c44', cardBg: '#ffffff', cardText: '#2f2a33', pageBg: '#f2e9db', cardShape: 'floating' },
+];
+
+// Small, deterministic (not cryptographic) string hash -- good enough to
+// spread slugs across THEMES/art styles without external dependencies.
+// Exported so 5-pinterest-pin.mjs can use the same function (with a
+// different salt) to pick the AI art style independently of the theme,
+// rather than the two always moving in lockstep.
+export function hashString(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash * 31 + str.charCodeAt(i)) | 0;
+  }
+  return Math.abs(hash);
+}
+
+/** Deterministically picks one of THEMES for a given article slug. */
+export function pickPinTheme(slug) {
+  return THEMES[hashString(`theme:${slug}`) % THEMES.length];
+}
+
 function buildHtml({ heroImageDataUri, logoDataUri, category, headline, subtext }) {
   return `<!doctype html>
 <html><head><meta charset="utf-8">
@@ -207,7 +243,42 @@ function buildCardContent(layoutStyle, items) {
   return `<ul class="stack">${rows}</ul>`;
 }
 
-function buildInfographicHtml({ backgroundImageDataUri, logoDataUri, category, headline, layoutStyle, items }) {
+function buildInfographicHtml({ backgroundImageDataUri, logoDataUri, category, headline, layoutStyle, items, theme }) {
+  // 'flush' keeps the original edge-to-edge card (sharp corners, full
+  // 1000px width, normal document flow right below the art zone).
+  // 'floating' instead sits inset with margins, rounded corners, and a
+  // drop shadow -- the page background (theme.pageBg) shows through the
+  // margins. It starts right at the art zone's own bottom edge (930px),
+  // not overlapping up into it: the headline can wrap to two lines (see
+  // INFOGRAPHIC_SYSTEM_PROMPT's "1-2 short lines" budget in
+  // 5-pinterest-pin.mjs), and an earlier version of this that overlapped
+  // higher clipped a two-line headline behind the card in testing. Same
+  // total 1000x1500 canvas either way; only how the card container is
+  // positioned/shaped differs.
+  const cardCss =
+    theme.cardShape === 'floating'
+      ? `
+  .card {
+    position: absolute;
+    left: 48px;
+    right: 48px;
+    top: 954px;
+    bottom: 48px;
+    background: ${theme.cardBg};
+    border-radius: 32px;
+    box-shadow: 0 24px 48px rgba(47,42,51,0.22);
+    padding: 56px 56px 40px;
+    overflow: hidden;
+  }`
+      : `
+  .card {
+    position: relative;
+    width: 1000px;
+    height: 570px;
+    background: ${theme.cardBg};
+    padding: 56px 64px 48px;
+  }`;
+
   return `<!doctype html>
 <html><head><meta charset="utf-8">
 <style>
@@ -217,7 +288,7 @@ function buildInfographicHtml({ backgroundImageDataUri, logoDataUri, category, h
     height: 1500px;
     position: relative;
     font-family: Georgia, serif;
-    background: ${BRAND.cream};
+    background: ${theme.pageBg};
     overflow: hidden;
   }
   .art-zone {
@@ -241,7 +312,7 @@ function buildInfographicHtml({ backgroundImageDataUri, logoDataUri, category, h
     position: absolute;
     top: 64px;
     left: 64px;
-    background: ${BRAND.terracotta};
+    background: ${theme.accent};
     color: #ffffff;
     font-family: Arial, sans-serif;
     font-weight: 700;
@@ -262,12 +333,7 @@ function buildInfographicHtml({ backgroundImageDataUri, logoDataUri, category, h
     line-height: 1.16;
     color: #ffffff;
   }
-  .card {
-    position: relative;
-    width: 1000px;
-    height: 570px;
-    padding: 56px 64px 48px;
-  }
+  ${cardCss}
   .stack {
     list-style: none;
   }
@@ -278,7 +344,7 @@ function buildInfographicHtml({ backgroundImageDataUri, logoDataUri, category, h
     font-family: Arial, sans-serif;
     font-size: 32px;
     line-height: 1.35;
-    color: ${BRAND.plum};
+    color: ${theme.cardText};
     margin-bottom: 28px;
   }
   .marker {
@@ -286,7 +352,7 @@ function buildInfographicHtml({ backgroundImageDataUri, logoDataUri, category, h
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: ${BRAND.terracotta};
+    background: ${theme.accent};
     color: #ffffff;
     font-family: Arial, sans-serif;
     font-weight: 700;
@@ -309,7 +375,7 @@ function buildInfographicHtml({ backgroundImageDataUri, logoDataUri, category, h
     font-family: Georgia, serif;
     font-weight: 700;
     font-size: 40px;
-    color: ${BRAND.plum};
+    color: ${theme.cardText};
     margin-bottom: 16px;
     line-height: 1.2;
   }
@@ -317,14 +383,14 @@ function buildInfographicHtml({ backgroundImageDataUri, logoDataUri, category, h
     font-family: Arial, sans-serif;
     font-size: 26px;
     line-height: 1.4;
-    color: ${BRAND.plum};
+    color: ${theme.cardText};
   }
   .comparison-divider {
     flex-shrink: 0;
     width: 64px;
     height: 64px;
     border-radius: 50%;
-    background: ${BRAND.terracotta};
+    background: ${theme.accent};
     color: #ffffff;
     font-family: Arial, sans-serif;
     font-weight: 700;
@@ -349,19 +415,19 @@ function buildInfographicHtml({ backgroundImageDataUri, logoDataUri, category, h
     font-family: Georgia, serif;
     font-weight: 700;
     font-size: 72px;
-    color: ${BRAND.terracotta};
+    color: ${theme.accent};
     flex-shrink: 0;
   }
   .stat-sublabel {
     font-family: Arial, sans-serif;
     font-size: 30px;
     line-height: 1.35;
-    color: ${BRAND.plum};
+    color: ${theme.cardText};
   }
   .brand {
     position: absolute;
-    left: 64px;
-    bottom: 48px;
+    left: ${theme.cardShape === 'floating' ? '56px' : '64px'};
+    bottom: ${theme.cardShape === 'floating' ? '40px' : '48px'};
     display: flex;
     align-items: center;
     gap: 16px;
@@ -374,10 +440,10 @@ function buildInfographicHtml({ backgroundImageDataUri, logoDataUri, category, h
     font-family: Georgia, serif;
     font-weight: 700;
     font-size: 30px;
-    color: ${BRAND.plum};
+    color: ${theme.cardText};
   }
   .brand .dot {
-    color: ${BRAND.terracotta};
+    color: ${theme.accent};
   }
 </style>
 </head>
@@ -402,7 +468,7 @@ function buildInfographicHtml({ backgroundImageDataUri, logoDataUri, category, h
  * Renders an infographic-style pin image (AI-generated background art in
  * the top ~62%, a real, always-legible content card below whose layout
  * matches `layoutStyle`) and returns a PNG Buffer.
- * @param {{ backgroundImage: { buffer: Buffer, ext: string }, category: string, headline: string, layoutStyle: 'list'|'process'|'comparison'|'stat', items: { label: string, sublabel?: string }[], logoPath?: string }} opts
+ * @param {{ backgroundImage: { buffer: Buffer, ext: string }, category: string, headline: string, layoutStyle: 'list'|'process'|'comparison'|'stat', items: { label: string, sublabel?: string }[], theme: { id: string, accent: string, cardBg: string, cardText: string, pageBg: string, cardShape: 'flush'|'floating' }, logoPath?: string }} opts
  */
 export async function renderInfographicPinImage({
   backgroundImage,
@@ -410,6 +476,7 @@ export async function renderInfographicPinImage({
   headline,
   layoutStyle,
   items,
+  theme,
   logoPath = 'src/assets/brand/logo-icon.png',
 }) {
   const mime = backgroundImage.ext === 'webp' ? 'image/webp' : `image/${backgroundImage.ext}`;
@@ -420,6 +487,7 @@ export async function renderInfographicPinImage({
     headline,
     layoutStyle,
     items,
+    theme,
   });
 
   const browser = await chromium.launch();
