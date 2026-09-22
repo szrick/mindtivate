@@ -1,0 +1,31 @@
+{
+  "slug": "can-metformin-help-low-milk-supply-in-pcos",
+  "articleTitle": "Can Metformin Help Low Milk Supply in PCOS?",
+  "category": "Hormones",
+  "articleLink": "https://mindtivate.com/articles/can-metformin-help-low-milk-supply-in-pcos/",
+  "imagePath": "scripts/pipeline/pinterest-pin-drafts/can-metformin-help-low-milk-supply-in-pcos.png",
+  "style": "infographic",
+  "visualTheme": "terracotta-flush",
+  "imageHeadline": "When insulin resistance tanks your milk supply",
+  "imageSubtext": "What research says about metformin as a galactagogue for PCOS",
+  "pinTitle": "Can Metformin Help Low Milk Supply in PCOS? What the Research Shows",
+  "pinDescription": "You've tried every galactagogue and pumping schedule—but what if insulin resistance is interfering with lactation? Here's what one small trial found about metformin for low milk supply in PCOS, plus what to consider before trying it.",
+  "layoutStyle": "stat",
+  "items": [
+    {
+      "label": "8 mL vs -58 mL",
+      "sublabel": "Daily change: metformin group vs placebo"
+    },
+    {
+      "label": "<0.5%",
+      "sublabel": "Of maternal dose reaches infant in milk"
+    },
+    {
+      "label": "15 women",
+      "sublabel": "Total in the only randomized trial to date"
+    }
+  ],
+  "backgroundScene": "A modern breast pump on a kitchen counter beside a glass of water and a prescription bottle, soft morning light through a window",
+  "approved": false,
+  "generatedAt": "2026-09-22T04:10:32.565Z"
+}
