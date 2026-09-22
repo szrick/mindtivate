@@ -65,7 +65,7 @@ site's reputation. Full rationale in
 [docs/COMPLIANCE.md](docs/COMPLIANCE.md).
 
 A scheduled GitHub Action (`.github/workflows/content-pipeline.yml`) runs
-stages 1–4 daily and, once the site still builds with the resulting
+stages 1–4 every 2 days and, once the site still builds with the resulting
 file(s), pushes straight to `main` — no PR, no human review step for
 articles the pipeline itself drafts and edits (a manually-created Pages
 CMS draft is unaffected and stays review-gated). It never pins or
