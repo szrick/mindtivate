@@ -26,8 +26,13 @@ name: Content pipeline (research → draft → edit → publish)
 
 on:
   schedule:
-    # 06:00 Hong Kong Time (UTC+8, no DST) = 22:00 UTC the previous day.
-    - cron: '0 22 * * *'
+    # 06:00 Hong Kong Time (UTC+8, no DST) = 22:00 UTC the previous day,
+    # every other day. Cron's day-of-month step (*/2) resets at the start
+    # of each month rather than counting from the last run, so the gap is
+    # occasionally 1 day instead of 2 right around a month boundary (e.g.
+    # the 31st then the 1st) -- an accepted, minor imprecision rather than
+    # true "every 2 days" tracking, which cron alone can't express.
+    - cron: '0 22 */2 * *'
   workflow_dispatch:
 
 jobs:
@@ -69,17 +74,12 @@ jobs:
           CJ_PERSONAL_ACCESS_TOKEN: ${{ secrets.CJ_PERSONAL_ACCESS_TOKEN }}
           CJ_COMPANY_ID: ${{ secrets.CJ_COMPANY_ID }}
 
-      - name: Draft up to 3 articles with Poe
-        # --index selects which brief (0 = top candidate) from the latest
-        # product-briefs file; looping 0-2 drafts the top 3 instead of just
-        # one. `|| echo ...` keeps a day with fewer than 3 candidates from
-        # failing the whole job — pipeline:draft exits non-zero when an
-        # index doesn't exist, which would otherwise abort the step (and
-        # any indices after it) on `set -e`, GitHub Actions' default.
-        run: |
-          for i in 0 1 2; do
-            npm run pipeline:draft -- --index "$i" || echo "No brief at index $i — skipping."
-          done
+      - name: Draft one article with Poe
+        # --index 0 selects the top candidate from the latest
+        # product-briefs file. One article per run (this workflow itself
+        # now fires every 2 days, see the cron above) rather than the
+        # previous up-to-3-per-day cadence.
+        run: npm run pipeline:draft -- --index 0
         env:
           POE_API_KEY: ${{ secrets.POE_API_KEY }}
           POE_MODEL: ${{ vars.POE_MODEL }}

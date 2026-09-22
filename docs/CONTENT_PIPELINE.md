@@ -680,9 +680,9 @@ indefinitely rather than erroring (Cloudflare's API doesn't distinguish
 
 ## Scheduled automation
 
-`.github/workflows/content-pipeline.yml` runs stages 1–4 daily — research,
-product-brief matching, drafting up to 3 candidates, then the automated
-editor (stage 4) reviews and publishes each one — and, once `npm run
+`.github/workflows/content-pipeline.yml` runs stages 1–4 every 2 days —
+research, product-brief matching, drafting the top candidate, then the
+automated editor (stage 4) reviews and publishes it — and, once `npm run
 build` still succeeds with the resulting file(s), commits and pushes
 straight to `main`. No PR, no merge step, and (for pipeline-authored
 articles specifically) no human review step either — see stage 4 above
