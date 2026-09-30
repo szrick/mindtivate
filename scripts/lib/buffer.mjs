@@ -59,19 +59,49 @@ async function bufferGraphQL(query, variables = {}) {
 }
 
 /**
+ * This account has exactly one Buffer organization (confirmed live via
+ * account.organizations -- id 6abc9d21a3325fb2b8a972ed, "My organization").
+ * channels(input: ChannelsInput!) requires organizationId, so every
+ * channel-listing call needs it first; cached per-process since it won't
+ * change within a single script run.
+ */
+let cachedOrganizationId;
+
+async function getOrganizationId() {
+  if (cachedOrganizationId) return cachedOrganizationId;
+  const data = await bufferGraphQL(`
+    query {
+      account {
+        organizations { id }
+      }
+    }
+  `);
+  const organizationId = data.account?.organizations?.[0]?.id;
+  if (!organizationId) throw new Error('Buffer account has no organizations');
+  cachedOrganizationId = organizationId;
+  return organizationId;
+}
+
+/**
  * Lists every channel (social account) connected to this Buffer account.
  * Read-only -- safe to call freely, no way to post anything by accident.
  */
 export async function listChannels() {
-  const data = await bufferGraphQL(`
-    query {
-      channels {
+  const organizationId = await getOrganizationId();
+  const data = await bufferGraphQL(
+    `
+    query ($input: ChannelsInput!) {
+      channels(input: $input) {
         id
         service
-        serviceData
+        serviceId
+        name
+        displayName
       }
     }
-  `);
+  `,
+    { input: { organizationId } },
+  );
   return data.channels;
 }
 

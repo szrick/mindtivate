@@ -15,49 +15,23 @@ import { bufferGraphQLRaw } from '../lib/buffer.mjs';
 
 loadEnv();
 
-// Rounds 1-4 (see PR history) traced the real path to a working channel
-// list: `channels(input: ChannelsInput!)` needs `organizationId:
-// OrganizationId!`, and that comes from `account { organizations { id } }`
-// -- confirmed by introspection (account takes no args, returns Account,
-// which has a non-null `organizations` list). This round fetches the
-// real organizationId via that path and, if found, immediately tries the
-// actual channels() query with it -- the first attempt at real (non-
-// introspection) data since round 1.
+// Rounds 1-5 (see PR history) confirmed real, working reads: the account's
+// organizationId (6abc9d21a3325fb2b8a972ed) and the connected Pinterest
+// channel's id (6abc9d67ea19ca0bde2eebce, service "pinterest", serviceId/
+// name/displayName all "mindtivate"). The only remaining unknown for the
+// actual posting integration is the Mutation side -- what the real
+// create/publish-a-post mutation is called and shaped like. This
+// introspects the root Mutation type's field names (cheap) to find it.
 async function run() {
-  console.log('Fetching account.organizations...');
-  const accountData = await bufferGraphQLRaw(`
+  console.log('Introspecting Buffer schema (root Mutation type field names)...');
+  const schema = await bufferGraphQLRaw(`
     query {
-      account {
-        id
-        email
-        organizations { id name }
+      mutationType: __type(name: "Mutation") {
+        fields { name }
       }
     }
   `);
-  console.log('account:', JSON.stringify(accountData, null, 2));
-
-  const organizationId = accountData.data?.account?.organizations?.[0]?.id;
-  if (!organizationId) {
-    console.log('No organizationId found -- stopping here.');
-    return;
-  }
-
-  console.log(`\nListing channels for organizationId=${organizationId}...`);
-  const channelsData = await bufferGraphQLRaw(
-    `
-    query ($input: ChannelsInput!) {
-      channels(input: $input) {
-        id
-        service
-        serviceId
-        name
-        displayName
-      }
-    }
-  `,
-    { input: { organizationId } },
-  );
-  console.log('channels:', JSON.stringify(channelsData, null, 2));
+  console.log(JSON.stringify(schema, null, 2));
 }
 
 run().catch((err) => {
