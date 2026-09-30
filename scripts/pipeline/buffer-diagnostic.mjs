@@ -15,51 +15,32 @@ import { bufferGraphQLRaw } from '../lib/buffer.mjs';
 
 loadEnv();
 
-// Rounds 1-5 (see PR history) confirmed real, working reads: the account's
-// organizationId (6abc9d21a3325fb2b8a972ed) and the connected Pinterest
-// channel's id (6abc9d67ea19ca0bde2eebce, service "pinterest", serviceId/
-// name/displayName all "mindtivate"). Round 6 introspected the root
-// Mutation type and found `createPost` -- the real posting mutation. This
-// round introspects createPost's own arguments and, recursively, its
-// input type's fields (one level of nested input types too, since a
-// create-post shape is likely to nest e.g. `content { text, media }`).
+// Rounds 1-7 (see PR history) confirmed real, working reads (organizationId,
+// the Pinterest channel's id) and traced createPost's top-level input
+// shape: channelId (ChannelId!), assets ([AssetInput!]!), mode
+// (ShareMode!), schedulingType (SchedulingType!), needsApproval
+// (Boolean!), text (String), metadata (PostInputMetaData) -- metadata is
+// the likely home for Pinterest-specific fields (a pin needs a board,
+// unlike a plain social post). This round introspects the remaining
+// unknowns: AssetInput's fields (how an image URL is attached),
+// ShareMode/SchedulingType's enum values, and PostInputMetaData's fields.
 async function run() {
-  console.log("Introspecting Buffer schema (Mutation.createPost's args)...");
-  const schema = await bufferGraphQLRaw(`
-    query {
-      mutationType: __type(name: "Mutation") {
-        fields {
-          name
-          args {
-            name
-            type { name kind ofType { name kind ofType { name kind } } }
-          }
-        }
-      }
-    }
-  `);
-  const createPost = schema.data?.mutationType?.fields?.find((f) => f.name === 'createPost');
-  console.log('createPost field:', JSON.stringify(createPost, null, 2));
-
-  const inputTypeNames = new Set();
-  for (const arg of createPost?.args ?? []) {
-    const n = arg.type?.name ?? arg.type?.ofType?.name ?? arg.type?.ofType?.ofType?.name;
-    if (n) inputTypeNames.add(n);
-  }
-
-  for (const typeName of inputTypeNames) {
-    const inputType = await bufferGraphQLRaw(`
+  const typeNames = ['AssetInput', 'ShareMode', 'SchedulingType', 'PostInputMetaData'];
+  for (const typeName of typeNames) {
+    const result = await bufferGraphQLRaw(`
       query {
         __type(name: "${typeName}") {
           name
+          kind
           inputFields {
             name
             type { name kind ofType { name kind ofType { name kind ofType { name kind } } } }
           }
+          enumValues { name }
         }
       }
     `);
-    console.log(`${typeName} input type:`, JSON.stringify(inputType, null, 2));
+    console.log(`${typeName}:`, JSON.stringify(result, null, 2));
   }
 }
 
