@@ -18,20 +18,49 @@ loadEnv();
 // Rounds 1-5 (see PR history) confirmed real, working reads: the account's
 // organizationId (6abc9d21a3325fb2b8a972ed) and the connected Pinterest
 // channel's id (6abc9d67ea19ca0bde2eebce, service "pinterest", serviceId/
-// name/displayName all "mindtivate"). The only remaining unknown for the
-// actual posting integration is the Mutation side -- what the real
-// create/publish-a-post mutation is called and shaped like. This
-// introspects the root Mutation type's field names (cheap) to find it.
+// name/displayName all "mindtivate"). Round 6 introspected the root
+// Mutation type and found `createPost` -- the real posting mutation. This
+// round introspects createPost's own arguments and, recursively, its
+// input type's fields (one level of nested input types too, since a
+// create-post shape is likely to nest e.g. `content { text, media }`).
 async function run() {
-  console.log('Introspecting Buffer schema (root Mutation type field names)...');
+  console.log("Introspecting Buffer schema (Mutation.createPost's args)...");
   const schema = await bufferGraphQLRaw(`
     query {
       mutationType: __type(name: "Mutation") {
-        fields { name }
+        fields {
+          name
+          args {
+            name
+            type { name kind ofType { name kind ofType { name kind } } }
+          }
+        }
       }
     }
   `);
-  console.log(JSON.stringify(schema, null, 2));
+  const createPost = schema.data?.mutationType?.fields?.find((f) => f.name === 'createPost');
+  console.log('createPost field:', JSON.stringify(createPost, null, 2));
+
+  const inputTypeNames = new Set();
+  for (const arg of createPost?.args ?? []) {
+    const n = arg.type?.name ?? arg.type?.ofType?.name ?? arg.type?.ofType?.ofType?.name;
+    if (n) inputTypeNames.add(n);
+  }
+
+  for (const typeName of inputTypeNames) {
+    const inputType = await bufferGraphQLRaw(`
+      query {
+        __type(name: "${typeName}") {
+          name
+          inputFields {
+            name
+            type { name kind ofType { name kind ofType { name kind ofType { name kind } } } }
+          }
+        }
+      }
+    `);
+    console.log(`${typeName} input type:`, JSON.stringify(inputType, null, 2));
+  }
 }
 
 run().catch((err) => {
