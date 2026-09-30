@@ -142,7 +142,7 @@ export async function createPin({
     `
     mutation ($input: CreatePostInput!) {
       createPost(input: $input) {
-        id
+        __typename
       }
     }
   `,
