@@ -16,37 +16,66 @@
 // Usage: node scripts/pipeline/buffer-diagnostic.mjs
 
 import { loadEnv } from '../lib/env.mjs';
-import { createPin, bufferGraphQLRaw } from '../lib/buffer.mjs';
+import { bufferGraphQLRaw } from '../lib/buffer.mjs';
 
 loadEnv();
 
-const TEST_IMAGE_URL =
-  'https://raw.githubusercontent.com/szrick/mindtivate/main/scripts/pipeline/pinterest-pin-drafts/should-you-add-myoinositol-to-metformin-for-pcos.png';
-
-// First real (non-introspection) createPin() call validated the entire
-// mutation input -- channelId, assets, metadata.pinterest, everything --
-// with zero complaints. The only error was the response selection:
-// createPost returns PostActionPayload, not a Post with `id`. Rather
-// than guess PostActionPayload's real fields too, introspect it first.
+// Round 2's real createPin() call got PAST GraphQL validation entirely --
+// no shape errors -- but the actual result was
+// { __typename: "InvalidInputError" }: PostActionPayload is a UNION, and
+// Buffer rejected the *semantic content* of our input, not its shape.
+// The prime suspect: this call passed no boardServiceId (Pinterest pins
+// need a board), and this file never had a real board id to give it. This
+// round introspects PostActionPayload as a union (its real possibleTypes)
+// and InvalidInputError's fields (for the actual rejection reason/detail),
+// and also fetches this channel's real boards so a follow-up call can
+// supply a real boardServiceId.
 async function run() {
-  console.log('Introspecting PostActionPayload (createPost\'s real return type)...');
-  const payloadType = await bufferGraphQLRaw(`
+  console.log('Introspecting PostActionPayload (union) and InvalidInputError...');
+  const types = await bufferGraphQLRaw(`
     query {
-      __type(name: "PostActionPayload") {
+      payload: __type(name: "PostActionPayload") {
+        kind
+        possibleTypes { name }
+      }
+      invalidInput: __type(name: "InvalidInputError") {
         fields { name type { name kind ofType { name kind } } }
       }
     }
   `);
-  console.log('PostActionPayload:', JSON.stringify(payloadType, null, 2));
+  console.log(JSON.stringify(types, null, 2));
 
-  console.log('\nCalling createPin() for real (draft only -- needsApproval: true, saveToDraft: true)...');
-  const result = await createPin({
-    title: '[Buffer integration test -- safe to delete] Should You Add Myoinositol to Metformin for PCOS?',
-    description: '[Buffer integration test -- safe to delete] Verifying the Buffer createPost mutation shape end to end.',
-    link: 'https://mindtivate.com/articles/should-you-add-myoinositol-to-metformin-for-pcos/',
-    imageUrl: TEST_IMAGE_URL,
-  });
-  console.log('createPin() result:', JSON.stringify(result, null, 2));
+  // Channel itself has no `boards` field (confirmed by its earlier full
+  // introspection -- see buffer.mjs's history), but it does have
+  // `metadata: ChannelMetadata`, a union -- the per-service variant
+  // (e.g. a PinterestChannelMetadata) is the more likely home for a
+  // board list. Introspect the union's possible types, then fetch this
+  // channel's real metadata to see which variant it actually returns.
+  console.log('\nIntrospecting ChannelMetadata union...');
+  const metadataUnion = await bufferGraphQLRaw(`
+    query {
+      __type(name: "ChannelMetadata") {
+        kind
+        possibleTypes { name }
+      }
+    }
+  `);
+  console.log(JSON.stringify(metadataUnion, null, 2));
+
+  const pinterestMetaType = metadataUnion.data?.__type?.possibleTypes?.find((t) =>
+    /pinterest/i.test(t.name),
+  )?.name;
+  if (pinterestMetaType) {
+    console.log(`\nIntrospecting ${pinterestMetaType}...`);
+    const fields = await bufferGraphQLRaw(`
+      query {
+        __type(name: "${pinterestMetaType}") {
+          fields { name type { name kind ofType { name kind ofType { name kind } } } }
+        }
+      }
+    `);
+    console.log(JSON.stringify(fields, null, 2));
+  }
 }
 
 run().catch((err) => {
