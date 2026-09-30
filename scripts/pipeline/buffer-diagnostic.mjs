@@ -15,24 +15,20 @@ import { bufferGraphQLRaw } from '../lib/buffer.mjs';
 
 loadEnv();
 
-// First real run (see PR history) hit two schema-shape guesses that were
-// wrong: `serviceUsername` isn't a Channel field, and `channels` requires
-// a `ChannelsInput!` argument. Rather than guess a third time, this
-// introspects both the Channel type and the ChannelsInput input type in
-// one call, aliased so a single query gets both answers -- then, if that
-// succeeds, immediately tries listing channels using whatever `input`
-// shape the introspection reveals is required (best-effort: an empty
-// object `{}` first, since a lot of Buffer-style paginated list inputs
-// accept all-optional fields).
+// Round 1 (see PR history) hit two wrong field-name/argument guesses.
+// Round 2 introspected Channel + ChannelsInput directly and got the real
+// shape: `channels(input: ChannelsInput!)` needs `organizationId:
+// OrganizationId!` (required) plus an optional `filter` -- so the next
+// unknown is *where to get organizationId from*. Rather than guess a
+// query name for that too, this introspects the root Query type's field
+// names (cheap, one line each) to find the real entry point -- almost
+// certainly something like `me`/`user`/`organizations`.
 async function run() {
-  console.log('Introspecting Buffer schema (Channel type + ChannelsInput input type)...');
+  console.log('Introspecting Buffer schema (root Query type field names)...');
   const schema = await bufferGraphQLRaw(`
     query {
-      channelType: __type(name: "Channel") {
-        fields { name type { name kind ofType { name kind ofType { name kind } } } }
-      }
-      channelsInputType: __type(name: "ChannelsInput") {
-        inputFields { name type { name kind ofType { name kind ofType { name kind } } } }
+      queryType: __type(name: "Query") {
+        fields { name }
       }
     }
   `);
