@@ -27,7 +27,12 @@ function requireApiKey() {
   return apiKey;
 }
 
-async function bufferGraphQL(query, variables = {}) {
+// Non-throwing: returns the full { data, errors } payload as-is. Used
+// directly by diagnostics/introspection, where a partial result (e.g.
+// __type resolving to null for an unknown name) is informative rather
+// than fatal. bufferGraphQL (below) wraps this with the throw-on-error
+// behavior real callers want.
+export async function bufferGraphQLRaw(query, variables = {}) {
   const apiKey = requireApiKey();
   const res = await fetch(API_URL, {
     method: 'POST',
@@ -42,11 +47,14 @@ async function bufferGraphQL(query, variables = {}) {
     throw new Error(`Buffer API HTTP error: ${res.status} ${await res.text()}`);
   }
 
-  const payload = await res.json();
+  return res.json();
+}
+
+async function bufferGraphQL(query, variables = {}) {
+  const payload = await bufferGraphQLRaw(query, variables);
   if (payload.errors?.length) {
     throw new Error(`Buffer GraphQL error: ${JSON.stringify(payload.errors, null, 2)}`);
   }
-
   return payload.data;
 }
 
@@ -60,7 +68,7 @@ export async function listChannels() {
       channels {
         id
         service
-        serviceUsername
+        serviceData
       }
     }
   `);

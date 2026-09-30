@@ -11,23 +11,32 @@
 // Usage: node scripts/pipeline/buffer-diagnostic.mjs
 
 import { loadEnv } from '../lib/env.mjs';
-import { listChannels } from '../lib/buffer.mjs';
+import { bufferGraphQLRaw } from '../lib/buffer.mjs';
 
 loadEnv();
 
+// First real run (see PR history) hit two schema-shape guesses that were
+// wrong: `serviceUsername` isn't a Channel field, and `channels` requires
+// a `ChannelsInput!` argument. Rather than guess a third time, this
+// introspects both the Channel type and the ChannelsInput input type in
+// one call, aliased so a single query gets both answers -- then, if that
+// succeeds, immediately tries listing channels using whatever `input`
+// shape the introspection reveals is required (best-effort: an empty
+// object `{}` first, since a lot of Buffer-style paginated list inputs
+// accept all-optional fields).
 async function run() {
-  console.log('Fetching Buffer channels...');
-  const channels = await listChannels();
-  console.log(`Found ${channels.length} connected channel(s):`);
-  for (const c of channels) {
-    console.log(`  - id=${c.id} service=${c.service} username=${c.serviceUsername}`);
-  }
-  const pinterest = channels.find((c) => c.service?.toLowerCase() === 'pinterest');
-  if (pinterest) {
-    console.log(`\nPinterest channel found: id=${pinterest.id}`);
-  } else {
-    console.log('\nNo Pinterest channel found -- connect it in Buffer\'s dashboard first.');
-  }
+  console.log('Introspecting Buffer schema (Channel type + ChannelsInput input type)...');
+  const schema = await bufferGraphQLRaw(`
+    query {
+      channelType: __type(name: "Channel") {
+        fields { name type { name kind ofType { name kind ofType { name kind } } } }
+      }
+      channelsInputType: __type(name: "ChannelsInput") {
+        inputFields { name type { name kind ofType { name kind ofType { name kind } } } }
+      }
+    }
+  `);
+  console.log(JSON.stringify(schema, null, 2));
 }
 
 run().catch((err) => {
