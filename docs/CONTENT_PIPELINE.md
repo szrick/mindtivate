@@ -442,15 +442,27 @@ npm run pipeline:pin -- --slug your-article-slug --send    # send just this one,
 #    ...or let pinterest-auto-send.yml (below) pick it up automatically.
 ```
 
-`--send` calls Pinterest directly with the image as base64 data — unlike
-the old version of this script, it does NOT need the article's image to
-already be publicly reachable, so there's no post-deploy timing
-dependency. It resolves which board to pin to via `resolveBoardId()` in
-`scripts/lib/pinterest.mjs` (category → board from
+`--send` sends via **Buffer** (`scripts/lib/buffer.mjs`'s `createPin()`),
+not a direct Pinterest API call — Buffer is an official Pinterest
+Marketing Developer Partner with its own already-Standard API access, so
+pins go out through that instead of waiting on this project's own
+Pinterest app's Trial→Standard review. Unlike the direct-API version this
+replaced, Buffer's `ImageAssetInput` needs a publicly fetchable image
+URL rather than a base64 upload — the draft's already-committed PNG is
+used via its `raw.githubusercontent.com` URL (this repo is public),
+which only works because `sendDraft()` only ever runs on a draft that's
+already `approved: true`, meaning its review PR was already merged to
+`main` by the time a send happens. It resolves which board to pin to via
+`resolveBoardId()` in `scripts/lib/pinterest.mjs` (category → board from
 `scripts/lib/pinterest-boards.json`, falling back to `PINTEREST_BOARD_ID`
-for any category without one configured), and on success writes the
-resulting pin URL back onto the article's `pinterestPinUrl` field
-automatically — no manual Pages CMS step needed.
+for any category without one configured — the same Pinterest-native
+board id Buffer's `boardServiceId` expects), and on success writes the
+resulting pin URL (Buffer's `post.externalLink`) back onto the article's
+`pinterestPinUrl` field automatically — no manual Pages CMS step needed.
+Buffer publishes through its own send queue, so `externalLink` isn't
+guaranteed to be populated the instant `createPost` returns; when it
+isn't yet, the draft is still marked sent (so it's never retried), just
+without `pinterestPinUrl` recorded that run.
 
 `.github/workflows/weekly-pinterest-pins.yml` runs the **draft step
 only** (never sends) every Monday for up to 5 published articles missing
@@ -473,33 +485,19 @@ review PR, same as always). What's optional is *how* an approved draft
 actually gets sent:
 
 - **By hand**: `npm run pipeline:pin -- --slug <slug> --send`, run
-  locally with your own Pinterest credentials.
+  locally with `BUFFER_API_KEY` set.
 - **Automatically**: `.github/workflows/pinterest-auto-send.yml` runs
   daily, calls `npm run pipeline:pin -- --send-approved`, and sends every
   draft that's `approved: true` and not yet `sentAt` — capped at
   `MAX_SENDS_PER_RUN` (5) per run with a delay between each send
   (`docs/COMPLIANCE.md` warns against a "scripted bulk-pin loop"; this
   keeps a pile of same-day approvals from turning into a burst of
-  simultaneous posts). Needs `PINTEREST_ACCESS_TOKEN` /
-  `PINTEREST_BOARD_ID` as repo secrets — see `docs/SETUP.md`.
+  simultaneous posts). Needs `BUFFER_API_KEY` as a repo secret — see
+  `docs/SETUP.md`.
 
 Either path writes `sentAt`/`pinUrl` onto the draft `.json` and
-`pinterestPinUrl` onto the article, so a draft is never sent twice.
-
-**Token refresh**: Pinterest access tokens expire every 30 days. Both
-send paths call `refreshAccessToken()` in `scripts/lib/pinterest.mjs`
-first, which mints a fresh access token from a refresh token when
-`PINTEREST_APP_ID` / `PINTEREST_APP_SECRET` / `PINTEREST_REFRESH_TOKEN`
-are all configured (optional — falls back to whatever
-`PINTEREST_ACCESS_TOKEN` is already set otherwise). Pinterest's refresh
-token is the "continuous" kind — reusing it is expected to keep working
-indefinitely rather than being invalidated after one use, as long as
-it's used at least once within its own ~60-day window, which a daily
-auto-send run comfortably satisfies. This deliberately does not try to
-rewrite the `PINTEREST_REFRESH_TOKEN` secret on its own if Pinterest ever
-issues a new one — it logs a warning (never the token value) instead, so
-a human redoes the OAuth flow and updates the secret by hand if the old
-one ever actually stops working.
+`pinterestPinUrl` onto the article (when Buffer's `externalLink` is
+available yet — see above), so a draft is never sent twice either way.
 
 ## 6. Reddit engagement (`scripts/pipeline/6-reddit-engagement-draft.mjs`)
 

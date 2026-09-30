@@ -40,7 +40,8 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 
 import { loadEnv } from '../lib/env.mjs';
 import { askPoeForJson, generatePoeImage } from '../lib/poe.mjs';
 import { readFrontmatter, insertFrontmatterField } from '../lib/frontmatter.mjs';
-import { createPin, resolveBoardId, refreshAccessToken } from '../lib/pinterest.mjs';
+import { resolveBoardId } from '../lib/pinterest.mjs';
+import { createPin } from '../lib/buffer.mjs';
 import { renderPinImage, renderInfographicPinImage, pickPinTheme, hashString } from '../lib/pinterest-pin-image.mjs';
 
 loadEnv();
@@ -48,6 +49,16 @@ loadEnv();
 const DRAFTS_DIR = 'scripts/pipeline/pinterest-pin-drafts';
 const SITE_URL = 'https://mindtivate.com';
 const ARTICLES_DIR = 'src/content/articles';
+
+// Buffer's ImageAssetInput needs a publicly fetchable image URL, not a
+// base64 upload (unlike the direct Pinterest API this replaces) -- this
+// repo is public, so a draft's already-committed PNG is reachable here
+// as soon as it's on main. sendDraft() only ever runs (via --send or
+// --send-approved) on a draft that's already approved: true, which by
+// this project's own architecture means its PR was already reviewed and
+// merged -- so the image is guaranteed to exist at this URL by the time
+// it's needed.
+const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/szrick/mindtivate/main';
 
 const SYSTEM_PROMPT = `You write the wording for a Pinterest pin promoting a Mindtivate article
 (evidence-based women's health/wellness — specific and grounded, never
@@ -211,23 +222,6 @@ function resolveHeroImagePath(heroImage) {
   return `${ARTICLES_DIR}/${cleaned}`;
 }
 
-// If a refresh token is configured (PINTEREST_APP_ID/APP_SECRET/
-// REFRESH_TOKEN — all optional), mint a fresh access token for this
-// process rather than relying on a static PINTEREST_ACCESS_TOKEN that
-// expires every 30 days. createPin/resolveBoardId both already default
-// to reading PINTEREST_ACCESS_TOKEN from the environment, so setting it
-// here once is enough for every send in this run to pick it up. No-op
-// (keeps whatever PINTEREST_ACCESS_TOKEN is already set, if any) when
-// the refresh vars aren't configured -- see docs/SETUP.md.
-async function ensureFreshAccessToken() {
-  try {
-    const token = await refreshAccessToken();
-    if (token) process.env.PINTEREST_ACCESS_TOKEN = token;
-  } catch (err) {
-    console.warn(`Pinterest token refresh skipped: ${err.message}`);
-  }
-}
-
 // Sends one already-drafted, already-approved pin. Throws (with a
 // message describing exactly what's missing/wrong) rather than
 // exitCode-ing directly, so both the single-slug --send path and the
@@ -261,27 +255,39 @@ async function sendDraft(slug) {
     );
   }
 
-  console.log(`Creating Pinterest pin on board ${boardId}: "${draft.pinTitle}"...`);
-  const imageBase64 = readFileSync(imagePath).toString('base64');
-  const pin = await createPin({
+  console.log(`Creating Pinterest pin on board ${boardId} via Buffer: "${draft.pinTitle}"...`);
+  const imageUrl = `${GITHUB_RAW_BASE}/${imagePath}`;
+  const result = await createPin({
     title: draft.pinTitle,
     description: draft.pinDescription,
     link,
-    imageBase64,
-    imageContentType: 'image/png',
-    boardId,
+    imageUrl,
+    boardServiceId: boardId,
+    saveToDraft: false,
   });
 
-  const pinUrl = `https://www.pinterest.com/pin/${pin.id}/`;
+  if (result.__typename !== 'PostActionSuccess') {
+    throw new Error(`Buffer createPost failed: ${result.__typename}${result.message ? ` -- ${result.message}` : ''}`);
+  }
+
+  // Buffer publishes through its own queue, so the real Pinterest URL
+  // (post.externalLink) isn't guaranteed to be populated the instant
+  // createPost returns -- the send itself still succeeded and won't be
+  // retried (sentAt is set either way), but pinterestPinUrl only gets
+  // recorded on the article once a URL is actually available.
+  const pinUrl = result.post?.externalLink || null;
   draft.sentAt = new Date().toISOString();
-  draft.pinUrl = pinUrl;
+  if (pinUrl) draft.pinUrl = pinUrl;
   writeFileSync(draftPath, JSON.stringify(draft, null, 2));
 
-  const updatedArticle = insertFrontmatterField(readFileSync(articlePath, 'utf8'), 'pinterestPinUrl', pinUrl);
-  writeFileSync(articlePath, updatedArticle);
-
-  console.log(`Created pin: ${pinUrl}`);
-  console.log(`Recorded pinterestPinUrl in ${articlePath}.`);
+  if (pinUrl) {
+    const updatedArticle = insertFrontmatterField(readFileSync(articlePath, 'utf8'), 'pinterestPinUrl', pinUrl);
+    writeFileSync(articlePath, updatedArticle);
+    console.log(`Created pin: ${pinUrl}`);
+    console.log(`Recorded pinterestPinUrl in ${articlePath}.`);
+  } else {
+    console.log('Pin accepted by Buffer, but no externalLink yet (publishes asynchronously) -- pinterestPinUrl not recorded this run.');
+  }
   return pinUrl;
 }
 
@@ -311,8 +317,6 @@ async function sendApprovedDrafts() {
     console.log('No approved, unsent Pinterest pin drafts found.');
     return;
   }
-
-  await ensureFreshAccessToken();
 
   console.log(`Sending ${slugs.length} approved draft(s)...`);
   for (const [i, slug] of slugs.entries()) {
@@ -346,7 +350,6 @@ async function run() {
   }
 
   if (args.send) {
-    await ensureFreshAccessToken();
     try {
       await sendDraft(args.slug);
     } catch (err) {

@@ -1,23 +1,26 @@
-// Buffer API client (GraphQL, https://api.buffer.com) -- an alternative
-// posting channel for Pinterest pins while this project's own Pinterest
-// app is still on Trial access (see docs/SETUP.md's Pinterest section).
-// Buffer is an official Pinterest Marketing Developer Partner, so pins
-// published through it go out via Pinterest's *own* already-Standard API
-// access rather than this app's Trial-limited one -- the Pinterest
-// account still has to be connected as a channel inside Buffer's own
-// dashboard first (one-time, done by hand; the API can't do that initial
-// OAuth linking itself).
+// Buffer API client (GraphQL, https://api.buffer.com) -- the primary
+// posting path for Pinterest pins (see 5-pinterest-pin.mjs) while this
+// project's own Pinterest app is still on Trial access (see
+// docs/SETUP.md's Pinterest section). Buffer is an official Pinterest
+// Marketing Developer Partner, so pins published through it go out via
+// Pinterest's *own* already-Standard API access rather than this app's
+// Trial-limited one -- the Pinterest account still has to be connected
+// as a channel inside Buffer's own dashboard first (one-time, done by
+// hand; the API can't do that initial OAuth linking itself).
 //
 // SCHEMA CONFIRMED LIVE: developers.buffer.com is blocked by this
 // session's network policy, so every shape below was recovered via
 // GraphQL introspection against the real API instead (see git history
-// for scripts/pipeline/buffer-diagnostic.mjs, deleted once this was
-// confirmed working, for the full round-by-round trace) -- not a guess
-// from docs. createPin() has been exercised for real end to end: a live
-// call (saveToDraft: true) against the connected Pinterest channel
+// for scripts/pipeline/buffer-diagnostic.mjs and
+// buffer-post-success-check.mjs, both deleted once confirmed working,
+// for the full round-by-round trace) -- not a guess from docs.
+// createPin() has been exercised for real end to end: a live call
+// (saveToDraft: true) against the connected Pinterest channel
 // ("mindtivate") and its "Mindtivate Test Board" board returned
 // PostActionSuccess -- a real draft landed in Buffer's queue, nothing
-// published to Pinterest.
+// published to Pinterest. Post has no dedicated "platform URL" field;
+// externalLink is the closest match (confirmed present on Post, not yet
+// confirmed populated on a real *published*, non-draft send).
 
 const API_URL = 'https://api.buffer.com';
 
@@ -147,6 +150,9 @@ export async function createPin({
       createPost(input: $input) {
         __typename
         ... on InvalidInputError { message }
+        ... on PostActionSuccess {
+          post { id status externalLink sentAt }
+        }
       }
     }
   `,
