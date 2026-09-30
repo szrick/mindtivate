@@ -10,17 +10,14 @@
 //
 // SCHEMA CONFIRMED LIVE: developers.buffer.com is blocked by this
 // session's network policy, so every shape below was recovered via
-// GraphQL introspection against the real API instead (see
-// scripts/pipeline/buffer-diagnostic.mjs's git history for the full
-// round-by-round trace) -- not a guess from docs. Confirmed live:
-// account.organizations -> organizationId; channels(input:
-// {organizationId}) -> this account's one Pinterest channel; and
-// createPost(input: CreatePostInput!)'s full shape, including
-// metadata.pinterest.{boardServiceId,title,url}. createPost itself has
-// NOT been called for real yet (introspection is read-only; a real
-// createPost call creates an actual post/draft) -- createPin() below is
-// written to the confirmed schema but its first real call is still
-// pending a deliberate, human-aware test (see PR description).
+// GraphQL introspection against the real API instead (see git history
+// for scripts/pipeline/buffer-diagnostic.mjs, deleted once this was
+// confirmed working, for the full round-by-round trace) -- not a guess
+// from docs. createPin() has been exercised for real end to end: a live
+// call (saveToDraft: true) against the connected Pinterest channel
+// ("mindtivate") and its "Mindtivate Test Board" board returned
+// PostActionSuccess -- a real draft landed in Buffer's queue, nothing
+// published to Pinterest.
 
 const API_URL = 'https://api.buffer.com';
 
