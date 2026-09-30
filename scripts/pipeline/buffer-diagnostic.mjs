@@ -20,62 +20,62 @@ import { bufferGraphQLRaw } from '../lib/buffer.mjs';
 
 loadEnv();
 
-// Round 2's real createPin() call got PAST GraphQL validation entirely --
-// no shape errors -- but the actual result was
-// { __typename: "InvalidInputError" }: PostActionPayload is a UNION, and
-// Buffer rejected the *semantic content* of our input, not its shape.
-// The prime suspect: this call passed no boardServiceId (Pinterest pins
-// need a board), and this file never had a real board id to give it. This
-// round introspects PostActionPayload as a union (its real possibleTypes)
-// and InvalidInputError's fields (for the actual rejection reason/detail),
-// and also fetches this channel's real boards so a follow-up call can
-// supply a real boardServiceId.
+// Round 3 confirmed: PostActionPayload's union members include
+// InvalidInputError { message: String! } (so a fragment spread on it
+// gets the real rejection reason), and ChannelMetadata's Pinterest
+// variant is PinterestMetadata { boards: [<board type>!]! } -- exactly
+// the board list this integration needs. This round introspects the
+// board list's item type, then fetches this channel's real boards via
+// the root `channel(id:)` query (confirmed to exist, singular, from the
+// earlier root-Query-fields introspection).
+const PINTEREST_CHANNEL_ID = '6abc9d67ea19ca0bde2eebce';
+
 async function run() {
-  console.log('Introspecting PostActionPayload (union) and InvalidInputError...');
-  const types = await bufferGraphQLRaw(`
+  console.log("Introspecting PinterestMetadata.boards' item type...");
+  const boardsField = await bufferGraphQLRaw(`
     query {
-      payload: __type(name: "PostActionPayload") {
-        kind
-        possibleTypes { name }
-      }
-      invalidInput: __type(name: "InvalidInputError") {
-        fields { name type { name kind ofType { name kind } } }
+      __type(name: "PinterestMetadata") {
+        fields {
+          name
+          type { ofType { ofType { name kind } } }
+        }
       }
     }
   `);
-  console.log(JSON.stringify(types, null, 2));
+  console.log(JSON.stringify(boardsField, null, 2));
 
-  // Channel itself has no `boards` field (confirmed by its earlier full
-  // introspection -- see buffer.mjs's history), but it does have
-  // `metadata: ChannelMetadata`, a union -- the per-service variant
-  // (e.g. a PinterestChannelMetadata) is the more likely home for a
-  // board list. Introspect the union's possible types, then fetch this
-  // channel's real metadata to see which variant it actually returns.
-  console.log('\nIntrospecting ChannelMetadata union...');
-  const metadataUnion = await bufferGraphQLRaw(`
-    query {
-      __type(name: "ChannelMetadata") {
-        kind
-        possibleTypes { name }
-      }
-    }
-  `);
-  console.log(JSON.stringify(metadataUnion, null, 2));
+  const boardTypeName = boardsField.data?.__type?.fields?.find((f) => f.name === 'boards')?.type
+    ?.ofType?.ofType?.name;
 
-  const pinterestMetaType = metadataUnion.data?.__type?.possibleTypes?.find((t) =>
-    /pinterest/i.test(t.name),
-  )?.name;
-  if (pinterestMetaType) {
-    console.log(`\nIntrospecting ${pinterestMetaType}...`);
-    const fields = await bufferGraphQLRaw(`
+  if (boardTypeName) {
+    console.log(`\nIntrospecting ${boardTypeName}'s fields...`);
+    const boardType = await bufferGraphQLRaw(`
       query {
-        __type(name: "${pinterestMetaType}") {
-          fields { name type { name kind ofType { name kind ofType { name kind } } } }
+        __type(name: "${boardTypeName}") {
+          fields { name type { name kind ofType { name kind } } }
         }
       }
     `);
-    console.log(JSON.stringify(fields, null, 2));
+    console.log(JSON.stringify(boardType, null, 2));
   }
+
+  console.log(`\nFetching real boards for channel ${PINTEREST_CHANNEL_ID}...`);
+  const channelData = await bufferGraphQLRaw(
+    `
+    query ($id: ChannelId!) {
+      channel(id: $id) {
+        id
+        metadata {
+          ... on PinterestMetadata {
+            boards { id name }
+          }
+        }
+      }
+    }
+  `,
+    { id: PINTEREST_CHANNEL_ID },
+  );
+  console.log(JSON.stringify(channelData, null, 2));
 }
 
 run().catch((err) => {
