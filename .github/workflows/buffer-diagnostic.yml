@@ -1,0 +1,31 @@
+name: Buffer diagnostic (temporary)
+
+# One-off: confirms BUFFER_API_KEY works and finds the connected Pinterest
+# channel's id via scripts/pipeline/buffer-diagnostic.mjs. Read-only --
+# can't post anything. Delete this workflow (and that script) once the
+# real Buffer-based posting integration has been built and confirmed
+# against the actual API schema.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: List Buffer channels
+        run: node scripts/pipeline/buffer-diagnostic.mjs
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
