@@ -15,17 +15,15 @@ import { bufferGraphQLRaw } from '../lib/buffer.mjs';
 
 loadEnv();
 
-// Rounds 1-7 (see PR history) confirmed real, working reads (organizationId,
-// the Pinterest channel's id) and traced createPost's top-level input
-// shape: channelId (ChannelId!), assets ([AssetInput!]!), mode
-// (ShareMode!), schedulingType (SchedulingType!), needsApproval
-// (Boolean!), text (String), metadata (PostInputMetaData) -- metadata is
-// the likely home for Pinterest-specific fields (a pin needs a board,
-// unlike a plain social post). This round introspects the remaining
-// unknowns: AssetInput's fields (how an image URL is attached),
-// ShareMode/SchedulingType's enum values, and PostInputMetaData's fields.
+// Round 8 confirmed AssetInput is a one-of wrapper (document/image/video,
+// each its own input type) and PostInputMetaData has a per-service field
+// including `pinterest: PinterestPostMetadataInput` -- exactly where a
+// pin's board id belongs, confirming the shape guess from this file's
+// header comment. This (likely final) round introspects ImageAssetInput
+// (how an image URL attaches) and PinterestPostMetadataInput (board id
+// and whatever else a pin needs) to have everything for the real mutation.
 async function run() {
-  const typeNames = ['AssetInput', 'ShareMode', 'SchedulingType', 'PostInputMetaData'];
+  const typeNames = ['ImageAssetInput', 'PinterestPostMetadataInput'];
   for (const typeName of typeNames) {
     const result = await bufferGraphQLRaw(`
       query {
@@ -36,7 +34,6 @@ async function run() {
             name
             type { name kind ofType { name kind ofType { name kind ofType { name kind } } } }
           }
-          enumValues { name }
         }
       }
     `);
