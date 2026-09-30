@@ -11,9 +11,12 @@ import { bufferGraphQLRaw } from '../lib/buffer.mjs';
 loadEnv();
 
 async function run() {
+  // Round 1 confirmed PostActionSuccess { post: Post! } -- this round
+  // introspects Post's own fields to find the real Pinterest post/pin
+  // id or URL to record as pinterestPinUrl.
   const result = await bufferGraphQLRaw(`
     query {
-      __type(name: "PostActionSuccess") {
+      __type(name: "Post") {
         fields {
           name
           type { name kind ofType { name kind ofType { name kind } } }
