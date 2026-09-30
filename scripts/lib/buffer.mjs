@@ -8,16 +8,16 @@
 // dashboard first (one-time, done by hand; the API can't do that initial
 // OAuth linking itself).
 //
-// NOTE ON EXACT SCHEMA: written from Buffer's own developer docs
-// (developers.buffer.com) as summarized via search -- this session's
-// network policy blocks that domain directly, so the exact mutation
-// field names below are our best-informed guess, not something fetched
-// and confirmed against the live schema. bufferGraphQL() surfaces the
-// full GraphQL error array on any failure specifically so a real "Unknown
-// argument"/"Field ... of required type ... was not provided" error (if
-// one comes back) is immediately visible and actionable rather than
-// swallowed -- expect one fix-forward round once this is first run for
-// real in CI.
+// SCHEMA CONFIRMED LIVE: developers.buffer.com is blocked by this
+// session's network policy, so every shape below was recovered via
+// GraphQL introspection against the real API instead (see git history
+// for scripts/pipeline/buffer-diagnostic.mjs, deleted once this was
+// confirmed working, for the full round-by-round trace) -- not a guess
+// from docs. createPin() has been exercised for real end to end: a live
+// call (saveToDraft: true) against the connected Pinterest channel
+// ("mindtivate") and its "Mindtivate Test Board" board returned
+// PostActionSuccess -- a real draft landed in Buffer's queue, nothing
+// published to Pinterest.
 
 const API_URL = 'https://api.buffer.com';
 
@@ -59,19 +59,49 @@ async function bufferGraphQL(query, variables = {}) {
 }
 
 /**
+ * This account has exactly one Buffer organization (confirmed live via
+ * account.organizations -- id 6abc9d21a3325fb2b8a972ed, "My organization").
+ * channels(input: ChannelsInput!) requires organizationId, so every
+ * channel-listing call needs it first; cached per-process since it won't
+ * change within a single script run.
+ */
+let cachedOrganizationId;
+
+async function getOrganizationId() {
+  if (cachedOrganizationId) return cachedOrganizationId;
+  const data = await bufferGraphQL(`
+    query {
+      account {
+        organizations { id }
+      }
+    }
+  `);
+  const organizationId = data.account?.organizations?.[0]?.id;
+  if (!organizationId) throw new Error('Buffer account has no organizations');
+  cachedOrganizationId = organizationId;
+  return organizationId;
+}
+
+/**
  * Lists every channel (social account) connected to this Buffer account.
  * Read-only -- safe to call freely, no way to post anything by accident.
  */
 export async function listChannels() {
-  const data = await bufferGraphQL(`
-    query {
-      channels {
+  const organizationId = await getOrganizationId();
+  const data = await bufferGraphQL(
+    `
+    query ($input: ChannelsInput!) {
+      channels(input: $input) {
         id
         service
-        serviceData
+        serviceId
+        name
+        displayName
       }
     }
-  `);
+  `,
+    { input: { organizationId } },
+  );
   return data.channels;
 }
 
@@ -79,4 +109,61 @@ export async function listChannels() {
 export async function findPinterestChannel() {
   const channels = await listChannels();
   return channels.find((c) => c.service?.toLowerCase() === 'pinterest') ?? null;
+}
+
+// Mirrors pinterest.mjs's createPin() parameter shape so callers (e.g. a
+// future stage swapped between the two backends) don't need to know
+// which one they're talking to. Defaults to saveToDraft: true -- i.e.
+// it lands as a draft in Buffer's own queue for a human to review and
+// approve there, rather than publishing to Pinterest immediately. This
+// matches this project's existing draft -> human-approval -> send
+// pattern for Pinterest pins (see scripts/pipeline/5-pinterest-pin.mjs)
+// and means a caller has to explicitly opt in (saveToDraft: false) to
+// make this actually publish live.
+//
+// needsApproval defaults to false, confirmed live: passing true 400'd
+// with "needsApproval is only valid when your posting policy on this
+// channel requires approval" -- that's a Buffer *team* review-workflow
+// feature (multi-person approval queues), unrelated to and not needed
+// for saveToDraft's own held-back-from-publishing behavior, and this
+// channel has no such policy configured.
+export async function createPin({
+  title,
+  description,
+  link,
+  imageUrl,
+  boardServiceId,
+  channelId,
+  needsApproval = false,
+  saveToDraft = true,
+}) {
+  const channel = channelId || (await findPinterestChannel())?.id;
+  if (!channel) throw new Error('No connected Pinterest channel found in Buffer');
+  if (!imageUrl) throw new Error('Missing imageUrl');
+
+  const data = await bufferGraphQL(
+    `
+    mutation ($input: CreatePostInput!) {
+      createPost(input: $input) {
+        __typename
+        ... on InvalidInputError { message }
+      }
+    }
+  `,
+    {
+      input: {
+        channelId: channel,
+        assets: [{ image: { url: imageUrl } }],
+        text: description,
+        mode: 'shareNow',
+        schedulingType: 'automatic',
+        needsApproval,
+        saveToDraft,
+        metadata: {
+          pinterest: { boardServiceId, title, url: link },
+        },
+      },
+    },
+  );
+  return data.createPost;
 }
