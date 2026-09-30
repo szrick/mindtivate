@@ -20,32 +20,32 @@ import { bufferGraphQLRaw } from '../lib/buffer.mjs';
 
 loadEnv();
 
-// Round 3 confirmed: PostActionPayload's union members include
-// InvalidInputError { message: String! } (so a fragment spread on it
-// gets the real rejection reason), and ChannelMetadata's Pinterest
-// variant is PinterestMetadata { boards: [<board type>!]! } -- exactly
-// the board list this integration needs. This round introspects the
-// board list's item type, then fetches this channel's real boards via
-// the root `channel(id:)` query (confirmed to exist, singular, from the
-// earlier root-Query-fields introspection).
+// Round 4 hit two real errors: (1) the introspection query for
+// boards' item type wasn't nested deep enough (boards: NON_NULL(LIST(
+// NON_NULL(<item>))) needs 3 ofType levels, this round's query only had
+// 2, so the item type's name came back null) and (2) `channel` takes
+// `input: ChannelInput!`, not a bare `id` arg ("Unknown argument \"id\"
+// on field \"Query.channel\""). This round fixes both: one more ofType
+// level for the item type name, and introspects ChannelInput's real
+// shape before retrying the real board-list fetch.
 const PINTEREST_CHANNEL_ID = '6abc9d67ea19ca0bde2eebce';
 
 async function run() {
-  console.log("Introspecting PinterestMetadata.boards' item type...");
+  console.log("Introspecting PinterestMetadata.boards' item type (one level deeper)...");
   const boardsField = await bufferGraphQLRaw(`
     query {
       __type(name: "PinterestMetadata") {
         fields {
           name
-          type { ofType { ofType { name kind } } }
+          type { ofType { ofType { name kind ofType { name kind } } } }
         }
       }
     }
   `);
   console.log(JSON.stringify(boardsField, null, 2));
 
-  const boardTypeName = boardsField.data?.__type?.fields?.find((f) => f.name === 'boards')?.type
-    ?.ofType?.ofType?.name;
+  const boardsType = boardsField.data?.__type?.fields?.find((f) => f.name === 'boards')?.type;
+  const boardTypeName = boardsType?.ofType?.ofType?.name ?? boardsType?.ofType?.ofType?.ofType?.name;
 
   if (boardTypeName) {
     console.log(`\nIntrospecting ${boardTypeName}'s fields...`);
@@ -59,11 +59,21 @@ async function run() {
     console.log(JSON.stringify(boardType, null, 2));
   }
 
+  console.log('\nIntrospecting ChannelInput...');
+  const channelInputType = await bufferGraphQLRaw(`
+    query {
+      __type(name: "ChannelInput") {
+        inputFields { name type { name kind ofType { name kind } } }
+      }
+    }
+  `);
+  console.log(JSON.stringify(channelInputType, null, 2));
+
   console.log(`\nFetching real boards for channel ${PINTEREST_CHANNEL_ID}...`);
   const channelData = await bufferGraphQLRaw(
     `
-    query ($id: ChannelId!) {
-      channel(id: $id) {
+    query ($input: ChannelInput!) {
+      channel(input: $input) {
         id
         metadata {
           ... on PinterestMetadata {
@@ -73,7 +83,7 @@ async function run() {
       }
     }
   `,
-    { id: PINTEREST_CHANNEL_ID },
+    { input: { id: PINTEREST_CHANNEL_ID } },
   );
   console.log(JSON.stringify(channelData, null, 2));
 }
