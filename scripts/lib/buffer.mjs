@@ -116,14 +116,20 @@ export async function findPinterestChannel() {
 
 // Mirrors pinterest.mjs's createPin() parameter shape so callers (e.g. a
 // future stage swapped between the two backends) don't need to know
-// which one they're talking to. Defaults to needsApproval: true and
-// saveToDraft: true -- i.e. it lands as a draft in Buffer's own queue
-// for a human to review and approve there, rather than publishing to
-// Pinterest immediately. This matches this project's existing
-// draft -> human-approval -> send pattern for Pinterest pins (see
-// scripts/pipeline/5-pinterest-pin.mjs) and means a caller has to
-// explicitly opt in (saveToDraft: false, needsApproval: false) to make
-// this actually publish live.
+// which one they're talking to. Defaults to saveToDraft: true -- i.e.
+// it lands as a draft in Buffer's own queue for a human to review and
+// approve there, rather than publishing to Pinterest immediately. This
+// matches this project's existing draft -> human-approval -> send
+// pattern for Pinterest pins (see scripts/pipeline/5-pinterest-pin.mjs)
+// and means a caller has to explicitly opt in (saveToDraft: false) to
+// make this actually publish live.
+//
+// needsApproval defaults to false, confirmed live: passing true 400'd
+// with "needsApproval is only valid when your posting policy on this
+// channel requires approval" -- that's a Buffer *team* review-workflow
+// feature (multi-person approval queues), unrelated to and not needed
+// for saveToDraft's own held-back-from-publishing behavior, and this
+// channel has no such policy configured.
 export async function createPin({
   title,
   description,
@@ -131,7 +137,7 @@ export async function createPin({
   imageUrl,
   boardServiceId,
   channelId,
-  needsApproval = true,
+  needsApproval = false,
   saveToDraft = true,
 }) {
   const channel = channelId || (await findPinterestChannel())?.id;
