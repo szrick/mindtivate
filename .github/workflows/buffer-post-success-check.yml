@@ -1,0 +1,28 @@
+name: Buffer PostActionSuccess check (temporary)
+
+# One-off: introspects PostActionSuccess's fields. Read-only, no side
+# effects. Delete this workflow (and the script it runs) after use.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Introspect PostActionSuccess
+        run: node scripts/pipeline/buffer-post-success-check.mjs
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
