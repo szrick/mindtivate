@@ -15,44 +15,49 @@ import { bufferGraphQLRaw } from '../lib/buffer.mjs';
 
 loadEnv();
 
-// Round 1 (see PR history) hit two wrong field-name/argument guesses.
-// Round 2 introspected Channel + ChannelsInput directly and got the real
-// shape: `channels(input: ChannelsInput!)` needs `organizationId:
-// OrganizationId!` (required) plus an optional `filter`. Round 3
-// introspected the root Query type's field names to find where
-// organizationId comes from -- `account` is the standout candidate (no
-// other field name suggests an account/org context). This round
-// introspects `account`'s own arguments (does it need an id, or is it
-// implicit from the API key?) and its return type's fields, to confirm
-// and get the real path to organizationId.
+// Rounds 1-4 (see PR history) traced the real path to a working channel
+// list: `channels(input: ChannelsInput!)` needs `organizationId:
+// OrganizationId!`, and that comes from `account { organizations { id } }`
+// -- confirmed by introspection (account takes no args, returns Account,
+// which has a non-null `organizations` list). This round fetches the
+// real organizationId via that path and, if found, immediately tries the
+// actual channels() query with it -- the first attempt at real (non-
+// introspection) data since round 1.
 async function run() {
-  console.log("Introspecting Buffer schema (Query.account's args + its return type's fields)...");
-  const schema = await bufferGraphQLRaw(`
+  console.log('Fetching account.organizations...');
+  const accountData = await bufferGraphQLRaw(`
     query {
-      queryType: __type(name: "Query") {
-        fields(includeDeprecated: true) {
-          name
-          args { name type { name kind ofType { name kind } } }
-          type { name kind ofType { name kind } }
-        }
+      account {
+        id
+        email
+        organizations { id name }
       }
     }
   `);
-  const accountField = schema.data?.queryType?.fields?.find((f) => f.name === 'account');
-  console.log('account field:', JSON.stringify(accountField, null, 2));
+  console.log('account:', JSON.stringify(accountData, null, 2));
 
-  const accountTypeName = accountField?.type?.name ?? accountField?.type?.ofType?.name;
-  if (accountTypeName) {
-    const accountType = await bufferGraphQLRaw(`
-      query {
-        __type(name: "${accountTypeName}") {
-          name
-          fields { name type { name kind ofType { name kind } } }
-        }
-      }
-    `);
-    console.log(`${accountTypeName} type:`, JSON.stringify(accountType, null, 2));
+  const organizationId = accountData.data?.account?.organizations?.[0]?.id;
+  if (!organizationId) {
+    console.log('No organizationId found -- stopping here.');
+    return;
   }
+
+  console.log(`\nListing channels for organizationId=${organizationId}...`);
+  const channelsData = await bufferGraphQLRaw(
+    `
+    query ($input: ChannelsInput!) {
+      channels(input: $input) {
+        id
+        service
+        serviceId
+        name
+        displayName
+      }
+    }
+  `,
+    { input: { organizationId } },
+  );
+  console.log('channels:', JSON.stringify(channelsData, null, 2));
 }
 
 run().catch((err) => {
