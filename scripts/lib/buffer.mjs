@@ -143,6 +143,7 @@ export async function createPin({
     mutation ($input: CreatePostInput!) {
       createPost(input: $input) {
         __typename
+        ... on InvalidInputError { message }
       }
     }
   `,
