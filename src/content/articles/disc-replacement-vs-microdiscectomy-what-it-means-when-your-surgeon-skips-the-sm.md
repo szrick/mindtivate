@@ -20,7 +20,6 @@ tags:
   - surgery
   - sciatica
   - spine health
-pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979119592"
 ---
 ## Why your surgeon is recommending the bigger procedure
 
