@@ -4,11 +4,32 @@
   "category": "Mind",
   "articleLink": "https://mindtivate.com/articles/why-you-can-t-eat-around-your-partner-without-feeling-sick/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/why-you-can-t-eat-around-your-partner-without-feeling-sick.png",
-  "style": "photo",
-  "imageHeadline": "Why Eating With Your Partner Makes You Nauseous",
-  "imageSubtext": "It's not the relationship—it's social anxiety around food. Here's what helps.",
-  "pinTitle": "Nausea When Eating With Your Partner? Understanding Social Eating Anxiety",
-  "pinDescription": "Feeling sick or unable to eat around a new partner isn't a red flag about the relationship. It's a common form of social anxiety tied to eating in front of others. Understand what's happening and find practical, evidence-based ways to ease the discomfort and enjoy meals together.",
+  "style": "infographic",
+  "visualTheme": "sage-floating",
+  "imageHeadline": "Nausea when eating with your partner isn't the ick",
+  "imageSubtext": "It's a documented social anxiety response—and it's treatable",
+  "pinTitle": "Why Eating in Front of Your Partner Triggers Nausea (Social Anxiety & Relationships)",
+  "pinDescription": "If you feel sick every time you eat with your new partner—even though the relationship is good—it may be social anxiety, not a relationship problem. Learn why eating while being observed triggers physical symptoms and what gradual exposure and CBT can do to help.",
+  "layoutStyle": "process",
+  "items": [
+    {
+      "label": "Recognize it's anxiety, not the relationship",
+      "sublabel": ""
+    },
+    {
+      "label": "Start with low-stakes foods or snacks",
+      "sublabel": ""
+    },
+    {
+      "label": "Practice eating together gradually",
+      "sublabel": ""
+    },
+    {
+      "label": "Talk to a therapist if it persists",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A cozy table set for two with simple dishes and soft natural light from a nearby window, focus on the table setting rather than people",
   "approved": true,
-  "generatedAt": "2026-10-02T13:12:10.697Z"
+  "generatedAt": "2026-10-02T14:14:39.127Z"
 }

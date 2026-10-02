@@ -4,11 +4,28 @@
   "category": "Mind",
   "articleLink": "https://mindtivate.com/articles/what-to-ask-a-parent-with-dementia-while-they-can-still-talk/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/what-to-ask-a-parent-with-dementia-while-they-can-still-talk.png",
-  "style": "photo",
-  "imageHeadline": "The Questions to Ask Before Dementia Takes Their Words",
-  "imageSubtext": "How to capture what matters most while your parent can still answer",
-  "pinTitle": "What to Ask a Parent With Dementia While They Can Still Talk | Mindful Caregiving",
-  "pinDescription": "Primary progressive aphasia will eventually affect language and speech. Learn which conversations to prioritize now—the stories, memories, and details that matter most—while your parent can still share them with you.",
+  "style": "infographic",
+  "visualTheme": "terracotta-floating",
+  "imageHeadline": "Questions to ask before aphasia takes her words",
+  "imageSubtext": "What to capture now while your parent can still speak",
+  "pinTitle": "What to Ask a Parent With Dementia While They Can Still Talk | Primary Progressive Aphasia",
+  "pinDescription": "Primary progressive aphasia will eventually take your mother's ability to speak and understand language. From her own story to messages for future milestones, here are the categories of questions that matter most when conversation is on a timeline.",
+  "layoutStyle": "list",
+  "items": [
+    {
+      "label": "Her story in her words—childhood, becoming a mother, what she was like at your age",
+      "sublabel": ""
+    },
+    {
+      "label": "Practical details you'll need—recipes, passwords, family history you don't know yet",
+      "sublabel": ""
+    },
+    {
+      "label": "Messages for specific moments—your wedding, a hard day, advice for a grandchild",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A small audio recorder resting on a kitchen table beside two cups of tea, soft afternoon light coming through a window",
   "approved": true,
-  "generatedAt": "2026-10-02T13:10:40.825Z"
+  "generatedAt": "2026-10-02T14:08:58.597Z"
 }

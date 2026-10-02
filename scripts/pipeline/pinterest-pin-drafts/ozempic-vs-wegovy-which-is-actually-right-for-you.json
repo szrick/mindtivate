@@ -4,11 +4,24 @@
   "category": "Body",
   "articleLink": "https://mindtivate.com/articles/ozempic-vs-wegovy-which-is-actually-right-for-you/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/ozempic-vs-wegovy-which-is-actually-right-for-you.png",
-  "style": "photo",
-  "imageHeadline": "Ozempic vs. Wegovy: What's the Real Difference?",
-  "imageSubtext": "Same active ingredient, different FDA approvals and dosing",
-  "pinTitle": "Ozempic vs Wegovy: Understanding the Difference Between These GLP-1 Medications",
-  "pinDescription": "Both contain semaglutide, but they're approved for different purposes and prescribed at different doses. Learn what sets Ozempic and Wegovy apart, how they work, and what to consider when talking to your doctor about GLP-1 medications.",
+  "style": "infographic",
+  "visualTheme": "plum-block",
+  "imageHeadline": "Same drug, different dose—and your insurance knows it",
+  "imageSubtext": "What actually separates Ozempic and Wegovy for women",
+  "pinTitle": "Ozempic vs Wegovy: Dose, Approval & Insurance Differences for Women",
+  "pinDescription": "They're both semaglutide, but the FDA approval, dosing ceiling, and insurance coverage split matters more than the name. Here's what changes for weight loss, diabetes, fertility risk, and what your plan will actually cover—grounded in trial data and prescribing realities.",
+  "layoutStyle": "comparison",
+  "items": [
+    {
+      "label": "Ozempic",
+      "sublabel": "FDA-approved for type 2 diabetes, max 2 mg"
+    },
+    {
+      "label": "Wegovy",
+      "sublabel": "FDA-approved for weight loss, up to 2.4 mg"
+    }
+  ],
+  "backgroundScene": "Two identical prescription medication pens side by side on a clean wooden table with soft natural window light and a subtle insurance card partially visible in the background",
   "approved": true,
-  "generatedAt": "2026-10-02T13:20:30.840Z"
+  "generatedAt": "2026-10-02T14:06:39.499Z"
 }

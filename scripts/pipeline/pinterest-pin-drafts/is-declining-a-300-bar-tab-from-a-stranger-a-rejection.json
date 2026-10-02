@@ -4,11 +4,28 @@
   "category": "Love",
   "articleLink": "https://mindtivate.com/articles/is-declining-a-300-bar-tab-from-a-stranger-a-rejection/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/is-declining-a-300-bar-tab-from-a-stranger-a-rejection.png",
-  "style": "photo",
-  "imageHeadline": "When Saying No to a Gift Isn't Really About the Gift",
-  "imageSubtext": "What a $300 bar tab offer actually means in dating",
-  "pinTitle": "Is Declining a $300 Bar Tab From a Stranger a Rejection? | Dating Psychology",
-  "pinDescription": "A stranger offers to cover your expensive bar tab—do you accept? Explore what gift acceptance and refusal actually signal in early dating contexts, and why your gut reaction matters more than the dollar amount. Understand the psychology behind these moments.",
+  "style": "infographic",
+  "visualTheme": "terracotta-block",
+  "imageHeadline": "Declining a gift isn't rejecting the person",
+  "imageSubtext": "It's setting a boundary about how you want to meet someone",
+  "pinTitle": "Is Declining a $300 Bar Tab From a Stranger a Rejection? What Gift Acceptance Really Signals",
+  "pinDescription": "A stranger offers to cover your bar tab so you'll stay and talk. You say no. Does that mean you're not interested? Here's what declining a gift actually communicates in early dating—and why boundaries aren't the same as rejection. Read the full breakdown of reciprocity, expectations, and how to navigate these moments.",
+  "layoutStyle": "list",
+  "items": [
+    {
+      "label": "Declining sets a boundary, not a romantic verdict",
+      "sublabel": ""
+    },
+    {
+      "label": "Big gestures from strangers can trigger obligation",
+      "sublabel": ""
+    },
+    {
+      "label": "You can say no to the tab and yes to conversation",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A dimly lit bar counter with empty cocktail glasses and a folded receipt, warm ambient lighting in the background",
   "approved": true,
-  "generatedAt": "2026-10-02T13:09:18.663Z"
+  "generatedAt": "2026-10-02T14:05:37.359Z"
 }

@@ -4,11 +4,28 @@
   "category": "Hormones",
   "articleLink": "https://mindtivate.com/articles/why-your-estradiol-gel-sits-on-your-skin-for-hours/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/why-your-estradiol-gel-sits-on-your-skin-for-hours.png",
-  "style": "photo",
-  "imageHeadline": "Your Estradiol Gel Isn't Absorbing? Here's Why",
-  "imageSubtext": "What affects absorption time and what you can actually do about it",
-  "pinTitle": "Why Estradiol Gel Takes Hours to Absorb (And What Affects It)",
-  "pinDescription": "If your estradiol gel sits on your skin for hours or leaves residue the next morning, there are specific factors at play. Learn what influences transdermal hormone absorption and evidence-based adjustments you can try for better results.",
+  "style": "infographic",
+  "visualTheme": "plum-block",
+  "imageHeadline": "Your estradiol gel isn't broken—your skin is",
+  "imageSubtext": "Why absorption varies and what to adjust before you worry",
+  "pinTitle": "Why Estradiol Gel Takes Hours to Absorb (And What Actually Helps)",
+  "pinDescription": "If your estradiol gel sits on your skin for over an hour or leaves residue the next day, absorption may vary by application site, skin hydration, and timing. Learn what affects transdermal hormone absorption and what to try before assuming it's not working.",
+  "layoutStyle": "list",
+  "items": [
+    {
+      "label": "Application site matters—thighs may absorb better than arms",
+      "sublabel": ""
+    },
+    {
+      "label": "Visible residue doesn't mean the hormone didn't absorb",
+      "sublabel": ""
+    },
+    {
+      "label": "Check your levels first—symptoms and bloodwork tell the real story",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A clean bathroom counter with a pump bottle of clear gel next to a folded towel and a glass of water, soft morning light coming through a window",
   "approved": true,
-  "generatedAt": "2026-10-02T13:12:16.537Z"
+  "generatedAt": "2026-10-02T14:14:53.954Z"
 }

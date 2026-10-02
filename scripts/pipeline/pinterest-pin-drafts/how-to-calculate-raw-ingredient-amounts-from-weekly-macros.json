@@ -4,11 +4,32 @@
   "category": "Food",
   "articleLink": "https://mindtivate.com/articles/how-to-calculate-raw-ingredient-amounts-from-weekly-macros/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/how-to-calculate-raw-ingredient-amounts-from-weekly-macros.png",
-  "style": "photo",
-  "imageHeadline": "From Macro Targets to Pounds of Food",
-  "imageSubtext": "Simple math to turn your weekly nutrition goals into a real shopping list.",
-  "pinTitle": "Calculate Raw Ingredient Amounts From Weekly Macros | Grocery Shopping for Meal Prep",
-  "pinDescription": "Set your protein, carb, and fat targets? Here's how to figure out exactly how much chicken, rice, or other ingredients to buy each week. This straightforward guide breaks down the math that connects macro goals to real grocery quantities for easier meal prep.",
+  "style": "infographic",
+  "visualTheme": "plum-block",
+  "imageHeadline": "Stop guessing how much chicken to buy for the week",
+  "imageSubtext": "The yield math that turns macro targets into a real shopping list",
+  "pinTitle": "How to Calculate Raw Ingredient Amounts From Weekly Macros | Meal Prep Math",
+  "pinDescription": "You know your daily protein and carb targets, but how much raw chicken or dry rice do you actually need to buy? This walks through the yield factors that account for cooking loss and water absorption—so your grocery list matches your macro plan without waste or mid-week runs. Learn the reverse-engineering method that makes meal prep predictable.",
+  "layoutStyle": "process",
+  "items": [
+    {
+      "label": "Start with your weekly macro target for each food",
+      "sublabel": ""
+    },
+    {
+      "label": "Look up cooked nutrition data for that item",
+      "sublabel": ""
+    },
+    {
+      "label": "Apply the yield factor to find raw amount",
+      "sublabel": ""
+    },
+    {
+      "label": "Add a 10% buffer for real-life variance",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A clean kitchen counter with a grocery list on a clipboard next to a few raw chicken breasts, a small bowl of uncooked white rice, and a pencil",
   "approved": true,
-  "generatedAt": "2026-10-02T13:08:13.608Z"
+  "generatedAt": "2026-10-02T14:02:47.404Z"
 }

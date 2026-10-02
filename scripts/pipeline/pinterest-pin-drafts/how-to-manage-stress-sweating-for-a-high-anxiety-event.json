@@ -4,11 +4,32 @@
   "category": "Body",
   "articleLink": "https://mindtivate.com/articles/how-to-manage-stress-sweating-for-a-high-anxiety-event/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/how-to-manage-stress-sweating-for-a-high-anxiety-event.png",
-  "style": "photo",
-  "imageHeadline": "Stress Sweating Before a Big Event? Here's What Helps",
-  "imageSubtext": "Evidence-based strategies when your body's stress response kicks in",
-  "pinTitle": "How to Manage Stress Sweating for High-Anxiety Events | Evidence-Based Tips",
-  "pinDescription": "Stress sweating before a speech, wedding, or presentation isn't just nerves—it's your body's physical response to anxiety. Learn what actually works to manage it when traditional fixes fall short, with practical, evidence-based strategies for high-stakes moments.",
+  "style": "infographic",
+  "visualTheme": "sage-floating",
+  "imageHeadline": "Stress sweating isn't about temperature",
+  "imageSubtext": "It's your nervous system—and it needs a different approach",
+  "pinTitle": "How to Manage Stress Sweating Before a High-Anxiety Event (Speech, Wedding, Presentation)",
+  "pinDescription": "Anxiety-driven sweating responds to adrenaline, not heat—so the usual fixes don't work the same way. Learn what actually helps when you're facing a high-stakes moment and traditional solutions won't cut it, from antiperspirant timing to dermatologist-backed options.",
+  "layoutStyle": "process",
+  "items": [
+    {
+      "label": "Apply clinical-strength antiperspirant at night to dry skin",
+      "sublabel": ""
+    },
+    {
+      "label": "Give it 1-2 weeks of consistent use to see results",
+      "sublabel": ""
+    },
+    {
+      "label": "Schedule a dermatologist visit if you need more help",
+      "sublabel": ""
+    },
+    {
+      "label": "Consider prescription options or Botox for severe cases",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A formal dress hanging on a wooden hanger against soft natural light from a window, with delicate fabric texture visible",
   "approved": true,
-  "generatedAt": "2026-10-02T13:08:36.411Z"
+  "generatedAt": "2026-10-02T14:03:53.403Z"
 }

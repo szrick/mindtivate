@@ -4,11 +4,28 @@
   "category": "Beauty",
   "articleLink": "https://mindtivate.com/articles/how-to-buy-body-lotion-in-bulk-without-sacrificing-quality/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/how-to-buy-body-lotion-in-bulk-without-sacrificing-quality.png",
-  "style": "photo",
-  "imageHeadline": "Buying Body Lotion in Bulk When You Actually Need It",
-  "imageSubtext": "Make daily moisture affordable without compromising what works for your skin",
-  "pinTitle": "How to Buy Body Lotion in Bulk for Dry Skin & Ichthyosis Without Sacrificing Quality",
-  "pinDescription": "When you have severely dry skin or ichthyosis, lotion isn't a luxury—it's a medical necessity. Learn practical strategies for buying effective body lotion in bulk to make daily moisture management more affordable while keeping the ingredients and formulations that actually work for your skin.",
+  "style": "infographic",
+  "visualTheme": "plum-block",
+  "imageHeadline": "Make Daily Moisturizer Affordable When You Need It Most",
+  "imageSubtext": "Smart buying strategies for severe dry skin and ichthyosis",
+  "pinTitle": "How to Buy Body Lotion in Bulk Without Sacrificing Quality | Dry Skin & Ichthyosis",
+  "pinDescription": "When you go through multiple bottles a week, the cost adds up fast. Learn the per-ounce math that matters, when to choose creams over lotions, and how warehouse clubs and oil layering can make thick, effective moisturizer more affordable. Evidence-based strategies for chronic dry skin.",
+  "layoutStyle": "list",
+  "items": [
+    {
+      "label": "Compare per-ounce pricing in larger tubs and pump formats",
+      "sublabel": ""
+    },
+    {
+      "label": "Layer oil over moderately thick cream to customize richness",
+      "sublabel": ""
+    },
+    {
+      "label": "Stock up during sales at warehouse clubs or with subscriptions",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A clean bathroom counter with stacked white tubs and pump bottles of moisturizer beside a folded towel, soft natural light from a window",
   "approved": true,
-  "generatedAt": "2026-10-02T13:08:04.190Z"
+  "generatedAt": "2026-10-02T14:02:33.117Z"
 }

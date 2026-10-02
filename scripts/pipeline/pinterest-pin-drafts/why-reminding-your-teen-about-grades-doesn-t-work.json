@@ -4,11 +4,32 @@
   "category": "Mind",
   "articleLink": "https://mindtivate.com/articles/why-reminding-your-teen-about-grades-doesn-t-work/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/why-reminding-your-teen-about-grades-doesn-t-work.png",
-  "style": "photo",
-  "imageHeadline": "Nagging Your Teen About Grades? Research Says It Backfires",
-  "imageSubtext": "What actually builds academic motivation in adolescents",
-  "pinTitle": "Why Nagging Teens About Grades Backfires (& What Research Says Works Instead)",
-  "pinDescription": "Bright kid but no motivation to study? The research on adolescent academic motivation shows why reminding and nagging undermines the very drive you're trying to build. Learn the evidence-based approaches that actually support teens' intrinsic motivation and academic engagement.",
+  "style": "infographic",
+  "visualTheme": "terracotta-flush",
+  "imageHeadline": "The more you remind, the less they care",
+  "imageSubtext": "Why nagging about grades backfires with teens—and what actually works",
+  "pinTitle": "Why Reminding Your Teen About Grades Doesn't Work (What Helps Instead)",
+  "pinDescription": "Bright kid, no motivation to study? Research on adolescent academic motivation shows that reminders and pressure usually reduce engagement. Learn what actually supports motivation in disengaged teens—autonomy, collaboration, and praising effort over outcomes.",
+  "layoutStyle": "process",
+  "items": [
+    {
+      "label": "Ask what's actually getting in the way",
+      "sublabel": ""
+    },
+    {
+      "label": "Collaborate on a plan instead of imposing one",
+      "sublabel": ""
+    },
+    {
+      "label": "Let them choose how, when, and where to study",
+      "sublabel": ""
+    },
+    {
+      "label": "Praise effort and strategies, not just grades",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A teenager's desk with an open notebook and laptop in soft natural light, viewed from above at an angle, with a mug and pencil holder nearby",
   "approved": true,
-  "generatedAt": "2026-10-02T13:37:08.681Z"
+  "generatedAt": "2026-10-02T14:14:15.244Z"
 }

@@ -4,11 +4,32 @@
   "category": "Mind",
   "articleLink": "https://mindtivate.com/articles/how-to-deal-with-a-work-crush-without-derailing-your-career/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/how-to-deal-with-a-work-crush-without-derailing-your-career.png",
-  "style": "photo",
-  "imageHeadline": "Caught feelings at work? Here's what to do next",
-  "imageSubtext": "Navigate workplace attraction without jeopardizing your career",
-  "pinTitle": "How to Handle a Work Crush While Protecting Your Professional Reputation",
-  "pinDescription": "Attraction at work can feel complicated, especially when it catches you off guard. Learn practical strategies for managing workplace crushes thoughtfully—whether you act on them or not—while keeping your professional reputation intact.",
+  "style": "infographic",
+  "visualTheme": "terracotta-block",
+  "imageHeadline": "Crushing on a coworker? Here's what to do first",
+  "imageSubtext": "Protect your career while managing workplace attraction",
+  "pinTitle": "How to Handle a Work Crush Without Derailing Your Career | Evidence-Based Advice",
+  "pinDescription": "Workplace attraction is common—but it carries real risks. Learn how to assess whether to act on feelings for a coworker, what to check before making a move, and how to protect your professional reputation whether you pursue it or let it go. Evidence-based guidance for navigating office crushes.",
+  "layoutStyle": "process",
+  "items": [
+    {
+      "label": "Check your company's dating policy first",
+      "sublabel": ""
+    },
+    {
+      "label": "Ask if it's attraction or loneliness",
+      "sublabel": ""
+    },
+    {
+      "label": "Consider the real risk if it goes badly",
+      "sublabel": ""
+    },
+    {
+      "label": "Decide: pursue carefully or let it fade",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A modern office breakroom with a coffee station and large windows overlooking a city, soft natural light, minimalist and professional atmosphere",
   "approved": true,
-  "generatedAt": "2026-10-02T13:08:23.267Z"
+  "generatedAt": "2026-10-02T14:03:13.354Z"
 }

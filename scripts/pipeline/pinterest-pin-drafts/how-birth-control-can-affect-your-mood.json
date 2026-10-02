@@ -4,11 +4,28 @@
   "category": "Hormones",
   "articleLink": "https://mindtivate.com/articles/how-birth-control-can-affect-your-mood/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/how-birth-control-can-affect-your-mood.png",
-  "style": "photo",
-  "imageHeadline": "Birth Control Changed Your Mood? Here's Why",
-  "imageSubtext": "The hormone-mood connection, explained by research",
-  "pinTitle": "How Birth Control Affects Mood: What the Science Says About Hormones & Mental Health",
-  "pinDescription": "Hormonal birth control can influence mood in ways that feel confusing or isolating. Learn what research shows about the connection between contraceptives and emotional changes, plus what to watch for and when to talk to your provider.",
+  "style": "infographic",
+  "visualTheme": "plum-block",
+  "imageHeadline": "Your birth control might be affecting your mood",
+  "imageSubtext": "What the research says about hormonal contraception and mood changes",
+  "pinTitle": "How Birth Control Can Affect Your Mood – What the Research Shows",
+  "pinDescription": "Feeling flatter or more anxious since starting the pill? The research backs a real connection between hormonal contraception and mood changes — and it depends on which type of hormone you're using. Learn what the evidence actually shows and when switching methods makes sense.",
+  "layoutStyle": "list",
+  "items": [
+    {
+      "label": "Not all progestins affect mood the same way",
+      "sublabel": ""
+    },
+    {
+      "label": "Tracking mood alongside your cycle reveals patterns",
+      "sublabel": ""
+    },
+    {
+      "label": "Switching methods is a legitimate reason, not overreacting",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A flat lay of a monthly pill pack resting on a soft linen surface beside a simple mood journal and pen",
   "approved": true,
-  "generatedAt": "2026-10-02T13:07:58.994Z"
+  "generatedAt": "2026-10-02T14:02:22.321Z"
 }

@@ -4,11 +4,32 @@
   "category": "Body",
   "articleLink": "https://mindtivate.com/articles/why-postpartum-hair-loss-peaks-at-3-5-months-and-what-actually-helps/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/why-postpartum-hair-loss-peaks-at-3-5-months-and-what-actually-helps.png",
-  "style": "photo",
-  "imageHeadline": "Postpartum Hair Loss Is Normal—Here's the Science",
-  "imageSubtext": "Why shedding peaks at 3–5 months and what research says actually helps",
-  "pinTitle": "Why Postpartum Hair Loss Peaks at 3–5 Months (and What Actually Helps)",
-  "pinDescription": "Losing hair by the handful after having a baby? It's telogen effluvium, a predictable shift in your hair cycle—not a deficiency. Learn why shedding peaks a few months postpartum and what the evidence says about managing it.",
+  "style": "infographic",
+  "visualTheme": "terracotta-block",
+  "imageHeadline": "Postpartum Hair Loss Peaks at 3–5 Months",
+  "imageSubtext": "It's telogen effluvium—temporary, hormonal, and right on schedule.",
+  "pinTitle": "Why Postpartum Hair Loss Happens at 3–5 Months (and What Actually Helps)",
+  "pinDescription": "Losing clumps of hair after having a baby isn't a deficiency—it's telogen effluvium, triggered by the estrogen drop after delivery. Learn why it peaks around 3–5 months postpartum, what the research says about supplements, and how to protect your hair while it recovers.",
+  "layoutStyle": "process",
+  "items": [
+    {
+      "label": "Estrogen drops after delivery",
+      "sublabel": ""
+    },
+    {
+      "label": "Hair shifts into shedding phase all at once",
+      "sublabel": ""
+    },
+    {
+      "label": "Shedding peaks around 3–5 months postpartum",
+      "sublabel": ""
+    },
+    {
+      "label": "Regrowth follows as hormones stabilize",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A soft-focus bathroom counter with a wooden hairbrush, loose strands of hair, and a clean white towel folded beside a simple glass bottle of shampoo.",
   "approved": true,
-  "generatedAt": "2026-10-02T13:11:43.098Z"
+  "generatedAt": "2026-10-02T14:11:31.816Z"
 }

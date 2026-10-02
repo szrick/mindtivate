@@ -4,11 +4,24 @@
   "category": "Food",
   "articleLink": "https://mindtivate.com/articles/shirataki-vs-cauliflower-rice-for-bulking-fried-rice/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/shirataki-vs-cauliflower-rice-for-bulking-fried-rice.png",
-  "style": "photo",
-  "imageHeadline": "Shirataki or Cauliflower Rice? It Depends on Your Goal",
-  "imageSubtext": "Both bulk up fried rice with minimal calories—but they work differently",
-  "pinTitle": "Shirataki vs Cauliflower Rice for Low-Calorie Fried Rice: How to Choose",
-  "pinDescription": "Both shirataki noodles and cauliflower rice add volume to fried rice without many calories, but shirataki offers soluble fiber while cauliflower delivers a crispable texture. Learn which one fits your specific goals and how to use each one effectively.",
+  "style": "infographic",
+  "visualTheme": "terracotta-floating",
+  "imageHeadline": "Shirataki vs. Cauliflower Rice: Which Bulks Better?",
+  "imageSubtext": "Same volume, different fiber—here's how to choose for your fried rice.",
+  "pinTitle": "Shirataki vs. Cauliflower Rice for Bulking Fried Rice: How to Choose",
+  "pinDescription": "Both shirataki and cauliflower rice add serious volume to fried rice for minimal calories, but they work differently. Shirataki's soluble fiber helps you stay fuller longer, while cauliflower crisps up and adds vegetables to your plate. Learn which filler fits your goals and how to prep each one for the best texture.",
+  "layoutStyle": "comparison",
+  "items": [
+    {
+      "label": "Shirataki",
+      "sublabel": "Soluble fiber for satiety, chewy texture"
+    },
+    {
+      "label": "Cauliflower Rice",
+      "sublabel": "Crisps in the pan, adds vegetable serving"
+    }
+  ],
+  "backgroundScene": "A wok on a stovetop with fried rice ingredients scattered around—a wooden spoon, small bowls of soy sauce and sesame oil, and fresh ginger on a cutting board.",
   "approved": true,
-  "generatedAt": "2026-10-02T13:09:54.486Z"
+  "generatedAt": "2026-10-02T14:07:06.545Z"
 }

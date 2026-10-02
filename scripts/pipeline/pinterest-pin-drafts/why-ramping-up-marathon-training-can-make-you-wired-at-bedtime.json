@@ -4,11 +4,28 @@
   "category": "Sleep",
   "articleLink": "https://mindtivate.com/articles/why-ramping-up-marathon-training-can-make-you-wired-at-bedtime/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/why-ramping-up-marathon-training-can-make-you-wired-at-bedtime.png",
-  "style": "photo",
-  "imageHeadline": "Training harder but sleeping worse? Here's why.",
-  "imageSubtext": "What marathon training does to your nervous system at night.",
-  "pinTitle": "Why Marathon Training Disrupts Sleep (And How to Wind Down After Hard Workouts)",
-  "pinDescription": "Ramping up your running volume can leave you wired at bedtime. Learn what's happening in your nervous system when training load increases, and evidence-based strategies to help your body wind down after hard training days.",
+  "style": "infographic",
+  "visualTheme": "sage-flush",
+  "imageHeadline": "Training harder but can't fall asleep?",
+  "imageSubtext": "Your nervous system may not be switching off after evening workouts",
+  "pinTitle": "Why Marathon Training Ramps Can Disrupt Sleep (And What Helps)",
+  "pinDescription": "Ramping up mileage quickly can leave you wired at bedtime — even when you're exhausted. It's a nervous-system response to increased training load, especially when workouts happen close to bedtime. Learn the timing shifts, recovery strategies, and wind-down cues that help your body downshift after hard training days.",
+  "layoutStyle": "list",
+  "items": [
+    {
+      "label": "Evening workouts keep your core temp & cortisol elevated",
+      "sublabel": ""
+    },
+    {
+      "label": "Sleep trouble is an early sign of overreaching",
+      "sublabel": ""
+    },
+    {
+      "label": "Shifting sessions earlier & adding true easy days helps",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A pair of running shoes resting on a wooden floor beside a dimly lit bedroom window at dusk, with soft evening light filtering through sheer curtains",
   "approved": true,
-  "generatedAt": "2026-10-02T13:11:52.920Z"
+  "generatedAt": "2026-10-02T14:14:01.979Z"
 }

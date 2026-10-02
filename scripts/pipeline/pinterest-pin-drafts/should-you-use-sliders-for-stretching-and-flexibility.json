@@ -4,11 +4,32 @@
   "category": "Body",
   "articleLink": "https://mindtivate.com/articles/should-you-use-sliders-for-stretching-and-flexibility/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/should-you-use-sliders-for-stretching-and-flexibility.png",
-  "style": "photo",
-  "imageHeadline": "Do Sliders Actually Help You Get More Flexible?",
-  "imageSubtext": "What friction control means for your hamstrings, hips, and splits.",
-  "pinTitle": "Should You Use Sliders for Stretching and Flexibility? What to Know",
-  "pinDescription": "Sliders reduce friction during floor-based stretches, giving you more control over your range of motion. Learn how they work for hamstrings, hips, and splits—and whether they're right for your flexibility practice.",
+  "style": "infographic",
+  "visualTheme": "terracotta-floating",
+  "imageHeadline": "Sliders let you train flexibility you can actually use",
+  "imageSubtext": "Active stretching with control beats forcing a position you can't hold",
+  "pinTitle": "Should You Use Sliders for Stretching and Flexibility? Evidence-Based Guide",
+  "pinDescription": "Sliders reduce friction during floor stretches so you can actively move through range of motion for hamstrings, hips, and splits—building strength at end range instead of just passively sitting in a stretch. Learn how they work, what research says, and when to add them to your flexibility routine.",
+  "layoutStyle": "process",
+  "items": [
+    {
+      "label": "Warm up with light movement first",
+      "sublabel": ""
+    },
+    {
+      "label": "Do 2-3 sets of slider drills for target areas",
+      "sublabel": ""
+    },
+    {
+      "label": "Control the slide—stop before form breaks",
+      "sublabel": ""
+    },
+    {
+      "label": "Finish with static stretching if desired",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A pair of small round fabric sliders resting on a smooth wooden floor beside a yoga mat, soft natural light from a window",
   "approved": true,
-  "generatedAt": "2026-10-02T13:10:04.962Z"
+  "generatedAt": "2026-10-02T14:07:30.721Z"
 }

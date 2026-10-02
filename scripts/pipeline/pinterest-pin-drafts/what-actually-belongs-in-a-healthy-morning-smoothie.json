@@ -4,11 +4,32 @@
   "category": "Food",
   "articleLink": "https://mindtivate.com/articles/what-actually-belongs-in-a-healthy-morning-smoothie/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/what-actually-belongs-in-a-healthy-morning-smoothie.png",
-  "style": "photo",
-  "imageHeadline": "Build a Morning Smoothie That Actually Works",
-  "imageSubtext": "Science-backed ingredients, no influencer add-ins required",
-  "pinTitle": "What Actually Belongs in a Healthy Morning Smoothie | Evidence-Based Nutrition",
-  "pinDescription": "Skip the endless add-in lists and learn what the research actually says about building a balanced morning smoothie. Find out which ingredients matter for sustained energy and nutrition, plus what you can skip.",
+  "style": "infographic",
+  "visualTheme": "terracotta-flush",
+  "imageHeadline": "Build a Better Morning Smoothie",
+  "imageSubtext": "The science-backed template that skips the hype",
+  "pinTitle": "What Actually Belongs in a Healthy Morning Smoothie (Science-Backed Template)",
+  "pinDescription": "Influencers push endless add-ins, but research points to something simpler: whole fruit, protein, and not much else. Here's a straightforward framework for building a balanced smoothie that keeps you full—without the specialty powders or long ingredient lists.",
+  "layoutStyle": "process",
+  "items": [
+    {
+      "label": "Start with unsweetened liquid base",
+      "sublabel": ""
+    },
+    {
+      "label": "Add a protein source for satiety",
+      "sublabel": ""
+    },
+    {
+      "label": "Blend in whole fruit for natural sweetness",
+      "sublabel": ""
+    },
+    {
+      "label": "Optional: one fat or handful of greens",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A kitchen countertop with a blender surrounded by fresh berries, a banana, leafy greens, and a carton of plain yogurt in soft morning light",
   "approved": true,
-  "generatedAt": "2026-10-02T13:10:21.004Z"
+  "generatedAt": "2026-10-02T14:08:04.789Z"
 }

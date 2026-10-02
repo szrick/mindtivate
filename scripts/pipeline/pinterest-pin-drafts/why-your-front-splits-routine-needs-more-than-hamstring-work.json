@@ -4,11 +4,32 @@
   "category": "Body",
   "articleLink": "https://mindtivate.com/articles/why-your-front-splits-routine-needs-more-than-hamstring-work/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/why-your-front-splits-routine-needs-more-than-hamstring-work.png",
-  "style": "photo",
-  "imageHeadline": "Your Front Split Is Stuck? Check Your Hip Flexors",
-  "imageSubtext": "Hamstring stretches alone won't get you there—here's what's missing",
-  "pinTitle": "Why Front Splits Need Hip Flexor Work (Not Just Hamstring Stretches)",
-  "pinDescription": "Most front split routines focus only on hamstrings, but hip flexor mobility is just as critical for progress. Learn how to structure a balanced flexibility routine that addresses both muscle groups for real results.",
+  "style": "infographic",
+  "visualTheme": "sage-floating",
+  "imageHeadline": "Your splits routine is missing half the work",
+  "imageSubtext": "Hip flexors matter as much as hamstrings—here's how to train both",
+  "pinTitle": "Why Front Splits Need Hip Flexor Stretching (Not Just Hamstring Work)",
+  "pinDescription": "Low lunges and forward folds aren't enough. A front split requires flexibility from both sides of your hip at once—hamstring length in the front leg and hip flexor length in the back. Learn how to structure your routine with the right stretches, volume, and sequencing for real progress.",
+  "layoutStyle": "process",
+  "items": [
+    {
+      "label": "Warm up with 5-10 minutes of light movement",
+      "sublabel": ""
+    },
+    {
+      "label": "Alternate hamstring and hip flexor stretches",
+      "sublabel": ""
+    },
+    {
+      "label": "Aim for 2-4 minutes per muscle group",
+      "sublabel": ""
+    },
+    {
+      "label": "End in a supported split position",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A calm yoga studio floor with wooden planks, a rolled yoga mat in soft neutral tones, and a pair of foam yoga blocks resting nearby in warm afternoon light",
   "approved": true,
-  "generatedAt": "2026-10-02T13:20:54.503Z"
+  "generatedAt": "2026-10-02T14:15:04.558Z"
 }

@@ -4,13 +4,28 @@
   "category": "Hormones",
   "articleLink": "https://mindtivate.com/articles/can-metformin-help-low-milk-supply-in-pcos/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/can-metformin-help-low-milk-supply-in-pcos.png",
-  "style": "photo",
-  "imageHeadline": "When Insulin Resistance Affects Milk Supply",
-  "imageSubtext": "What research shows about metformin, PCOS, and breastfeeding",
+  "style": "infographic",
+  "visualTheme": "terracotta-flush",
+  "imageHeadline": "When insulin resistance is blocking your milk supply",
+  "imageSubtext": "What the research says about metformin for low supply in PCOS",
   "pinTitle": "Can Metformin Help Low Milk Supply in PCOS? What the Research Shows",
-  "pinDescription": "If you have PCOS and low milk supply, insulin resistance might be part of the picture. This evidence-based guide explores what the research says about metformin during breastfeeding and whether it may support lactation when other approaches haven't worked.",
-  "approved": true,
-  "generatedAt": "2026-10-02T13:07:19.263Z",
-  "sentAt": "2026-10-02T13:45:57.909Z",
-  "pinUrl": "https://www.pinterest.com/pin/1115626138979119568"
+  "pinDescription": "You've tried all the supplements and pumping schedules, but what if insulin resistance is interfering with lactation? Here's what the evidence actually says about metformin as a galactagogue—including the one small trial, safety data, and what to consider before trying it.",
+  "layoutStyle": "list",
+  "items": [
+    {
+      "label": "Insulin resistance can interfere with milk production",
+      "sublabel": ""
+    },
+    {
+      "label": "Metformin is safe during breastfeeding but evidence is thin",
+      "sublabel": ""
+    },
+    {
+      "label": "Rule out mechanical and hormonal causes first",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A soft-focus view of a breast pump on a bedside table next to a water bottle and medication bottle, with warm morning light coming through a window",
+  "approved": false,
+  "generatedAt": "2026-10-02T14:01:49.329Z"
 }

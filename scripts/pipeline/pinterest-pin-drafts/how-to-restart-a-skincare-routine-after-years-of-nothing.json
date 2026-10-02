@@ -4,11 +4,28 @@
   "category": "Beauty",
   "articleLink": "https://mindtivate.com/articles/how-to-restart-a-skincare-routine-after-years-of-nothing/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/how-to-restart-a-skincare-routine-after-years-of-nothing.png",
-  "style": "photo",
-  "imageHeadline": "Rebuilding Your Skincare Routine From Zero",
-  "imageSubtext": "A gentle restart guide when self-care has been on pause",
-  "pinTitle": "How to Restart a Skincare Routine After Years of Nothing | Simple Sustainable Steps",
-  "pinDescription": "Depression and neurodivergence can put self-care on hold for months or years. This guide walks through rebuilding a simple, sustainable skincare routine when you're starting from scratch—no pressure, just practical steps that work with your brain and energy levels.",
+  "style": "infographic",
+  "visualTheme": "terracotta-block",
+  "imageHeadline": "Restart your skincare routine from zero",
+  "imageSubtext": "A gentle 3-step foundation when executive function is low",
+  "pinTitle": "How to Restart a Skincare Routine After Years of Nothing | Depression & Neurodivergence",
+  "pinDescription": "Depression and neurodivergence can derail self-care for years. Learn how to rebuild a simple, sustainable skincare routine that works with your brain—starting with just three steps: cleanser, moisturizer, and sunscreen. Includes strategies for ADHD, trauma, and low-energy days.",
+  "layoutStyle": "process",
+  "items": [
+    {
+      "label": "Add a gentle cleanser in the shower",
+      "sublabel": ""
+    },
+    {
+      "label": "Keep moisturizer where you already go daily",
+      "sublabel": ""
+    },
+    {
+      "label": "Layer in sunscreen after it feels automatic",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A simple bathroom counter with a few skincare bottles beside a sink, soft natural light coming through a window, clean and uncluttered",
   "approved": true,
-  "generatedAt": "2026-10-02T13:08:46.180Z"
+  "generatedAt": "2026-10-02T14:04:26.790Z"
 }

@@ -4,11 +4,32 @@
   "category": "Body",
   "articleLink": "https://mindtivate.com/articles/exercise-physio-recommendations-for-l5-s1-injury/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/exercise-physio-recommendations-for-l5-s1-injury.png",
-  "style": "photo",
-  "imageHeadline": "L5/S1 disc injury? Not all movement helps.",
-  "imageSubtext": "What physical therapy research says about extension, core work & recovery.",
-  "pinTitle": "Exercise & Physio Recommendations for L5/S1 Disc Injury | Evidence-Based Recovery",
-  "pinDescription": "L5/S1 disc injuries respond to structured exercise—but timing and type matter. Learn what physical therapy research says about extension-based movement, core stabilization work, and realistic recovery timelines for lower back disc issues.",
+  "style": "infographic",
+  "visualTheme": "terracotta-flush",
+  "imageHeadline": "L5/S1 disc injury? Not all exercises help.",
+  "imageSubtext": "What physical therapy research says about extension, core work, and recovery.",
+  "pinTitle": "Exercise & Physical Therapy for L5/S1 Disc Injury: What Actually Works",
+  "pinDescription": "L5/S1 disc injuries respond to structured exercise—but the type matters. Learn about centralization, extension exercises, core stabilization, and realistic recovery timelines based on physical therapy research.",
+  "layoutStyle": "process",
+  "items": [
+    {
+      "label": "Find your directional preference with a PT",
+      "sublabel": ""
+    },
+    {
+      "label": "Start extension or other movements that centralize pain",
+      "sublabel": ""
+    },
+    {
+      "label": "Add core stabilization as acute symptoms settle",
+      "sublabel": ""
+    },
+    {
+      "label": "Progress over 6-12 weeks with supervised program",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A calm physical therapy room with a treatment table, yoga mat on the floor, and soft natural light from a window.",
   "approved": true,
-  "generatedAt": "2026-10-02T13:07:53.975Z"
+  "generatedAt": "2026-10-02T14:02:07.411Z"
 }

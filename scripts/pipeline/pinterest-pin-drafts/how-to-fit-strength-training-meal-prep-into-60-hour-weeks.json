@@ -4,11 +4,32 @@
   "category": "Body",
   "articleLink": "https://mindtivate.com/articles/how-to-fit-strength-training-meal-prep-into-60-hour-weeks/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/how-to-fit-strength-training-meal-prep-into-60-hour-weeks.png",
-  "style": "photo",
-  "imageHeadline": "Strength training on a 60-hour work week? It's possible.",
-  "imageSubtext": "Evidence-based strategies that actually fit your schedule.",
-  "pinTitle": "How to Fit Strength Training & Meal Prep Into 60+ Hour Weeks | Realistic Fitness Tips",
-  "pinDescription": "Working long hours doesn't mean giving up on strength training or nutrition. Learn how to structure workouts and meal prep around demanding schedules—whether you're managing work, school, or health conditions—without adding to your stress. Find practical, evidence-based strategies for staying consistent when time is tight.",
+  "style": "infographic",
+  "visualTheme": "terracotta-block",
+  "imageHeadline": "Train & Meal Prep Without Burning Out",
+  "imageSubtext": "A realistic system for 60+ hour weeks and chronic health conditions",
+  "pinTitle": "How to Fit Strength Training & Meal Prep Into 60+ Hour Weeks Without Burning Out",
+  "pinDescription": "When you're managing a packed schedule and chronic health conditions, rigid plans backfire. Learn how to structure strength training and meal prep around the time and energy you actually have—including the minimum effective dose for training, component-based meal prep, and what to do when your body says no.",
+  "layoutStyle": "process",
+  "items": [
+    {
+      "label": "Start with 2-3 full-body sessions per week",
+      "sublabel": ""
+    },
+    {
+      "label": "Prep components, not full meals",
+      "sublabel": ""
+    },
+    {
+      "label": "Decide your week once, then execute",
+      "sublabel": ""
+    },
+    {
+      "label": "Build in flexibility for low-energy days",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A clean kitchen counter with meal prep containers, a gym water bottle, and a weekly planner laid out in soft natural light",
   "approved": true,
-  "generatedAt": "2026-10-02T13:36:54.277Z"
+  "generatedAt": "2026-10-02T14:03:23.343Z"
 }

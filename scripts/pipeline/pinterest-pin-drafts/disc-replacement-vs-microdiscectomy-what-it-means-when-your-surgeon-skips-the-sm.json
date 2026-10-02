@@ -4,13 +4,32 @@
   "category": "Body",
   "articleLink": "https://mindtivate.com/articles/disc-replacement-vs-microdiscectomy-what-it-means-when-your-surgeon-skips-the-sm/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/disc-replacement-vs-microdiscectomy-what-it-means-when-your-surgeon-skips-the-sm.png",
-  "style": "photo",
-  "imageHeadline": "Your surgeon skipped microdiscectomy. Here's why.",
-  "imageSubtext": "What it means when disc replacement is recommended first",
-  "pinTitle": "Disc Replacement vs Microdiscectomy: Understanding Your Spine Surgery Options",
-  "pinDescription": "When your surgeon recommends disc replacement over the smaller microdiscectomy procedure, it's telling you something specific about your spine condition. Learn what that recommendation means, what factors influence the choice, and the key questions to ask before deciding on surgery.",
-  "approved": true,
-  "generatedAt": "2026-10-02T13:07:32.491Z",
-  "sentAt": "2026-10-02T13:46:13.352Z",
-  "pinUrl": "https://www.pinterest.com/pin/1115626138979119592"
+  "style": "infographic",
+  "visualTheme": "terracotta-block",
+  "imageHeadline": "When your surgeon skips microdiscectomy",
+  "imageSubtext": "What it means if you're going straight to disc replacement",
+  "pinTitle": "Disc Replacement vs. Microdiscectomy: Why Your Surgeon Recommends the Bigger Surgery",
+  "pinDescription": "Your surgeon says microdiscectomy won't work and wants disc replacement instead. The decision usually comes down to how your disc has deteriorated and whether the smaller surgery would lead to re-herniation. What to ask about your imaging, your surgeon's experience, and the recovery timeline before you decide.",
+  "layoutStyle": "process",
+  "items": [
+    {
+      "label": "Understand why microdiscectomy won't work",
+      "sublabel": ""
+    },
+    {
+      "label": "Ask about your surgeon's experience",
+      "sublabel": ""
+    },
+    {
+      "label": "Compare disc replacement to fusion",
+      "sublabel": ""
+    },
+    {
+      "label": "Get realistic recovery expectations",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A clean medical consultation room with an illuminated spine MRI scan on a light board, viewed from the side with soft natural lighting",
+  "approved": false,
+  "generatedAt": "2026-10-02T14:02:21.308Z"
 }
