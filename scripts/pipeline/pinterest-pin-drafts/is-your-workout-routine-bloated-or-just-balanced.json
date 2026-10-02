@@ -4,11 +4,32 @@
   "category": "Body",
   "articleLink": "https://mindtivate.com/articles/is-your-workout-routine-bloated-or-just-balanced/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/is-your-workout-routine-bloated-or-just-balanced.png",
-  "style": "photo",
-  "imageHeadline": "Is Your Workout Routine Actually Balanced?",
-  "imageSubtext": "Too many rows and presses might mean you're missing something important.",
-  "pinTitle": "Is Your Workout Routine Bloated or Balanced? How to Tell",
-  "pinDescription": "If you're doing lots of rows and presses but skipping other movement patterns, your routine might be lopsided. Learn how to spot the gaps in your training and build a more balanced approach that supports your body long-term.",
+  "style": "infographic",
+  "visualTheme": "terracotta-flush",
+  "imageHeadline": "Too many rows, not enough squats?",
+  "imageSubtext": "How to tell if your workout is unbalanced—or just more varied",
+  "pinTitle": "Is Your Workout Routine Bloated or Just Balanced? Movement Pattern Audit",
+  "pinDescription": "If you're doing three row variations and two chest presses but your glutes aren't growing, your routine might not be bloated—it might be unbalanced. Learn how to audit your program using movement patterns, set volume per muscle group, and goal alignment to build a routine that's both effective and enjoyable.",
+  "layoutStyle": "process",
+  "items": [
+    {
+      "label": "List every exercise by movement pattern",
+      "sublabel": ""
+    },
+    {
+      "label": "Count total sets per week for each category",
+      "sublabel": ""
+    },
+    {
+      "label": "Compare your volume to your actual goals",
+      "sublabel": ""
+    },
+    {
+      "label": "Adjust exercises to match what you need",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A notebook and pen lying on a gym floor next to a pair of dumbbells and a resistance band, with soft natural light from a window",
   "approved": true,
-  "generatedAt": "2026-10-02T13:09:34.835Z"
+  "generatedAt": "2026-10-02T14:06:14.964Z"
 }

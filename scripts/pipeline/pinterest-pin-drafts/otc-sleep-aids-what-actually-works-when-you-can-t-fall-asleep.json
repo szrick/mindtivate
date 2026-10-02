@@ -4,11 +4,24 @@
   "category": "Sleep",
   "articleLink": "https://mindtivate.com/articles/otc-sleep-aids-what-actually-works-when-you-can-t-fall-asleep/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/otc-sleep-aids-what-actually-works-when-you-can-t-fall-asleep.png",
-  "style": "photo",
-  "imageHeadline": "Which OTC Sleep Aids Actually Have Evidence Behind Them?",
-  "imageSubtext": "A clear look at melatonin, magnesium, antihistamines, and what they really do.",
-  "pinTitle": "OTC Sleep Aids That Work: Evidence-Based Guide to Melatonin, Magnesium & Antihistamines",
-  "pinDescription": "Can't fall asleep? Here's what the research says about common over-the-counter sleep aids—melatonin, magnesium, and antihistamines—including what they actually do and when they might help. A grounded guide to making informed choices about sleep support.",
+  "style": "infographic",
+  "visualTheme": "terracotta-block",
+  "imageHeadline": "What OTC sleep aids actually do (and don't do)",
+  "imageSubtext": "Melatonin, magnesium, antihistamines—the evidence behind each one",
+  "pinTitle": "OTC Sleep Aids That Work: Melatonin, Magnesium & Antihistamines Explained",
+  "pinDescription": "Can't fall asleep and wondering if melatonin, magnesium, or antihistamines will help? Here's what each one does, what the research shows, and when they might work for insomnia or sleep-related headaches.",
+  "layoutStyle": "comparison",
+  "items": [
+    {
+      "label": "Melatonin",
+      "sublabel": "Reduces time to fall asleep by 7-9 minutes"
+    },
+    {
+      "label": "Magnesium",
+      "sublabel": "May reduce sleep onset by 17 minutes"
+    }
+  ],
+  "backgroundScene": "A nightstand with a glass of water and a small supplement bottle beside a softly lit bedside lamp, with rumpled bedsheets visible in the background",
   "approved": true,
-  "generatedAt": "2026-10-02T13:09:40.116Z"
+  "generatedAt": "2026-10-02T14:06:29.155Z"
 }

@@ -4,11 +4,32 @@
   "category": "Beauty",
   "articleLink": "https://mindtivate.com/articles/how-to-get-smooth-glowy-legs-in-2-weeks-for-an-event/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/how-to-get-smooth-glowy-legs-in-2-weeks-for-an-event.png",
-  "style": "photo",
-  "imageHeadline": "Two Weeks to Smoother, More Even-Looking Legs",
-  "imageSubtext": "A realistic plan for dry skin, bumps, and uneven tone before your event",
-  "pinTitle": "How to Get Smoother Legs in 2 Weeks | Realistic Skincare Routine for Events",
-  "pinDescription": "Dealing with dry, bumpy legs before a big event? This two-week plan walks you through gentle exfoliation, hydration, and evening out skin tone—no quick fixes, just what actually works. Find the full timeline and product guidance inside.",
+  "style": "infographic",
+  "visualTheme": "terracotta-flush",
+  "imageHeadline": "Two-Week Plan for Smoother, Glowier Legs",
+  "imageSubtext": "Hydration, gradual color, and realistic expectations for your big event",
+  "pinTitle": "How to Get Smooth Glowy Legs in 2 Weeks | Realistic Skin Prep for Events",
+  "pinDescription": "Dry, bumpy legs and an event coming up? This two-week timeline walks you through hydration, gentle exfoliation, and gradual self-tanner application—no perfection required, just smoother, more even-looking skin. Find the full step-by-step plan and what to expect.",
+  "layoutStyle": "process",
+  "items": [
+    {
+      "label": "Hydrate and exfoliate to prep skin texture",
+      "sublabel": ""
+    },
+    {
+      "label": "Build gradual color with DHA-based tanner",
+      "sublabel": ""
+    },
+    {
+      "label": "Minimize bumps and time your last shave",
+      "sublabel": ""
+    },
+    {
+      "label": "Layer strategically for glow on event night",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A bathroom countertop with a bottle of body lotion, an exfoliating mitt, and a gradual tanning lotion arranged on a clean marble surface with soft natural light",
   "approved": true,
-  "generatedAt": "2026-10-02T13:08:31.696Z"
+  "generatedAt": "2026-10-02T14:03:38.709Z"
 }

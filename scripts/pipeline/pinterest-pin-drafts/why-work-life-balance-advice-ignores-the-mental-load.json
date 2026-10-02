@@ -4,11 +4,28 @@
   "category": "Mind",
   "articleLink": "https://mindtivate.com/articles/why-work-life-balance-advice-ignores-the-mental-load/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/why-work-life-balance-advice-ignores-the-mental-load.png",
-  "style": "photo",
-  "imageHeadline": "Work-Life Balance Advice Misses the Mental Load",
-  "imageSubtext": "Why time management tips don't address who's planning everything",
-  "pinTitle": "Why Work-Life Balance Advice Ignores the Mental Load | Evidence-Based Wellness",
-  "pinDescription": "Most work-life balance strategies assume household tasks are split evenly—but they rarely account for the invisible planning, organizing, and decision-making that falls disproportionately on women. Explore what the research shows about mental load and what actually helps.",
+  "style": "infographic",
+  "visualTheme": "sage-flush",
+  "imageHeadline": "Work-Life Balance Advice Skips the Real Problem",
+  "imageSubtext": "When mental load is invisible, calendar blocking doesn't help",
+  "pinTitle": "Why Work-Life Balance Advice Ignores Mental Load (And What Actually Helps)",
+  "pinDescription": "Most work-life balance tips assume the problem is work hours — but for many women, the real barrier is mental load: the invisible work of managing a household. Research shows what actually helps (and what doesn't). Read the evidence-based breakdown.",
+  "layoutStyle": "list",
+  "items": [
+    {
+      "label": "90% of women do daily household chores vs. 40% of men",
+      "sublabel": ""
+    },
+    {
+      "label": "Mental load drives stress even when paid work is equal",
+      "sublabel": ""
+    },
+    {
+      "label": "Boundary tactics help manage symptoms, not the cause",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A kitchen counter with a closed laptop, a wall calendar with scattered notes, and a coffee mug in soft afternoon light",
   "approved": true,
-  "generatedAt": "2026-10-02T13:20:49.354Z"
+  "generatedAt": "2026-10-02T14:14:25.485Z"
 }

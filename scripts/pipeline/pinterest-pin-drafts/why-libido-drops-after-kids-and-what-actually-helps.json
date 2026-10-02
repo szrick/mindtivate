@@ -4,11 +4,28 @@
   "category": "Love",
   "articleLink": "https://mindtivate.com/articles/why-libido-drops-after-kids-and-what-actually-helps/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/why-libido-drops-after-kids-and-what-actually-helps.png",
-  "style": "photo",
-  "imageHeadline": "Why Your Sex Drive Changed After Kids",
-  "imageSubtext": "It's not just tiredness—here's what's really happening.",
-  "pinTitle": "Why Libido Drops After Having Kids (and What Actually Helps)",
-  "pinDescription": "Loss of desire after children involves hormones, nervous system shifts, and identity changes—not just exhaustion. Explore what's driving it biologically and psychologically, plus practical approaches when scheduling sex doesn't feel right.",
+  "style": "infographic",
+  "visualTheme": "terracotta-block",
+  "imageHeadline": "Your libido didn't break. Your capacity did.",
+  "imageSubtext": "What's really driving low desire after kids—and what helps more than scheduling",
+  "pinTitle": "Why Libido Drops After Kids (and What Actually Helps)",
+  "pinDescription": "Loss of desire after having children isn't just exhaustion. Hormones, touch overload, sleep deprivation, and identity shifts all play a role—and scheduling sex often backfires when you're already running on empty. Explore what's really driving it and practical approaches that address the root causes, not just the symptom.",
+  "layoutStyle": "list",
+  "items": [
+    {
+      "label": "Prolactin from breastfeeding suppresses estrogen & desire",
+      "sublabel": ""
+    },
+    {
+      "label": "Touch overload is nervous system saturation, not rejection",
+      "sublabel": ""
+    },
+    {
+      "label": "Desire often follows connection, not the other way around",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A quiet bedroom at dusk with an unmade bed, soft natural light filtering through sheer curtains, and a cup of tea resting on a nightstand",
   "approved": true,
-  "generatedAt": "2026-10-02T13:11:38.697Z"
+  "generatedAt": "2026-10-02T14:11:21.125Z"
 }

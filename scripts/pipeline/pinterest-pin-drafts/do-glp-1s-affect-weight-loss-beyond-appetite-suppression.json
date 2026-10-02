@@ -4,11 +4,28 @@
   "category": "Body",
   "articleLink": "https://mindtivate.com/articles/do-glp-1s-affect-weight-loss-beyond-appetite-suppression/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/do-glp-1s-affect-weight-loss-beyond-appetite-suppression.png",
-  "style": "photo",
-  "imageHeadline": "GLP-1s Do More Than Kill Your Appetite",
-  "imageSubtext": "How these medications actually change digestion, cravings, and gut health",
-  "pinTitle": "How GLP-1 Medications Affect Weight Loss Beyond Appetite Suppression",
-  "pinDescription": "GLP-1 medications work through multiple pathways—not just appetite reduction. Learn how they slow digestion, influence food preferences, and may affect your gut microbiome. Evidence-based look at what's actually happening in your body.",
+  "style": "infographic",
+  "visualTheme": "sage-flush",
+  "imageHeadline": "GLP-1s do more than curb hunger",
+  "imageSubtext": "How these medications change digestion, cravings, and eating behavior",
+  "pinTitle": "Do GLP-1s Affect Weight Loss Beyond Appetite Suppression? The Science Explained",
+  "pinDescription": "GLP-1 medications work through multiple pathways—slowing digestion, shifting food preferences, and reducing cravings for high-fat, high-sugar foods. They don't boost metabolism, but they do make calorie deficits easier to sustain. Here's what the research shows about how these medications actually work.",
+  "layoutStyle": "list",
+  "items": [
+    {
+      "label": "Slow gastric emptying keeps you fuller longer",
+      "sublabel": ""
+    },
+    {
+      "label": "Shift cravings away from high-fat, high-sugar foods",
+      "sublabel": ""
+    },
+    {
+      "label": "Don't increase metabolism or resting calorie burn",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A clean kitchen counter with a simple meal on a ceramic plate, soft natural light from a window, neutral tones and minimal styling",
   "approved": true,
-  "generatedAt": "2026-10-02T13:07:37.667Z"
+  "generatedAt": "2026-10-02T14:01:24.902Z"
 }

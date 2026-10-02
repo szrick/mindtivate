@@ -4,11 +4,28 @@
   "category": "Sleep",
   "articleLink": "https://mindtivate.com/articles/why-alcohol-doesn-t-actually-help-you-sleep/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/why-alcohol-doesn-t-actually-help-you-sleep.png",
-  "style": "photo",
-  "imageHeadline": "That Nightcap Is Sabotaging Your Sleep",
-  "imageSubtext": "Why alcohol disrupts the rest your body actually needs",
-  "pinTitle": "Why Alcohol Doesn't Actually Help You Sleep | Sleep Quality & Alcohol Effects",
-  "pinDescription": "Alcohol might help you fall asleep faster, but it interferes with the deeper, restorative sleep stages your body needs to function well. Learn what's really happening to your sleep cycles when you drink before bed.",
+  "style": "infographic",
+  "visualTheme": "sage-flush",
+  "imageHeadline": "Alcohol sedates you—it doesn't give you real sleep",
+  "imageSubtext": "What's really happening to your sleep cycles when you drink before bed",
+  "pinTitle": "Why Alcohol Doesn't Actually Help You Sleep (Even When It Knocks You Out)",
+  "pinDescription": "Alcohol may help you fall asleep faster, but it disrupts REM sleep, causes middle-of-the-night waking, and builds tolerance over time. Learn what's really happening to your sleep architecture and what actually works for chronic insomnia.",
+  "layoutStyle": "list",
+  "items": [
+    {
+      "label": "Alcohol suppresses REM sleep and causes fragmented waking",
+      "sublabel": ""
+    },
+    {
+      "label": "Tolerance builds—you need more over time for less effect",
+      "sublabel": ""
+    },
+    {
+      "label": "CBT-I is the first-line treatment for chronic insomnia",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A bedside table at night with a glass of water and an analog alarm clock showing 2:30 AM, soft moonlight coming through a window",
   "approved": true,
-  "generatedAt": "2026-10-02T13:20:39.672Z"
+  "generatedAt": "2026-10-02T14:10:24.700Z"
 }

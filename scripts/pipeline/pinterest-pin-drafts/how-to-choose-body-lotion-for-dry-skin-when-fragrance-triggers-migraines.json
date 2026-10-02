@@ -4,12 +4,28 @@
   "category": "Beauty",
   "articleLink": "https://mindtivate.com/articles/how-to-choose-body-lotion-for-dry-skin-when-fragrance-triggers-migraines/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/how-to-choose-body-lotion-for-dry-skin-when-fragrance-triggers-migraines.png",
-  "style": "photo",
-  "imageHeadline": "Moisturize Without the Migraine",
-  "imageSubtext": "Finding fragrance-free body lotion that actually hydrates dry skin",
-  "pinTitle": "How to Choose Body Lotion for Dry Skin When Fragrance Triggers Migraines",
-  "pinDescription": "If scented lotions leave you with a headache, you're not imagining it. Learn which ingredients deliver real hydration for dry skin without fragrance triggers, plus how to read labels when 'unscented' doesn't always mean scent-free.",
-  "pinImageAlt": "Guide to choosing fragrance-free body lotion for dry skin and migraine prevention",
+  "style": "infographic",
+  "visualTheme": "terracotta-floating",
+  "imageHeadline": "Fragrance-free lotion works just as well",
+  "imageSubtext": "Deep hydration without the migraine trigger",
+  "pinTitle": "How to Choose Fragrance-Free Body Lotion for Dry Skin & Migraines",
+  "pinDescription": "When fragrance triggers migraines, you need body lotion that hydrates without the scent. Learn what ingredients actually work for dry skin, why fragrance-free is different from unscented, and when to apply for the best results.",
+  "layoutStyle": "list",
+  "items": [
+    {
+      "label": "Look for ceramides, glycerin, and petrolatum high up",
+      "sublabel": ""
+    },
+    {
+      "label": "Fragrance-free ≠ unscented (unscented can mask scent)",
+      "sublabel": ""
+    },
+    {
+      "label": "Apply within minutes of bathing on damp skin",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A minimalist bathroom counter with a simple white pump bottle of lotion beside a folded towel and a few water droplets on clean tile",
   "approved": true,
-  "generatedAt": "2026-10-02T13:20:18.912Z"
+  "generatedAt": "2026-10-02T14:03:02.354Z"
 }

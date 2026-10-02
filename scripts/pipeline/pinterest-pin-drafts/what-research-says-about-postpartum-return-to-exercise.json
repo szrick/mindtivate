@@ -4,11 +4,32 @@
   "category": "Life Stages",
   "articleLink": "https://mindtivate.com/articles/what-research-says-about-postpartum-return-to-exercise/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/what-research-says-about-postpartum-return-to-exercise.png",
-  "style": "photo",
-  "imageHeadline": "Your 6-Week Checkup Isn't a Green Light to Resume Exercise",
-  "imageSubtext": "What the research actually says about postpartum movement and recovery",
-  "pinTitle": "What Research Says About Postpartum Return to Exercise | Evidence-Based Recovery Timeline",
-  "pinDescription": "The standard 6-week postpartum clearance doesn't tell the whole story about when and how to return to exercise after birth. Understand what the research shows about pelvic floor recovery, tissue healing, and building back strength safely during the postpartum period.",
+  "style": "infographic",
+  "visualTheme": "sage-floating",
+  "imageHeadline": "Cleared at 6 weeks doesn't mean ready to run",
+  "imageSubtext": "What the research actually says about postpartum return to exercise",
+  "pinTitle": "Postpartum Return to Exercise: What Research Says About the 6-Week Clearance",
+  "pinDescription": "The 6-week checkup clears you medically, but that's not the same as your pelvic floor and core being ready for your old training load. The evidence supports a gradual, symptom-guided return: walking and core work first, then low-impact strength, and high-impact exercise only when your body can handle it without leaking, pressure, or pain. Learn what a realistic progression looks like.",
+  "layoutStyle": "process",
+  "items": [
+    {
+      "label": "Start with walking and pelvic floor activation",
+      "sublabel": ""
+    },
+    {
+      "label": "Add low-impact strength as core rebuilds",
+      "sublabel": ""
+    },
+    {
+      "label": "Progress to running only when symptom-free",
+      "sublabel": ""
+    },
+    {
+      "label": "Scale back if leaking, pressure, or pain appear",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A pair of walking shoes on a park trail with soft morning light filtering through trees",
   "approved": true,
-  "generatedAt": "2026-10-02T13:10:35.041Z"
+  "generatedAt": "2026-10-02T14:08:43.449Z"
 }

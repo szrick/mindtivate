@@ -4,11 +4,28 @@
   "category": "Body",
   "articleLink": "https://mindtivate.com/articles/should-you-take-pre-workout-for-early-morning-classes/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/should-you-take-pre-workout-for-early-morning-classes.png",
-  "style": "photo",
-  "imageHeadline": "Pre-Workout Before Your 6 AM Class: What to Know",
-  "imageSubtext": "Timing, caffeine tolerance, and what actually helps early-morning performance",
-  "pinTitle": "Should You Take Pre-Workout for Early Morning Workouts? What Research Says",
-  "pinDescription": "If you exercise early, pre-workout can help—but timing and caffeine content matter more than you think. Learn what the evidence says about morning pre-workout use, how to avoid jitters or crashes, and what actually supports performance when you're training before sunrise.",
+  "style": "infographic",
+  "visualTheme": "plum-block",
+  "imageHeadline": "Pre-Workout Before 7 a.m. Class: Worth It?",
+  "imageSubtext": "What to look for when you're short on sleep but need to show up",
+  "pinTitle": "Should You Take Pre-Workout for Early Morning Classes? What to Know About Caffeine & Sleep",
+  "pinDescription": "Pre-workout can help you get to that early class when energy is low, but the ingredient list matters—especially if you're working late nights. Learn which caffeine dose works without the jitters, what to avoid in the formula, and when it's actually helping vs. masking a bigger problem.",
+  "layoutStyle": "list",
+  "items": [
+    {
+      "label": "Look for 100–150 mg caffeine for a lift without jitters",
+      "sublabel": ""
+    },
+    {
+      "label": "Avoid proprietary blends—know exactly what you're taking",
+      "sublabel": ""
+    },
+    {
+      "label": "Morning dose clears by afternoon, less sleep disruption",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A minimalist gym setting at dawn with soft natural light streaming through large windows, yoga mat and water bottle on wooden floor, no people visible",
   "approved": true,
-  "generatedAt": "2026-10-02T13:10:00.306Z"
+  "generatedAt": "2026-10-02T14:07:20.481Z"
 }

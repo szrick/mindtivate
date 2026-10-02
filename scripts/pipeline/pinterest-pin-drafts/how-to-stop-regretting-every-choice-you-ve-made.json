@@ -4,11 +4,32 @@
   "category": "Mind",
   "articleLink": "https://mindtivate.com/articles/how-to-stop-regretting-every-choice-you-ve-made/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/how-to-stop-regretting-every-choice-you-ve-made.png",
-  "style": "photo",
-  "imageHeadline": "Stuck replaying old decisions? Here's how to move forward.",
-  "imageSubtext": "Evidence-based strategies to break the regret loop and trust yourself again.",
-  "pinTitle": "How to Stop Regretting Every Choice You've Made | Break the Cycle of Chronic Regret",
-  "pinDescription": "Chronic regret about past decisions—school, jobs, relationships—can keep you stuck in a painful loop. Learn why your brain gets trapped in this pattern and practical, evidence-based strategies to build confidence in your choices going forward.",
+  "style": "infographic",
+  "visualTheme": "sage-floating",
+  "imageHeadline": "Stop treating every choice like proof you can't decide",
+  "imageSubtext": "Break the regret loop and rebuild confidence in your judgment",
+  "pinTitle": "How to Stop Regretting Every Choice You've Made | Breaking the Chronic Regret Loop",
+  "pinDescription": "When regret becomes your default response to past decisions—school, jobs, relationships—it stops being about any single choice and starts eroding your confidence as a decision-maker. Learn the difference between productive regret and rumination, why fear of future regret keeps you stuck, and how to shift from second-guessing to learning.",
+  "layoutStyle": "process",
+  "items": [
+    {
+      "label": "Ask what you learned, not what you should have known",
+      "sublabel": ""
+    },
+    {
+      "label": "Separate the decision from the outcome",
+      "sublabel": ""
+    },
+    {
+      "label": "Notice when fear of regret is driving choices",
+      "sublabel": ""
+    },
+    {
+      "label": "Write down what matters to you now",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A quiet crossroads in a forest with multiple paths branching out, dappled sunlight filtering through the trees, leaves scattered on the ground",
   "approved": true,
-  "generatedAt": "2026-10-02T13:08:55.376Z"
+  "generatedAt": "2026-10-02T14:04:56.122Z"
 }

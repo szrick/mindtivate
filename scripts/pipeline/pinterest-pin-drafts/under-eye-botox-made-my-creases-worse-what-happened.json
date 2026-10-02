@@ -4,12 +4,32 @@
   "category": "Beauty",
   "articleLink": "https://mindtivate.com/articles/under-eye-botox-made-my-creases-worse-what-happened/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/under-eye-botox-made-my-creases-worse-what-happened.png",
-  "style": "photo",
+  "style": "infographic",
+  "visualTheme": "sage-floating",
   "imageHeadline": "Under-Eye Botox Made My Creases Worse",
-  "imageSubtext": "Why it happens and what actually helps while you wait it out",
-  "pinTitle": "Under-Eye Botox Made My Creases Worse—Here's Why It Happens & What Helps",
-  "pinDescription": "Botox under the eyes can sometimes create more creases instead of smoothing them. Learn why this reaction happens, how long the effect typically lasts, and what you can do to support your skin while the treatment wears off.",
-  "pinImageAltText": "Woman looking at under-eye area in mirror after Botox treatment caused unexpected creasing",
+  "imageSubtext": "Why it happens, how long it lasts, and what helps while you wait",
+  "pinTitle": "Under-Eye Botox Gone Wrong: Why More Creases Appear & How Long They Last",
+  "pinDescription": "Botox under the eyes can sometimes relax the wrong part of the muscle, creating more visible creases instead of smoothing them. Learn why this complication happens, when the effects wear off, and what you can do in the meantime to improve the appearance.",
+  "layoutStyle": "process",
+  "items": [
+    {
+      "label": "Understand why the creases appeared",
+      "sublabel": ""
+    },
+    {
+      "label": "Know your timeline for improvement",
+      "sublabel": ""
+    },
+    {
+      "label": "Use hydrating patches and good skincare",
+      "sublabel": ""
+    },
+    {
+      "label": "Ask specific questions before future injections",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A clean bathroom counter with skincare products, an eye cream tube, and a small mirror reflecting soft natural light from a window",
   "approved": true,
-  "generatedAt": "2026-10-02T13:10:10.240Z"
+  "generatedAt": "2026-10-02T14:07:43.762Z"
 }

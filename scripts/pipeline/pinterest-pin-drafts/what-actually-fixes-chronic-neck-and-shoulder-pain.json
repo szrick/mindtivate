@@ -4,11 +4,28 @@
   "category": "Body",
   "articleLink": "https://mindtivate.com/articles/what-actually-fixes-chronic-neck-and-shoulder-pain/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/what-actually-fixes-chronic-neck-and-shoulder-pain.png",
-  "style": "photo",
-  "imageHeadline": "Why Your Neck Pain Keeps Coming Back",
-  "imageSubtext": "Heat and meds only mask it. Here's what actually works long-term.",
-  "pinTitle": "What Actually Fixes Chronic Neck and Shoulder Pain (Evidence-Based)",
-  "pinDescription": "If you're stuck in a cycle of temporary relief, this explains why quick fixes don't last — and what the research shows actually creates lasting change for chronic neck and shoulder pain. Evidence-based strategies that take time but work.",
+  "style": "infographic",
+  "visualTheme": "plum-block",
+  "imageHeadline": "Heat won't fix chronic neck pain. This will.",
+  "imageSubtext": "The evidence-backed approach most people skip",
+  "pinTitle": "What Actually Fixes Chronic Neck and Shoulder Pain (Not Heat or Painkillers)",
+  "pinDescription": "Heat and ibuprofen only mask the pain for a few hours. Research shows exercise therapy — specifically deep neck flexor and scapular strengthening — is the first-line treatment for lasting relief. Learn what the evidence says works, why it takes weeks not days, and what role stress actually plays.",
+  "layoutStyle": "list",
+  "items": [
+    {
+      "label": "Strengthen deep neck flexors, not just stretch",
+      "sublabel": ""
+    },
+    {
+      "label": "Correct forward head posture over weeks, not days",
+      "sublabel": ""
+    },
+    {
+      "label": "Address stress load on trapezius muscles",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A minimalist desk workspace with a laptop at eye level and a supportive ergonomic chair, viewed from the side, soft natural light from a window",
   "approved": true,
-  "generatedAt": "2026-10-02T13:37:03.669Z"
+  "generatedAt": "2026-10-02T14:08:15.560Z"
 }

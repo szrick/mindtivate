@@ -4,11 +4,28 @@
   "category": "Mind",
   "articleLink": "https://mindtivate.com/articles/what-to-do-after-a-blackout-you-can-t-remember-consenting-to/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/what-to-do-after-a-blackout-you-can-t-remember-consenting-to.png",
-  "style": "photo",
-  "imageHeadline": "Woke up with no memory of last night?",
-  "imageSubtext": "What a blackout means for consent and what to do now",
+  "style": "infographic",
+  "visualTheme": "sage-flush",
+  "imageHeadline": "What a blackout means for consent",
+  "imageSubtext": "When your brain stopped recording, could you really agree?",
   "pinTitle": "What to Do After a Blackout You Can't Remember Consenting To | Mindtivate",
-  "pinDescription": "If you've woken up with no memory of the night before, you're facing urgent questions about consent, safety, and next steps. This guide walks through what alcohol blackouts mean, why memory loss complicates consent, and the practical actions you can take now—from medical care to support resources.",
+  "pinDescription": "A blackout isn't passing out—it's when your brain stops forming memories while you're still awake. If you were vomiting, couldn't stand, and blacked out, you were incapacitated. Here's what that means for consent, what options you have now, and where to get support.",
+  "layoutStyle": "process",
+  "items": [
+    {
+      "label": "Understand what happened in your brain",
+      "sublabel": ""
+    },
+    {
+      "label": "Know your options for medical care and support",
+      "sublabel": ""
+    },
+    {
+      "label": "Decide what feels right for you next",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A quiet bedroom window at dawn with soft natural light filtering through sheer curtains, a glass of water on a nightstand",
   "approved": true,
-  "generatedAt": "2026-10-02T13:10:47.071Z"
+  "generatedAt": "2026-10-02T14:09:16.377Z"
 }

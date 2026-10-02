@@ -4,11 +4,28 @@
   "category": "Mind",
   "articleLink": "https://mindtivate.com/articles/postpartum-rage-the-symptoms-no-one-prepares-you-for/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/postpartum-rage-the-symptoms-no-one-prepares-you-for.png",
-  "style": "photo",
-  "imageHeadline": "Postpartum rage is real—and you're not alone",
-  "imageSubtext": "Understanding the anger and tension that no one warned you about",
-  "pinTitle": "Postpartum Rage Symptoms: What to Know About Postpartum Anger",
-  "pinDescription": "Hair-trigger anger, physical tension, and overwhelming rage after having a baby aren't character flaws—they're symptoms that deserve attention. Learn what postpartum rage actually looks like, why it happens, and what support is available.",
+  "style": "infographic",
+  "visualTheme": "terracotta-floating",
+  "imageHeadline": "Postpartum rage is real—and more common than you think",
+  "imageSubtext": "Hair-trigger anger, physical tension, and why it's a symptom worth naming",
+  "pinTitle": "Postpartum Rage Symptoms: Why New-Mom Anger Feels Different & What Helps",
+  "pinDescription": "Sudden, intense anger that feels involuntary? Physical tension, disproportionate reactions, and a nervous system on high alert? Postpartum rage is a documented symptom—often linked to postpartum anxiety—that standard screenings miss. Understand what's happening in your brain and body, and why it's worth talking about.",
+  "layoutStyle": "list",
+  "items": [
+    {
+      "label": "The anger hits fast and feels disproportionate to the trigger",
+      "sublabel": ""
+    },
+    {
+      "label": "Your body registers it: racing heart, clenched jaw, tight shoulders",
+      "sublabel": ""
+    },
+    {
+      "label": "It's a common symptom of postpartum anxiety, not a character flaw",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A quiet bedroom at dawn with rumpled sheets and soft morning light filtering through sheer curtains, a water glass on a nightstand",
   "approved": true,
-  "generatedAt": "2026-10-02T13:09:49.314Z"
+  "generatedAt": "2026-10-02T14:06:51.743Z"
 }

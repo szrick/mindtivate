@@ -4,11 +4,28 @@
   "category": "Hormones",
   "articleLink": "https://mindtivate.com/articles/is-there-a-safest-hormone-therapy-for-menopause/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/is-there-a-safest-hormone-therapy-for-menopause.png",
-  "style": "photo",
-  "imageHeadline": "Not All Hormone Therapy Carries the Same Risk",
-  "imageSubtext": "Type, dose, timing, and how you take it all matter for menopause HRT",
-  "pinTitle": "Is There a Safest Hormone Therapy for Menopause? What the Evidence Shows",
-  "pinDescription": "Hormone therapy for menopause isn't one-size-fits-all. Research shows that safety depends on which hormones you use, the dose, whether it's a pill or patch, and when you start. Learn what the evidence says about minimizing risk while treating symptoms.",
+  "style": "infographic",
+  "visualTheme": "plum-block",
+  "imageHeadline": "HRT safety isn't one answer—it depends on timing & type",
+  "imageSubtext": "Hormone, dose, route, and when you start all change the risk math",
+  "pinTitle": "Is There a Safest Hormone Therapy for Menopause? What the Research Shows",
+  "pinDescription": "HRT safety depends on which hormone, what dose, how it's delivered, and when you start—not a single yes or no. Learn how timing, estrogen-alone vs. combined therapy, and transdermal vs. oral routes shift the risk-benefit picture so you can have a more grounded conversation with your provider.",
+  "layoutStyle": "list",
+  "items": [
+    {
+      "label": "Timing matters: starting within 10 years of menopause shifts risk-benefit",
+      "sublabel": ""
+    },
+    {
+      "label": "Transdermal estrogen carries lower clot risk than oral",
+      "sublabel": ""
+    },
+    {
+      "label": "Estrogen-alone and combined therapy have different breast cancer profiles",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A soft-focus arrangement of estradiol patches, gel tubes, and pill bottles on a clean countertop beside a calendar marked with menopause transition dates",
   "approved": true,
-  "generatedAt": "2026-10-02T13:09:29.724Z"
+  "generatedAt": "2026-10-02T14:05:59.203Z"
 }
