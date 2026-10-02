@@ -464,25 +464,32 @@ guaranteed to be populated the instant `createPost` returns; when it
 isn't yet, the draft is still marked sent (so it's never retried), just
 without `pinterestPinUrl` recorded that run.
 
-`.github/workflows/weekly-pinterest-pins.yml` runs the **draft step
-only** (never sends) every Monday for up to 5 published articles missing
-a `pinterestPinUrl`, opening a PR with the generated images/copy —
-always `--style photo` on the scheduled run. A manual `workflow_dispatch`
-can instead target one specific article (`slug` input) and/or style
-(`style` input, `photo` or `infographic`) — useful for trying the
-infographic style on a single article before deciding whether to make it
-the default for the weekly scan.
+`.github/workflows/weekly-pinterest-pins.yml` runs the **draft step**
+every Monday for up to 5 published articles missing a `pinterestPinUrl`,
+opening a PR with the generated images/copy — always `--style photo` on
+the scheduled run. A manual `workflow_dispatch` can instead target one
+specific article (`slug` input), a different `limit` (e.g. for a
+one-time backfill), and/or style (`style` input, `photo` or
+`infographic`).
+
+Drafts come out of this workflow with `"approved": true` already set
+(the standing default, per explicit decision — the per-pin human-review
+step was deliberately dropped from the weekly schedule in favor of full
+automation): merging the PR is enough to let a draft start sending.
 Pinterest pins have no built-in "unsent draft" state the way Resend
-broadcasts do, so a real PR diff — the actual pin image, viewable inline
-on GitHub — is the review surface instead. The human gate is that
-`"approved": true` step, not the send command itself — see below.
+broadcasts do, so the PR diff — the actual pin image, viewable inline on
+GitHub — still exists as an *optional* review surface if you want to
+catch a bad AI-generated image/copy before it ships; flip a draft back
+to `"approved": false` there first if one needs changes. A manual
+`workflow_dispatch` can set `autoApprove` to `false` to get the old
+review-before-send behavior back for a one-off run.
 
 ### Sending: manual or automatic
 
-Nothing is ever sent to Pinterest without a human having set
-`"approved": true` on a draft first (in a `weekly-pinterest-pins.yml`
-review PR, same as always). What's optional is *how* an approved draft
-actually gets sent:
+A draft only ever sends once it's `"approved": true` — by default that
+happens automatically as soon as a weekly-pinterest-pins.yml PR merges
+(see above), not via a separate manual step. What's optional is *how*
+an approved draft actually gets sent:
 
 - **By hand**: `npm run pipeline:pin -- --slug <slug> --send`, run
   locally with `BUFFER_API_KEY` set.
