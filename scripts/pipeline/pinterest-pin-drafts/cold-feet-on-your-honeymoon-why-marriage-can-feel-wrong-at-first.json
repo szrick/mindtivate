@@ -4,13 +4,28 @@
   "category": "Love",
   "articleLink": "https://mindtivate.com/articles/cold-feet-on-your-honeymoon-why-marriage-can-feel-wrong-at-first/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/cold-feet-on-your-honeymoon-why-marriage-can-feel-wrong-at-first.png",
-  "style": "photo",
-  "imageHeadline": "Honeymoon Doesn't Feel Right? You're Not Alone",
-  "imageSubtext": "What post-wedding letdown really is—and what actually helps.",
-  "pinTitle": "Why Marriage Can Feel Wrong at First: Post-Wedding Letdown Explained",
-  "pinDescription": "That 'ick' feeling on your honeymoon isn't as rare as you might think. Wedding letdown and new in-law dynamics can hit hard right after you marry. Understand what's happening and find grounded strategies that help you adjust.",
-  "approved": true,
-  "generatedAt": "2026-10-02T13:07:27.691Z",
-  "sentAt": "2026-10-02T13:46:05.596Z",
-  "pinUrl": "https://www.pinterest.com/pin/1115626138979119581"
+  "style": "infographic",
+  "visualTheme": "plum-block",
+  "imageHeadline": "Why marriage can feel wrong right after the wedding",
+  "imageSubtext": "Honeymoon letdown is more common than you think—and what it means",
+  "pinTitle": "Cold Feet on Your Honeymoon: Why Marriage Can Feel Wrong at First",
+  "pinDescription": "Feeling disconnected or even regretful right after your wedding isn't rare. Research shows nearly half of newly married women experience a postnuptial letdown period—especially when family conflict and unmet expectations collide. Here's what's actually happening and how to navigate it without panic.",
+  "layoutStyle": "list",
+  "items": [
+    {
+      "label": "Postnuptial sadness affects nearly half of newlyweds",
+      "sublabel": ""
+    },
+    {
+      "label": "In-law tension can erode marital satisfaction over time",
+      "sublabel": ""
+    },
+    {
+      "label": "Talk about unmet needs before resentment hardens",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A suitcase open on a hotel bed with soft morning light coming through sheer curtains, travel documents and a passport visible on the nightstand",
+  "approved": false,
+  "generatedAt": "2026-10-02T14:02:07.693Z"
 }

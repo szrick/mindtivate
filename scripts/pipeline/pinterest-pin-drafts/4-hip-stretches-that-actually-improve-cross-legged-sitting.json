@@ -4,13 +4,32 @@
   "category": "Body",
   "articleLink": "https://mindtivate.com/articles/4-hip-stretches-that-actually-improve-cross-legged-sitting/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/4-hip-stretches-that-actually-improve-cross-legged-sitting.png",
-  "style": "photo",
-  "imageHeadline": "Why Cross-Legged Sitting Feels Impossible (And How to Fix It)",
-  "imageSubtext": "4 stretches that target the muscles limiting your hip mobility",
-  "pinTitle": "4 Hip Stretches to Improve Cross-Legged Sitting | Evidence-Based Mobility",
-  "pinDescription": "Struggling to sit cross-legged? Tight hip muscles and restricted range of motion are usually the culprits. Learn which four stretches target the right areas and how often to practice them for real improvement in your hip mobility.",
-  "approved": true,
-  "generatedAt": "2026-10-02T13:07:09.216Z",
-  "sentAt": "2026-10-02T13:45:44.573Z",
-  "pinUrl": "https://www.pinterest.com/pin/1115626138979119540"
+  "style": "infographic",
+  "visualTheme": "terracotta-floating",
+  "imageHeadline": "Can't sit cross-legged? Your hips need these 4 stretches",
+  "imageSubtext": "Target the muscle groups that actually limit hip mobility",
+  "pinTitle": "4 Hip Stretches That Actually Improve Cross-Legged Sitting | Evidence-Based Guide",
+  "pinDescription": "Limited hip mobility from tight adductors, hip flexors, and external rotators makes cross-legged sitting uncomfortable. These four stretches target the real restrictions—butterfly, 90/90, low lunge, and pigeon—with guidance on frequency and what to expect over time.",
+  "layoutStyle": "process",
+  "items": [
+    {
+      "label": "Butterfly stretch for inner thighs",
+      "sublabel": ""
+    },
+    {
+      "label": "90/90 stretch for hip rotation",
+      "sublabel": ""
+    },
+    {
+      "label": "Low lunge for hip flexors",
+      "sublabel": ""
+    },
+    {
+      "label": "Pigeon pose for glutes",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A yoga mat rolled out on a wooden floor next to a window with soft natural light, with a folded blanket and yoga block resting nearby",
+  "approved": false,
+  "generatedAt": "2026-10-02T14:01:20.611Z"
 }
