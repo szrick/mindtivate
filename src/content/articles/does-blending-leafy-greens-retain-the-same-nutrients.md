@@ -18,6 +18,7 @@ tags:
   - nutrition
   - fiber
 heroImageAlt: "Lifestyle photo related to \"Does Blending Leafy Greens Retain the Same Nutrients?\""
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979145010"
 ---
 You're not eating enough greens, and you're wondering if blending them into a drinkable form will let you consume more without the sit-down-and-chew commitment of a big salad. Short answer: yes, blending works. The nutrients stay intact, and you'll get the fiber too—something you'd lose if you were juicing instead.
 

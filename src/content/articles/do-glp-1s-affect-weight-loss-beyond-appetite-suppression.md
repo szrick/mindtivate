@@ -19,6 +19,7 @@ tags:
   - "GLP-1"
   - metabolism
   - appetite
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979145003"
 ---
 ## The question behind the question
 

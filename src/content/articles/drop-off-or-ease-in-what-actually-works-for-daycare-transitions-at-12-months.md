@@ -16,6 +16,7 @@ tags:
   - daycare transition
   - toddler development
   - working parents
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979145018"
 ---
 ## The question every parent switching care asks
 
