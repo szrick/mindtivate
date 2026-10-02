@@ -1,0 +1,29 @@
+name: Buffer board check (temporary)
+
+# One-off, read-only: confirms which Pinterest boards Buffer's connected
+# channel currently sees. Delete this workflow (and the script it runs)
+# after use.
+
+on:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: List boards
+        run: node scripts/pipeline/buffer-board-check.mjs
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
