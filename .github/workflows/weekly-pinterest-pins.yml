@@ -20,7 +20,7 @@ on:
   workflow_dispatch:
     inputs:
       slug:
-        description: 'Draft just this one article slug instead of the usual "up to 5 unpinned" scan (optional)'
+        description: 'Draft just these article slugs instead of the usual "up to 5 unpinned" scan (optional) -- one slug, or several separated by commas/newlines (e.g. to regenerate a batch of already-drafted slugs in a different style)'
         required: false
         type: string
       style:
@@ -64,14 +64,17 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Draft pin(s)
-        # Manual runs can target one specific slug/style (e.g. to try the
-        # infographic style on a single article before it's part of the
-        # regular scan); the scheduled run and any manual run without a
-        # slug input keep the original "top 5 unpinned, photo style"
-        # behavior unchanged (limit defaults to '5').
+        # Manual runs can target specific slug(s)/style (e.g. to try the
+        # infographic style on one article before it's part of the regular
+        # scan, or to regenerate a whole batch of already-drafted slugs in
+        # a different style) -- comma/newline-separated so one dispatch can
+        # cover many slugs in a single PR instead of one dispatch each. The
+        # scheduled run and any manual run without a slug input keep the
+        # original "top 5 unpinned, photo style" behavior unchanged (limit
+        # defaults to '5').
         run: |
           if [ -n "${{ inputs.slug }}" ]; then
-            slugs=("${{ inputs.slug }}")
+            mapfile -t slugs < <(printf '%s' "${{ inputs.slug }}" | tr ',' '\n' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v '^$')
           else
             mapfile -t slugs < <(node scripts/pipeline/find-unpinned-articles.mjs | head -"${{ inputs.limit || '5' }}")
           fi
