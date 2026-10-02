@@ -91,6 +91,26 @@ function parseFlatYamlLines(text) {
       continue;
     }
 
+    // A plain (unquoted, no `>`/`|` marker) scalar can itself continue
+    // onto indented lines below it -- valid YAML folds those the same
+    // way `>` does (joined with spaces), rather than starting a new
+    // field. Without this, e.g. `description: Some long sentence\n  that
+    // wraps.` silently drops everything after the first line (the
+    // continuation lines have no ":", so the loop below just skips
+    // them) -- this bit real article descriptions written this way,
+    // truncating what every drafting stage (Pinterest pin, Reddit
+    // comment, newsletter, digest) sends to the model as input. Quoted
+    // values and array items ("  - foo") never fold like this, so leave
+    // those alone.
+    const isQuotedValue = (value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"));
+    if (value && !isQuotedValue) {
+      const collected = [value];
+      while (i + 1 < lines.length && /^\s+\S/.test(lines[i + 1]) && !/^\s*-\s/.test(lines[i + 1])) {
+        collected.push(lines[++i].trim());
+      }
+      value = collected.join(' ');
+    }
+
     if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
       value = value.slice(1, -1);
     }
