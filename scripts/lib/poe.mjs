@@ -106,6 +106,16 @@ function extractFirstJsonValue(str) {
   return str.slice(start);
 }
 
+// Models routinely leave a trailing comma before the closing `}`/`]` of
+// an otherwise-correct JSON object -- a real, recurring failure mode
+// ("Expected double-quoted property name in JSON at position N"), not a
+// sign the content itself is wrong. JSON.parse has no tolerance for it,
+// so strip it before parsing rather than failing on an otherwise-good
+// response.
+function stripTrailingCommas(str) {
+  return str.replace(/,(\s*[}\]])/g, '$1');
+}
+
 /**
  * Ask Poe for strict JSON and parse it. Throws if the response isn't
  * valid JSON (callers should retry or fail loudly rather than publish
@@ -116,7 +126,7 @@ function extractFirstJsonValue(str) {
 export async function askPoeForJson(args) {
   const raw = await askPoe(args);
   const fenced = raw.trim().replace(/^```json\s*/i, '').replace(/```$/, '').trim();
-  const jsonOnly = extractFirstJsonValue(fenced);
+  const jsonOnly = stripTrailingCommas(extractFirstJsonValue(fenced));
   try {
     return JSON.parse(jsonOnly);
   } catch (err) {
