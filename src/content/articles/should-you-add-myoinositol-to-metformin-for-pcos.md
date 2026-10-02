@@ -18,6 +18,7 @@ tags:
   - metformin
   - insulin resistance
 heroImageAlt: "Lifestyle photo related to \"Should You Add Myoinositol to Metformin for PCOS?\""
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979115944"
 ---
 ## The question behind the supplement
 
