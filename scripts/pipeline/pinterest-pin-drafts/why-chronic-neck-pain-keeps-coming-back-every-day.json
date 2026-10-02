@@ -4,12 +4,28 @@
   "category": "Body",
   "articleLink": "https://mindtivate.com/articles/why-chronic-neck-pain-keeps-coming-back-every-day/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/why-chronic-neck-pain-keeps-coming-back-every-day.png",
-  "style": "photo",
-  "imageHeadline": "Why Your Neck Pain Returns Every Single Day",
-  "imageSubtext": "The cycle between your neck and traps—and what actually breaks it",
-  "pinTitle": "Why Chronic Neck Pain Keeps Coming Back Every Day | Evidence-Based Relief",
-  "pinDescription": "That nagging pain between your neck and traps that cycles through the day and disrupts your sleep has a pattern. Understand why it keeps returning and what research shows actually helps long-term—not just quick fixes.",
-  "pinDescriptionAlt": "If your neck pain returns every day, there's usually a reason. Learn why that nagging tension between your neck and traps follows a daily cycle, how it affects your sleep, and what evidence-based approaches offer lasting relief beyond temporary fixes.",
+  "style": "infographic",
+  "visualTheme": "sage-flush",
+  "imageHeadline": "Why your neck pain cycles through the day",
+  "imageSubtext": "That same-spot ache that fades, then returns—what's actually happening",
+  "pinTitle": "Why Chronic Neck Pain Keeps Coming Back Every Day (and What Helps)",
+  "pinDescription": "That persistent ache where your neck meets your traps—cycling through the day, disrupting sleep, making it hard to focus. The pattern points to mechanical causes like posture, muscle tension, and trigger points. Learn what breaks the cycle long-term, when to see a specialist, and why rest alone isn't enough.",
+  "layoutStyle": "list",
+  "items": [
+    {
+      "label": "Pain that cycles points to mechanical issues, not inflammation",
+      "sublabel": ""
+    },
+    {
+      "label": "Trigger points stay tense even when pain temporarily fades",
+      "sublabel": ""
+    },
+    {
+      "label": "Exercise therapy and posture retraining address the root cause",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A desk workspace viewed from above showing a laptop, notebook, and coffee cup on a wooden surface with soft natural light from a nearby window",
   "approved": true,
-  "generatedAt": "2026-10-02T13:11:21.983Z"
+  "generatedAt": "2026-10-02T14:10:39.137Z"
 }

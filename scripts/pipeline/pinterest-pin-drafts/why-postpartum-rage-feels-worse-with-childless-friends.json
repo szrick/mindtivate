@@ -4,11 +4,28 @@
   "category": "Mind",
   "articleLink": "https://mindtivate.com/articles/why-postpartum-rage-feels-worse-with-childless-friends/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/why-postpartum-rage-feels-worse-with-childless-friends.png",
-  "style": "photo",
-  "imageHeadline": "When Your Friend Texts During Bedtime & You See Red",
-  "imageSubtext": "Postpartum rage is real—and your friendships can be a trigger.",
-  "pinTitle": "Why Postpartum Rage Feels Worse With Childless Friends | Understanding Postpartum Anger",
-  "pinDescription": "That sudden flash of anger when a friend without kids suggests impossible plans isn't just sleep deprivation. Learn what postpartum rage actually is, why certain relationships can intensify it, and when anger after birth needs professional support.",
+  "style": "infographic",
+  "visualTheme": "terracotta-block",
+  "imageHeadline": "When a 7 p.m. dinner invite feels like a personal attack",
+  "imageSubtext": "Postpartum rage is real — and it's worse when friends don't get your new reality",
+  "pinTitle": "Why Postpartum Rage Feels Worse With Childless Friends | Postpartum Anger Explained",
+  "pinDescription": "That flash of hot, disproportionate anger when friends suggest plans during bedtime isn't just exhaustion. Learn what postpartum rage actually is, why gaps in understanding make it worse, and when the anger warrants professional support.",
+  "layoutStyle": "list",
+  "items": [
+    {
+      "label": "Postpartum rage often overlaps with depression or anxiety",
+      "sublabel": ""
+    },
+    {
+      "label": "Sleep deprivation and identity shifts amplify the response",
+      "sublabel": ""
+    },
+    {
+      "label": "Frequent, intense anger affecting relationships needs care",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A phone screen showing a text message notification on a bedside table next to a baby monitor glowing softly in a dimly lit bedroom",
   "approved": true,
-  "generatedAt": "2026-10-02T13:11:47.908Z"
+  "generatedAt": "2026-10-02T14:11:45.327Z"
 }

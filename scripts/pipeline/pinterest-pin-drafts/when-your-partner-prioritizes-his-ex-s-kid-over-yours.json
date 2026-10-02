@@ -4,11 +4,32 @@
   "category": "Love",
   "articleLink": "https://mindtivate.com/articles/when-your-partner-prioritizes-his-ex-s-kid-over-yours/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/when-your-partner-prioritizes-his-ex-s-kid-over-yours.png",
-  "style": "photo",
-  "imageHeadline": "He'll drive 12 hours for her kid, but not yours",
-  "imageSubtext": "How to know if it's fixable or a deeper incompatibility",
-  "pinTitle": "When Your Partner Prioritizes His Ex's Kid Over Yours: Boundary or Deal-Breaker?",
-  "pinDescription": "He makes time for his ex's child but sets strict limits with yours. Is this a boundary you can work through together, or a sign you're fundamentally incompatible? Explore what these patterns really mean for blended family dynamics.",
+  "style": "infographic",
+  "visualTheme": "terracotta-floating",
+  "imageHeadline": "He drives 12 hours for his ex's kid but won't let yours visit",
+  "imageSubtext": "That's not a boundary. It's a choice about what kind of relationship he wants.",
+  "pinTitle": "When Your Partner Prioritizes His Ex's Child Over Yours – Boundary or Compatibility Issue?",
+  "pinDescription": "He'll make a 12-hour trip for his goddaughter but keeps your children at arm's length. This asymmetry reveals more than awkwardness—it shows how he sees your kids fitting into his life. Learn how to frame the boundary conversation and recognize when it's not a communication problem, but a values mismatch.",
+  "layoutStyle": "process",
+  "items": [
+    {
+      "label": "Name the specific behavior that doesn't work",
+      "sublabel": ""
+    },
+    {
+      "label": "Ask him to explain the discrepancy",
+      "sublabel": ""
+    },
+    {
+      "label": "Watch how he responds to the request",
+      "sublabel": ""
+    },
+    {
+      "label": "Decide if his actions match his words",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A quiet living room with a couch and coffee table, soft natural light through a window, a few children's toys visible in the corner suggesting family life",
   "approved": true,
-  "generatedAt": "2026-10-02T13:11:11.404Z"
+  "generatedAt": "2026-10-02T14:10:07.009Z"
 }

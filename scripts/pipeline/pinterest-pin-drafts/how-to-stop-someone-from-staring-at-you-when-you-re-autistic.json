@@ -4,11 +4,32 @@
   "category": "Mind",
   "articleLink": "https://mindtivate.com/articles/how-to-stop-someone-from-staring-at-you-when-you-re-autistic/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/how-to-stop-someone-from-staring-at-you-when-you-re-autistic.png",
-  "style": "photo",
-  "imageHeadline": "Set Boundaries Around Staring Without the Confrontation",
-  "imageSubtext": "Practical scripts for autistic people navigating unwanted attention",
-  "pinTitle": "How to Stop Someone Staring at You (Autistic-Friendly Boundary Scripts)",
-  "pinDescription": "Unwanted staring in class or public spaces can be anxiety-inducing, and confronting it directly feels risky. This guide offers specific, low-escalation language and strategies to address staring while protecting yourself from misinterpretation.",
+  "style": "infographic",
+  "visualTheme": "terracotta-block",
+  "imageHeadline": "Set a boundary without the confrontation spiral",
+  "imageSubtext": "Direct scripts for stopping unwanted staring when you're autistic",
+  "pinTitle": "How to Stop Someone From Staring at You When You're Autistic",
+  "pinDescription": "Being stared at repeatedly triggers real anxiety, especially when you can't read the intent behind it. Here's how to set a clear, direct boundary without escalation—including exact scripts, timing strategies, and what to do if indirect attempts haven't worked. Find concrete steps for autistic self-advocacy.",
+  "layoutStyle": "process",
+  "items": [
+    {
+      "label": "Name the specific behavior out loud",
+      "sublabel": ""
+    },
+    {
+      "label": "State what needs to change",
+      "sublabel": ""
+    },
+    {
+      "label": "Choose a time when others are nearby",
+      "sublabel": ""
+    },
+    {
+      "label": "Escalate if the behavior continues",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A quiet university lecture hall with rows of empty wooden desks and soft natural light filtering through tall windows",
   "approved": true,
-  "generatedAt": "2026-10-02T13:09:04.476Z"
+  "generatedAt": "2026-10-02T14:05:09.750Z"
 }

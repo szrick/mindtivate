@@ -4,11 +4,28 @@
   "category": "Food",
   "articleLink": "https://mindtivate.com/articles/when-your-family-eats-24-string-cheeses-in-3-days/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/when-your-family-eats-24-string-cheeses-in-3-days.png",
-  "style": "photo",
-  "imageHeadline": "Your toddler ate all the string cheese. Again.",
-  "imageSubtext": "Why variety matters more than you think—and what to stock instead.",
-  "pinTitle": "When Your Family Eats 24 String Cheeses in 3 Days: Toddler Snacks That Work",
-  "pinDescription": "If string cheese is the only snack your toddler will eat, you're not alone. Learn why variety matters for young eaters and find a list of toddler-safe snacks that actually work for the whole family—no battles required.",
+  "style": "infographic",
+  "visualTheme": "terracotta-flush",
+  "imageHeadline": "Beyond the string cheese spiral",
+  "imageSubtext": "Simple snack swaps that work for toddlers and the whole family",
+  "pinTitle": "Toddler Snacks Beyond String Cheese: Easy Ideas That Actually Work",
+  "pinDescription": "Your toddler loves string cheese—so does everyone else. Here's why variety matters now, what balanced toddler snacks actually include, and how to prep grab-and-go options that hit more nutrient targets without adding stress to your day.",
+  "layoutStyle": "list",
+  "items": [
+    {
+      "label": "Pair snacks from two food groups for balanced nutrition",
+      "sublabel": ""
+    },
+    {
+      "label": "Batch-prep options on weekends to save daily time",
+      "sublabel": ""
+    },
+    {
+      "label": "Variety now builds toddler food preferences that stick",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A wooden cutting board with fresh fruit slices, small crackers, and cubed cheese arranged casually in a bright, sunlit kitchen",
   "approved": true,
-  "generatedAt": "2026-10-02T13:11:06.295Z"
+  "generatedAt": "2026-10-02T14:09:53.641Z"
 }

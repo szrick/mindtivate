@@ -4,11 +4,24 @@
   "category": "Food",
   "articleLink": "https://mindtivate.com/articles/does-blending-leafy-greens-retain-the-same-nutrients/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/does-blending-leafy-greens-retain-the-same-nutrients.png",
-  "style": "photo",
-  "imageHeadline": "Does Blending Destroy Nutrients in Greens?",
-  "imageSubtext": "What really happens to spinach and kale in your blender",
-  "pinTitle": "Does Blending Leafy Greens Retain Nutrients? The Science Behind Smoothies",
-  "pinDescription": "If you blend spinach, kale, or other leafy greens into smoothies, you might wonder whether the fiber and nutrients survive. Here's what the research shows about blending versus eating greens whole, and what it means for your morning routine.",
+  "style": "infographic",
+  "visualTheme": "terracotta-block",
+  "imageHeadline": "Blending Greens Keeps the Fiber & Nutrients",
+  "imageSubtext": "What actually changes when you drink spinach instead of chewing it",
+  "pinTitle": "Does Blending Leafy Greens Retain Nutrients? What the Research Shows",
+  "pinDescription": "Blending spinach or kale into a smoothie keeps the fiber, vitamins, and minerals intact—unlike juicing, which strains out what matters. Learn what you gain in volume, what you lose in satiety, and how to make blended greens work without overthinking it.",
+  "layoutStyle": "comparison",
+  "items": [
+    {
+      "label": "Blending",
+      "sublabel": "Keeps fiber, vitamins & minerals intact"
+    },
+    {
+      "label": "Juicing",
+      "sublabel": "Strains out fiber & beneficial compounds"
+    }
+  ],
+  "backgroundScene": "A glass blender jar filled with fresh green leafy vegetables and clear liquid, sitting on a kitchen counter with scattered spinach leaves nearby",
   "approved": true,
-  "generatedAt": "2026-10-02T13:07:43.080Z"
+  "generatedAt": "2026-10-02T14:01:37.661Z"
 }

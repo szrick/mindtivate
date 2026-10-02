@@ -4,11 +4,24 @@
   "category": "Sleep",
   "articleLink": "https://mindtivate.com/articles/when-sleep-medications-stop-working-what-cbt-i-treats-that-pills-don-t/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/when-sleep-medications-stop-working-what-cbt-i-treats-that-pills-don-t.png",
-  "style": "photo",
-  "imageHeadline": "Sleep meds stopped working? There's a reason why.",
-  "imageSubtext": "What cognitive behavioral therapy treats that prescriptions can't",
+  "style": "infographic",
+  "visualTheme": "sage-floating",
+  "imageHeadline": "When pills stop working after 2 hours",
+  "imageSubtext": "CBT-I retrains the sleep patterns medications can't touch",
   "pinTitle": "When Sleep Medications Stop Working: What CBT-I Treats That Pills Don't",
-  "pinDescription": "If you've cycled through Ambien, Lunesta, or other sleep medications without lasting results, cognitive behavioral therapy for insomnia (CBT-I) addresses the underlying patterns that pills can't fix. Learn why this evidence-based approach works when medications fail and what it actually treats.",
+  "pinDescription": "You've cycled through Ambien, Lunesta, gabapentin—but you're still waking every hour or two. Behavioral therapy for insomnia (CBT-I) targets the learned arousal patterns that keep fragmented sleep going, with effects that last long after treatment ends. Learn what stimulus control and sleep restriction actually do.",
+  "layoutStyle": "comparison",
+  "items": [
+    {
+      "label": "Medications",
+      "sublabel": "Stop working when you stop taking them"
+    },
+    {
+      "label": "CBT-I",
+      "sublabel": "Retrains your sleep system—effects persist"
+    }
+  ],
+  "backgroundScene": "A quiet bedroom at night with an unmade bed and a dim lamp on a nightstand, view from the doorway looking in",
   "approved": true,
-  "generatedAt": "2026-10-02T13:11:00.483Z"
+  "generatedAt": "2026-10-02T14:09:43.647Z"
 }

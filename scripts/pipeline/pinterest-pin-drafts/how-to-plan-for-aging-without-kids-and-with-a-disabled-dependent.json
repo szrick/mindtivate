@@ -4,11 +4,32 @@
   "category": "Life Stages",
   "articleLink": "https://mindtivate.com/articles/how-to-plan-for-aging-without-kids-and-with-a-disabled-dependent/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/how-to-plan-for-aging-without-kids-and-with-a-disabled-dependent.png",
-  "style": "photo",
-  "imageHeadline": "Planning for aging when you're the caregiver—not the cared-for",
-  "imageSubtext": "Building a support plan without relying on family",
-  "pinTitle": "How to Plan for Aging Without Kids (Especially When You're a Caregiver)",
-  "pinDescription": "If you're caring for a disabled dependent and wondering who will help you both decades from now, you're not alone. This guide walks through practical steps to build a long-term support plan—financial, legal, and social—when traditional family networks aren't the answer.",
+  "style": "infographic",
+  "visualTheme": "terracotta-block",
+  "imageHeadline": "Planning for two futures when family isn't the plan",
+  "imageSubtext": "Legal, financial, and support strategies for solo caregivers aging with dependents",
+  "pinTitle": "How to Plan for Aging Without Kids (and With a Disabled Dependent) | Solo Aging Guide",
+  "pinDescription": "When you're caring for a disabled relative and have no adult children to coordinate your own future care, you need a different framework. Legal documents, support networks, and financial strategies that account for both of you—practical steps to start before 45.",
+  "layoutStyle": "process",
+  "items": [
+    {
+      "label": "Set up legal documents for both of you",
+      "sublabel": ""
+    },
+    {
+      "label": "Build a support network outside family",
+      "sublabel": ""
+    },
+    {
+      "label": "Plan financially for two care futures",
+      "sublabel": ""
+    },
+    {
+      "label": "Connect with aging resources early",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A kitchen table with organized folders and paperwork, a laptop open to a planning document, and a cup of tea, warm afternoon light coming through a window",
   "approved": true,
-  "generatedAt": "2026-10-02T13:08:41.189Z"
+  "generatedAt": "2026-10-02T14:04:10.119Z"
 }

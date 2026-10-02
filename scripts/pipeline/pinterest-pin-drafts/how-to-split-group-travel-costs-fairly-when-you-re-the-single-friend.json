@@ -4,11 +4,32 @@
   "category": "Mind",
   "articleLink": "https://mindtivate.com/articles/how-to-split-group-travel-costs-fairly-when-you-re-the-single-friend/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/how-to-split-group-travel-costs-fairly-when-you-re-the-single-friend.png",
-  "style": "photo",
-  "imageHeadline": "Why Singles Shouldn't Pay More on Group Trips",
-  "imageSubtext": "Equal splits aren't always fair—here's how to talk about it",
-  "pinTitle": "How to Split Group Travel Costs Fairly When You're the Single Friend | Fair Cost Splitting",
-  "pinDescription": "Paying the same as couples for shared accommodations can mean you're actually paying more per person. Learn why equal splits aren't always equitable and get practical language for proposing a fairer method that preserves friendships and respects everyone's budget.",
+  "style": "infographic",
+  "visualTheme": "sage-flush",
+  "imageHeadline": "You're not bitter—the math really is unfair",
+  "imageSubtext": "Why paying per person when couples share rooms doesn't add up",
+  "pinTitle": "How to Split Group Travel Costs Fairly as the Single Friend | Mindtivate",
+  "pinDescription": "When couples share private bedrooms in a group rental and you're solo, equal per-person splits mean you're subsidizing their accommodation. Here's how to propose splitting by bedroom instead—and how to bring it up without making things awkward.",
+  "layoutStyle": "process",
+  "items": [
+    {
+      "label": "Understand why per-person splits feel off",
+      "sublabel": ""
+    },
+    {
+      "label": "Propose splitting by bedroom, not headcount",
+      "sublabel": ""
+    },
+    {
+      "label": "Time the conversation before booking",
+      "sublabel": ""
+    },
+    {
+      "label": "Decide when to speak up vs. let it go",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "An overhead view of a cozy vacation rental living room with a pullout sofa bed partially unfolded, a suitcase beside it, and warm natural light coming through a window",
   "approved": true,
-  "generatedAt": "2026-10-02T13:36:58.998Z"
+  "generatedAt": "2026-10-02T14:04:41.291Z"
 }

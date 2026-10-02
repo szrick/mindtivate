@@ -4,11 +4,28 @@
   "category": "Beauty",
   "articleLink": "https://mindtivate.com/articles/hydrating-dry-skin-without-occlusives-5-alternatives-to-slugging/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/hydrating-dry-skin-without-occlusives-5-alternatives-to-slugging.png",
-  "style": "photo",
-  "imageHeadline": "Hate slugging? Hydrate without the grease",
-  "imageSubtext": "Five occlusive alternatives for dry skin that won't wreck your pillowcase",
-  "pinTitle": "Dry Skin Hydration Without Slugging: 5 Lighter Occlusive Alternatives",
-  "pinDescription": "Slugging isn't for everyone—especially if you wake up stuck to your pillowcase. Discover five research-backed alternatives that seal in moisture without heavy petroleum jelly, tailored for arid climates and anyone who wants effective hydration minus the mess.",
+  "style": "infographic",
+  "visualTheme": "sage-flush",
+  "imageHeadline": "Hate slugging? You still need occlusion.",
+  "imageSubtext": "5 ways to hydrate dry skin without the greasy pillowcase",
+  "pinTitle": "How to Hydrate Dry Skin Without Heavy Occlusives (Alternatives to Slugging)",
+  "pinDescription": "Living in a dry climate means your skin needs occlusion—but not the petrolatum that transfers to your pillowcase. Learn which lightweight occlusives actually work, why humectants need backup in low humidity, and how to build a sustainable routine when the air is genuinely arid.",
+  "layoutStyle": "list",
+  "items": [
+    {
+      "label": "Layer humectants under lightweight occlusives like squalane",
+      "sublabel": ""
+    },
+    {
+      "label": "Run a humidifier at 40–50% to reduce water loss overnight",
+      "sublabel": ""
+    },
+    {
+      "label": "Cleanse once daily and apply products to damp skin",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A bedside table with a small humidifier releasing gentle mist, next to a minimalist bottle of serum and a soft cotton pillowcase in natural morning light",
   "approved": true,
-  "generatedAt": "2026-10-02T13:09:13.197Z"
+  "generatedAt": "2026-10-02T14:05:23.519Z"
 }
