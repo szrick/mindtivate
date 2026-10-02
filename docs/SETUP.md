@@ -251,12 +251,19 @@ comment for how this was confirmed against Buffer's live GraphQL API.
 4. For the scheduled drafting workflow
    (`.github/workflows/weekly-pinterest-pins.yml`) to run, add
    `POE_API_KEY` (see section 3) as a repository secret — that workflow
-   only ever drafts, so it's the only credential it needs.
-5. **Optional: automatic sending.** Without this, an approved draft only
-   ever gets sent when you run `--send` locally by hand. To have
-   `.github/workflows/pinterest-auto-send.yml` send anything already
-   marked `"approved": true` automatically (daily), add `BUFFER_API_KEY`
-   as a repo secret too — that's the only credential auto-send needs.
+   only ever drafts, so it's the only credential it needs. By default
+   its drafts come out `"approved": true` already (auto-approve is the
+   standing default, per explicit decision — see
+   `docs/CONTENT_PIPELINE.md`'s Pinterest section); a manual
+   `workflow_dispatch` run can set `autoApprove` to `false` to get a
+   draft you review before approving by hand instead.
+5. **Required for anything to actually reach Pinterest**: add
+   `BUFFER_API_KEY` as a repo secret so
+   `.github/workflows/pinterest-auto-send.yml` can send whatever's
+   `"approved": true` (daily, capped at 5/run) — since drafts
+   auto-approve by default, this is what actually gets a pin out, not
+   an optional extra. Without it, approved drafts just pile up unsent
+   until you run `--send` locally by hand with `BUFFER_API_KEY` set.
 
 A direct Pinterest API integration (`scripts/lib/pinterest.mjs`) still
 exists in the repo and is fully working, kept for reference/fallback —
@@ -326,8 +333,9 @@ used previously (see git history for `scripts/lib/sender.mjs` and the
 removed `senderFormAction` setting) — that automation emailed *Sender's*
 subscriber list, a separate system from Resend. Stage 7 is intentionally
 human-gated (draft → review → approve → send) rather than a fully
-automatic poll-and-send, matching the rest of the pipeline's approach to
-anything that goes out publicly — see `docs/COMPLIANCE.md`.
+automatic poll-and-send — see `docs/COMPLIANCE.md`. (Stage 5's Pinterest
+drafts, by contrast, auto-approve by default per explicit decision — see
+section 6 below and `docs/CONTENT_PIPELINE.md`'s Pinterest section.)
 
 6. **Weekly digest** (stage 8, optional): `.github/workflows/weekly-digest.yml`
    runs `pipeline:digest` every Monday, gated by `weeklyDigestEnabled` in
