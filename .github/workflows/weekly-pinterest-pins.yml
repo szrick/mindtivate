@@ -81,7 +81,20 @@ jobs:
           fi
           for slug in "${slugs[@]}"; do
             echo "::group::Drafting pin for $slug"
-            npm run pipeline:pin -- --slug "$slug" --style "${{ inputs.style || 'photo' }}"
+            # A single bad response (e.g. Poe occasionally returns
+            # malformed JSON) must not take down the whole batch -- under
+            # `bash -e`, letting this command's failure propagate would
+            # abort the entire loop, discarding every already-successful
+            # draft in this run too (the "Open PR" step never runs on a
+            # failed job). Skip just this slug and continue instead; it
+            # has no draft file written, so the next run's
+            # find-unpinned-articles.mjs scan picks it up again
+            # automatically.
+            if ! npm run pipeline:pin -- --slug "$slug" --style "${{ inputs.style || 'photo' }}"; then
+              echo "::warning::Drafting failed for $slug -- skipping, will be retried on a future run"
+              echo "::endgroup::"
+              continue
+            fi
             # inputs.autoApprove is "" (not "true"/"false") on the
             # scheduled run -- only an explicit "false" from a manual
             # dispatch should skip auto-approval; anything else
