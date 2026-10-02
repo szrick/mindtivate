@@ -4,11 +4,28 @@
   "category": "Sleep",
   "articleLink": "https://mindtivate.com/articles/waking-too-early-and-needing-8-5-hours-is-it-insomnia/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/waking-too-early-and-needing-8-5-hours-is-it-insomnia.png",
-  "style": "photo",
-  "imageHeadline": "Waking Too Early Isn't Always Insomnia",
-  "imageSubtext": "What it means when you need 8.5 hours but can't stay asleep",
-  "pinTitle": "Waking Too Early and Needing 8.5 Hours: Is It Insomnia? | Sleep Problems Explained",
-  "pinDescription": "If you need 8.5–9 hours of sleep but wake too early 4–5 days a week, you might wonder if it's insomnia. Learn what difficulty staying asleep actually signals and evidence-based steps to address early waking patterns.",
+  "style": "infographic",
+  "visualTheme": "terracotta-floating",
+  "imageHeadline": "Waking too early most days? It counts as insomnia",
+  "imageSubtext": "Even if you're hitting 7 hours—when you need more, the gap matters",
+  "pinTitle": "Waking Too Early and Needing 8.5 Hours: Is It Insomnia?",
+  "pinDescription": "If you need 8.5–9 hours but wake too early 4–5 days a week and feel exhausted, that's sleep maintenance insomnia—even if you're getting 7 hours. Learn when early waking becomes a real problem, why population averages don't tell your story, and what to try (from sleep hygiene to when to talk to a provider).",
+  "layoutStyle": "list",
+  "items": [
+    {
+      "label": "Insomnia = not getting enough sleep for you, not a number",
+      "sublabel": ""
+    },
+    {
+      "label": "Waking early 3+ nights/week for 3 months = chronic insomnia",
+      "sublabel": ""
+    },
+    {
+      "label": "CBT-I has strong evidence for sleep maintenance problems",
+      "sublabel": ""
+    }
+  ],
+  "backgroundScene": "A softly lit bedroom at dawn with warm morning light filtering through sheer curtains onto an empty, unmade bed with rumpled sheets",
   "approved": true,
-  "generatedAt": "2026-10-02T13:10:16.337Z"
+  "generatedAt": "2026-10-02T14:20:57.232Z"
 }
