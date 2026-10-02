@@ -19,6 +19,7 @@ tags:
   - flexibility
   - stretching
   - joint health
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979119540"
 ---
 ## Why you can't sit cross-legged comfortably
 

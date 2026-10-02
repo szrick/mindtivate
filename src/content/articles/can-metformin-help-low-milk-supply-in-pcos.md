@@ -14,6 +14,7 @@ tags:
   - postpartum
   - insulin resistance
   - metformin
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979119568"
 ---
 ## The problem: you've done everything the lists tell you to do
 

@@ -17,6 +17,7 @@ tags:
   - pregnancy
   - contraception
 updatedDate: 2026-09-04
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979119552"
 ---
 You're eight months into birth control, bleeding irregularly, using condoms, getting negative pregnancy tests — and still worried you might somehow be pregnant. That spiral is exhausting, and you're not alone in it. Abnormal bleeding on hormonal contraception is one of the most common side effects, but when you've heard stories about people who didn't know they were pregnant, it's hard to trust the reassurance.
 
