@@ -691,8 +691,9 @@ Pinterest's draft (a local PNG/JSON a PR diff shows directly), a Short's
 so nothing is public yet:
 
 ```bash
-# 1. Draft: Poe writes a 4-6 beat, 100-150 word script (hook, evidence
-#    beats, CTA) plus a B-roll search query per beat; ElevenLabs voices
+# 1. Draft: Poe writes a tight 3-beat, 50-70 word script (hook, one
+#    specific payoff point, a CTA that names mindtivate.com) under 30
+#    seconds total, plus a B-roll search query per beat; ElevenLabs voices
 #    the full script and returns word-level timestamps; each beat sources
 #    a real Pexels/Pixabay stock video clip (falling back to a plain
 #    branded card if neither source has a match) trimmed to that beat's

@@ -59,28 +59,38 @@ const BRAND = { terracotta: '#d97a5f', plum: '#2f2a33', cream: '#f2e9db' };
 const MAX_PUBLISHES_PER_RUN = 4;
 const DELAY_BETWEEN_PUBLISHES_MS = 5000;
 
-const SCRIPT_SYSTEM_PROMPT = `You write the narration script for a 30-45 second vertical YouTube Short
-promoting a Mindtivate article (evidence-based women's health/wellness --
-specific, myth-busting, and grounded, never hype-y, preachy, or
-diet-culture). The audience is adult women, mostly 28-50, often in a
-specific life stage (postpartum, perimenopause/menopause, caregiving,
-dating after 30) who are tired of vague or shame-laden advice and want a
-direct, research-backed answer to a real question.
+const SCRIPT_SYSTEM_PROMPT = `You write the narration script for a vertical YouTube Short, under 30
+seconds total, promoting a Mindtivate article (evidence-based women's
+health/wellness -- specific, myth-busting, and grounded, never hype-y,
+preachy, or diet-culture). The audience is adult women, mostly 28-50,
+often in a specific life stage (postpartum, perimenopause/menopause,
+caregiving, dating after 30) who are tired of vague or shame-laden
+advice and want a direct, research-backed answer to a real question.
 
-Write 4-6 beats forming one continuous spoken script:
-- The first beat is the HOOK: a specific, counter-intuitive claim that
-  stops a scroll in the first 2-3 seconds. Often a reversal of common
-  advice ("You've been told X. Here's why that's wrong.").
-- The middle 2-4 beats deliver the actual evidence/answer from the
-  article -- specific, not generic. No filler, no "studies show" without
-  saying what they show.
-- The final beat is a short CTA pointing to the full article, phrased
-  naturally (never "click the link below" -- say something like "the
-  full breakdown is linked" or similar, varied per video).
+Write exactly 3 beats forming one continuous spoken script. Be concise
+and punchy, not thorough -- this is a hook into the article, not a
+summary of it. Cut every sentence that isn't doing real work. No lists
+of multiple sub-points, no "here are three things," no hedging -- one
+sharp idea, landed fast, every time.
+- Beat 1, the HOOK: a specific, counter-intuitive claim that stops a
+  scroll in the first 2-3 seconds. Often a reversal of common advice
+  ("You've been told X. Here's why that's wrong.").
+- Beat 2, the PAYOFF: the single sharpest, most specific insight from
+  the article that actually answers the hook. Pick the ONE best point,
+  not several -- specific, not generic, no filler, no "studies show"
+  without saying what they show.
+- Beat 3, the CTA: explicitly tell the viewer to go to mindtivate.com
+  for the full breakdown -- say "mindtivate.com" or "Mindtivate" by
+  name, not just "the link" or "linked below" (there's no visible link
+  for a viewer to click in a Short the way there is on other
+  platforms, so the site name has to be spoken). Keep it to one short
+  sentence, phrasing varied per video.
 
 Hard constraints:
-- Total spoken script across all beats: 100-150 words. This is read
-  aloud in ~30-45 seconds -- going over makes the video too long.
+- Total spoken script across all three beats: 50-70 words. Read aloud
+  at a natural pace, that's roughly 20-25 seconds -- there's no room
+  for a fourth beat or extra detail within that, so don't try to fit
+  more in.
 - Never invent statistics or claims not grounded in the article's own
   content.
 - Never write as if a real named person is sharing their own personal
@@ -96,7 +106,7 @@ Hard constraints:
 
 Also write a short "videoTitle" (under 80 characters, specific and
 curiosity-driving, not the raw article title) and a 2-3 sentence
-"videoDescription" ending with a line pointing to the full article.
+"videoDescription" ending with a line pointing to mindtivate.com.
 
 Return strict JSON:
 {
