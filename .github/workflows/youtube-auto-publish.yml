@@ -1,0 +1,64 @@
+name: YouTube Shorts auto-publish approved drafts
+
+# Publishes any YouTube Short draft that's already been marked
+# "approved": true in scripts/pipeline/youtube-short-drafts/*.json but
+# hasn't been published yet -- see scripts/pipeline/12-youtube-short.mjs's
+# --publish-approved. The human gate is the approval itself (set by hand,
+# after actually watching the private video linked from a
+# weekly-youtube-shorts.yml PR, same as always); this workflow only
+# automates the "flip private -> public" step for whatever's already been
+# approved, capped at MAX_PUBLISHES_PER_RUN (4) with a delay between
+# publishes -- see that constant in 12-youtube-short.mjs for why it's a
+# hard platform quota limit here, not just a cadence preference.
+
+on:
+  schedule:
+    - cron: '0 15 * * *' # daily, 15:00 UTC -- same time as pinterest-auto-send.yml
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    # Default GITHUB_TOKEN is read-only on this repo; pushing the
+    # updated draft(s) and article(s) straight to main needs write access.
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Publish approved, unpublished drafts
+        run: npm run pipeline:short -- --publish-approved
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+
+      - name: Check for changed draft(s)/article(s)
+        id: check
+        run: |
+          if git status --porcelain -- scripts/pipeline/youtube-short-drafts src/content/articles | grep -q .; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No draft/article changes — nothing was published, or nothing needed publishing."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push straight to main
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/pipeline/youtube-short-drafts src/content/articles
+          git commit -m 'content: record published YouTube Short(s)' \
+            -m 'Published by youtube-auto-publish.yml for draft(s) already marked approved: true — see the publishedAt/publicUrl fields for which.'
+          git push origin HEAD:main

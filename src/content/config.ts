@@ -35,6 +35,7 @@ const articles = defineCollection({
       featuredProducts: z.array(reference('products')).default([]),
       pinterestPinUrl: z.string().url().optional(),
       redditCommentUrl: z.string().url().optional(),
+      youtubeShortUrl: z.string().url().optional(),
       tags: z.array(z.string()).default([]),
     }),
 });
