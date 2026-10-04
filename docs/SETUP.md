@@ -491,8 +491,9 @@ upload and approves it (see `docs/COMPLIANCE.md`'s YouTube section).
    has Poe write a thumbnail concept (`POE_THUMBNAIL_CONCEPT_MODEL`,
    defaults to a fast Gemini variant) and generate the actual image via
    a Poe image-gen bot (`POE_THUMBNAIL_IMAGE_MODEL`, defaults to Poe's
-   Nano-Banana Lite — check the exact bot handle at poe.com/explore,
-   since handles can change). Setting it requires your YouTube channel
+   Nano-Banana-2-Lite, the same bot handle section 3's `POE_INFOGRAPHIC_MODEL`
+   already uses — check poe.com/explore if the handle ever changes).
+   Setting it requires your YouTube channel
    to have **"Additional features"** phone-number verification enabled
    (**youtube.com/verify**) — an unverified channel gets a clear API
    error back, not a silent no-op; the draft's `.json` records
