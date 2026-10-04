@@ -446,13 +446,23 @@ upload and approves it (see `docs/COMPLIANCE.md`'s YouTube section).
       create a new project (or reuse an existing one).
    2. **APIs & Services → Library** → search "YouTube Data API v3" →
       **Enable**.
-   3. **APIs & Services → OAuth consent screen**: choose **External**
-      (unless you have a Google Workspace org to use Internal), fill in
-      the required app info, and add your own Google account under **Test
-      users** (required while the app is in "Testing" status — it doesn't
-      need Google's review/verification for personal use like this, since
-      only accounts you explicitly add as test users can authorize it).
-      Add the scope `https://www.googleapis.com/auth/youtube.upload`.
+   3. **APIs & Services → Google Auth Platform** (Google restructured the
+      old single-page "OAuth consent screen" into three tabs here —
+      Branding/Audience/Clients — sometime in 2024; if your console still
+      shows the old single-page form, the equivalent steps are the same,
+      just not split across tabs). Under **Audience**: choose **External**
+      (unless you have a Google Workspace org to use Internal), and add
+      your own Google account under **Test users → + Add users**
+      (required while the app is in "Testing" status — it doesn't need
+      Google's review/verification for personal use like this, since only
+      accounts you explicitly add as test users can authorize it; trying
+      to authorize with an account not on this list fails with "Error
+      403: access_denied"). Under **Branding** (not Audience), fill in
+      the required app info. The scope
+      `https://www.googleapis.com/auth/youtube.upload` is requested by
+      `youtube-oauth-setup.mjs` itself at authorization time — nothing to
+      configure for it here on current console versions, though older
+      versions required adding it explicitly under a "Scopes" section.
    4. **APIs & Services → Credentials → Create Credentials → OAuth client
       ID** → Application type **Desktop app** (not "Web application" —
       Desktop app clients can use any `http://localhost:<port>` redirect
