@@ -16,6 +16,7 @@ tags:
   - physical therapy
   - L5/S1
   - rehabilitation
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979145026"
 ---
 ## Why L5/S1 injuries need a specific approach
 
