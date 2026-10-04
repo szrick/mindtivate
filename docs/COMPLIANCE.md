@@ -116,6 +116,45 @@ designed around.
   the photo-style pin already uses, so there's no misspelled/garbled-text
   risk to check for there.
 
+## YouTube Shorts
+
+- Every Short uploads as `privacyStatus: private` first — see
+  `scripts/lib/youtube.mjs`'s header comment for why. Nothing is public
+  until a human actually watches the private video on youtube.com and
+  sets `"approved": true` on its draft record; `youtube-auto-publish.yml`
+  only flips visibility for drafts a human already approved, the same
+  "automate the mechanical step, never the judgment call" shape as
+  `pinterest-auto-send.yml`.
+- **Reused/repetitive content risk.** YouTube can deem a channel
+  ineligible for monetization if its Shorts are too formulaic across
+  videos — a real risk for anything explicitly "one video per article."
+  `SCRIPT_SYSTEM_PROMPT` in `12-youtube-short.mjs` asks for a specific,
+  myth-busting angle per article rather than reading the title aloud, but
+  this is a prompt-design concern to keep revisiting, not a one-time
+  check — if a run of generated scripts starts reading as templated,
+  that's worth fixing in the prompt before it becomes a pattern across
+  dozens of videos.
+- **Stock footage and identifiable people.** Pexels/Pixabay's free
+  licenses permit commercial use without required attribution, but
+  neither permits implying endorsement by anyone shown on camera. A clip
+  of an identifiable person can also read as *that person's own story*,
+  which is a real problem for Mindtivate's more sensitive topics
+  (postpartum, grief, disability, menopause, mental health) — the
+  script-generation prompt biases B-roll search queries toward
+  settings/objects/hands over faces, more strictly for the Mind/
+  Hormones/Life Stages categories (see `sensitiveCategoryHint` in
+  `12-youtube-short.mjs`), but a reviewer should still treat "does this
+  clip misleadingly look like a real testimonial" as a checklist item
+  before approving a draft, same as the hero-photo check below.
+- **COPPA.** Every upload declares `selfDeclaredMadeForKids: false` —
+  this is general adult wellness content, not child-directed, but the
+  field is mandatory on every YouTube upload regardless, not something
+  specific to this project.
+- **Non-personal narration**, same as every other channel: the script is
+  Mindtivate's own voice, never written or voiced as if a real named
+  individual is sharing their own personal experience — see "Content
+  honesty" below, which this follows for exactly the same reason.
+
 ## Newsletter / email
 
 - Sender.net (like any ESP) requires consent-based opt-in and a working

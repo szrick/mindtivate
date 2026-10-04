@@ -683,6 +683,66 @@ being collected at all, so the digest would just report zeros
 indefinitely rather than erroring (Cloudflare's API doesn't distinguish
 "no beacon installed" from "a quiet day").
 
+## 12. YouTube Shorts (`scripts/pipeline/12-youtube-short.mjs`)
+
+Two-step, human-gated, same shape as stage 5 above — but unlike
+Pinterest's draft (a local PNG/JSON a PR diff shows directly), a Short's
+"draft" is a real upload to YouTube, just with `privacyStatus: private`
+so nothing is public yet:
+
+```bash
+# 1. Draft: Poe writes a 4-6 beat, 100-150 word script (hook, evidence
+#    beats, CTA) plus a B-roll search query per beat; ElevenLabs voices
+#    the full script and returns word-level timestamps; each beat sources
+#    a real Pexels/Pixabay stock video clip (falling back to a plain
+#    branded card if neither source has a match) trimmed to that beat's
+#    spoken duration; ffmpeg concatenates the clips, burns in
+#    word-synced captions (2-3 word bursts, brand colors), and mixes in
+#    the voiceover; the result uploads straight to YouTube as a private
+#    video. Writes scripts/pipeline/youtube-short-drafts/<slug>.json
+#    (script text, B-roll attributions, the private video's
+#    youtubeStudioUrl) -- never the video file itself, which isn't
+#    committed to the repo at all.
+npm run pipeline:short -- --slug your-article-slug
+
+# 2. Watch the private video at the draft's youtubeStudioUrl -- the JSON
+#    diff alone doesn't show you the finished video, unlike a Pinterest
+#    pin's PNG. Edit the script/approve in the .json if you want, set
+#    "approved": true, then either:
+npm run pipeline:short -- --slug your-article-slug --publish   # publish just this one, by hand
+#    ...or let youtube-auto-publish.yml (below) pick it up automatically.
+```
+
+`--publish` flips the already-uploaded video's `privacyStatus` from
+`private` to `public` via `scripts/lib/youtube.mjs`'s `publishVideo()` —
+it never re-uploads anything, just changes visibility on the video
+that's already sitting there. On success it writes `publishedAt`/
+`publicUrl` onto the draft `.json` and `youtubeShortUrl` onto the
+article's frontmatter, same "never sent twice" shape as Pinterest's
+`sentAt`/`pinterestPinUrl`.
+
+`.github/workflows/weekly-youtube-shorts.yml` runs the **draft step**
+every Wednesday for up to 2 published articles missing a
+`youtubeShortUrl` (kept low by default — each Short costs real
+ElevenLabs/compute time, unlike a Pinterest pin), opening a PR with the
+JSON draft record(s). Unlike Pinterest's weekly workflow, `autoApprove`
+here defaults to **false** — this format doesn't have Pinterest's track
+record yet, so a human should watch several private uploads before
+trusting the schedule to auto-approve.
+
+### Publishing: manual or automatic
+
+- **By hand**: `npm run pipeline:short -- --slug <slug> --publish`, run
+  locally with the YouTube OAuth env vars set (see `docs/SETUP.md`).
+- **Automatically**: `.github/workflows/youtube-auto-publish.yml` runs
+  daily, calls `npm run pipeline:short -- --publish-approved`, and
+  publishes every draft that's `approved: true` and not yet
+  `publishedAt` — capped at `MAX_PUBLISHES_PER_RUN` (4) per run. Unlike
+  Pinterest's cap (a spam-policy choice), this one tracks YouTube Data
+  API's real daily quota ceiling (~6 uploads/day on the default 10,000
+  units) — raising it needs a quota increase from Google, not just
+  editing a constant.
+
 ## Scheduled automation
 
 `.github/workflows/content-pipeline.yml` runs stages 1–4 every 2 days —
@@ -734,6 +794,14 @@ safety net, straight to `main` like `content-pipeline.yml`.
 
 `.github/workflows/analytics-digest.yml` runs stage 11 daily at 13:00
 UTC — see stage 11's section above.
+
+`.github/workflows/weekly-youtube-shorts.yml` runs stage 12's **draft
+step only** every Wednesday, for up to 2 published articles missing a
+`youtubeShortUrl`, and opens a PR with the JSON draft record(s) — see
+stage 12's section above. `.github/workflows/youtube-auto-publish.yml`
+runs daily and publishes any draft already marked `approved: true`
+(capped at 4/run) — see stage 12's "Publishing: manual or automatic"
+section.
 
 `POE_API_KEY` is required by all of the above and by stage 7 (newsletter
 broadcast drafts) — every drafting step in this pipeline goes through

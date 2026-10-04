@@ -410,6 +410,76 @@ see `docs/CONTENT_PIPELINE.md` if you need that instead.
    project's build settings, not just local `.env`, since that's what
    actually reaches production).
 
+## 7b. YouTube Shorts — automated video drafting (optional)
+
+Stage 12 (`scripts/pipeline/12-youtube-short.mjs`) turns a published
+article into a 30-45s vertical Short: Poe writes the script, ElevenLabs
+voices it, Pexels/Pixabay supply B-roll per beat, ffmpeg assembles the
+video with burned-in captions, and it uploads straight to YouTube as a
+**private** video — nothing is public until a human watches the private
+upload and approves it (see `docs/COMPLIANCE.md`'s YouTube section).
+
+1. **ElevenLabs** (voiceover): create an account at
+   [elevenlabs.io](https://elevenlabs.io) and get an API key under
+   **Settings → API Keys**. Add to `.env` as `ELEVENLABS_API_KEY`. Pick a
+   voice from the [Voice Library](https://elevenlabs.io/app/voice-library)
+   (any premade voice works to start) and copy its voice ID into `.env`
+   as `ELEVENLABS_VOICE_ID`. The free tier has a monthly character quota —
+   check ElevenLabs' current pricing before drafting a large batch of
+   articles at once; a paid tier is likely needed for anything beyond a
+   handful of Shorts a month.
+2. **Pexels** (B-roll, primary source): same key as section 3a's hero
+   photos if you already set that up — `PEXELS_API_KEY` works for both
+   Pexels' photo and video search endpoints. If you skipped section 3a,
+   get a free key at [pexels.com/api](https://www.pexels.com/api/)
+   (instant approval).
+3. **Pixabay** (B-roll, fallback source): create a free key at
+   [pixabay.com/api/docs](https://pixabay.com/api/docs/) (instant, no
+   approval wait). Add to `.env` as `PIXABAY_API_KEY`. Without either
+   Pexels or Pixabay configured, every beat falls back to a plain
+   branded card instead of real footage — see `renderFallbackFrame` in
+   `12-youtube-short.mjs`.
+4. **YouTube Data API v3** (upload): this is the multi-step one, since it
+   needs a real OAuth app and a one-time authorization against your
+   actual channel.
+   1. Go to [console.cloud.google.com](https://console.cloud.google.com),
+      create a new project (or reuse an existing one).
+   2. **APIs & Services → Library** → search "YouTube Data API v3" →
+      **Enable**.
+   3. **APIs & Services → OAuth consent screen**: choose **External**
+      (unless you have a Google Workspace org to use Internal), fill in
+      the required app info, and add your own Google account under **Test
+      users** (required while the app is in "Testing" status — it doesn't
+      need Google's review/verification for personal use like this, since
+      only accounts you explicitly add as test users can authorize it).
+      Add the scope `https://www.googleapis.com/auth/youtube.upload`.
+   4. **APIs & Services → Credentials → Create Credentials → OAuth client
+      ID** → Application type **Desktop app** (not "Web application" —
+      Desktop app clients can use any `http://localhost:<port>` redirect
+      without pre-registering the exact port, which is what lets the
+      next step pick one itself). Copy the **Client ID** and **Client
+      secret** into `.env` as `YOUTUBE_CLIENT_ID` / `YOUTUBE_CLIENT_SECRET`.
+   5. Run `node scripts/pipeline/youtube-oauth-setup.mjs` locally. It
+      prints a Google authorization URL — open it in a browser signed in
+      to the Google account that owns (or manages) your YouTube channel,
+      approve access, and the script prints a refresh token. Add that as
+      `.env`'s `YOUTUBE_REFRESH_TOKEN` (and the repo secret of the same
+      name — see below). This step can't be scripted further than this;
+      it needs a real person clicking "Allow" once.
+5. For the scheduled workflows (`weekly-youtube-shorts.yml`,
+   `youtube-auto-publish.yml`): add repo secrets `ELEVENLABS_API_KEY`,
+   `ELEVENLABS_VOICE_ID`, `PEXELS_API_KEY`, `PIXABAY_API_KEY`,
+   `YOUTUBE_CLIENT_ID`, `YOUTUBE_CLIENT_SECRET`, `YOUTUBE_REFRESH_TOKEN`
+   (plus `POE_API_KEY`, already needed for section 3). Unlike Pinterest's
+   `autoApprove` default, `weekly-youtube-shorts.yml` defaults
+   `autoApprove` to **false** — watch the first several private uploads
+   on youtube.com yourself before trusting this format unattended.
+6. YouTube Data API's free daily quota (10,000 units) caps real publishes
+   at roughly 6/day (`MAX_PUBLISHES_PER_RUN` in `12-youtube-short.mjs`
+   stays under that) — a hard platform ceiling, not a tunable preference.
+   Raise it only by requesting a quota increase from Google, a review
+   process that can take days.
+
 ## 8. Verify
 
 ```bash
