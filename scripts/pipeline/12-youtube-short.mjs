@@ -442,7 +442,7 @@ no preamble, no restating these instructions, no labeled sections.`;
 // Thumbnail concept comes from a separate, lighter Poe call rather than
 // reusing the video script beats directly -- a thumbnail needs its own
 // "best single frame" framing, distinct from an individual beat's B-roll
-// query. POE_THUMBNAIL_CONCEPT_MODEL defaults to a fast Gemini variant;
+// query. POE_THUMBNAIL_CONCEPT_MODEL defaults to Gemini-3.5-Flash;
 // POE_THUMBNAIL_IMAGE_MODEL is the actual image generator (Poe's
 // Nano-Banana-2-Lite, per the user's choice -- same bot handle
 // 5-pinterest-pin.mjs's infographic style already defaults to) -- both
@@ -450,7 +450,7 @@ no preamble, no restating these instructions, no labeled sections.`;
 // pipeline.
 async function generateThumbnailConcept({ article, script }) {
   const prompt = `Video title: "${script.videoTitle}"\nArticle category: ${article.category}\nScript: ${script.beats.map((b) => b.text).join(' ')}`;
-  const model = process.env.POE_THUMBNAIL_CONCEPT_MODEL || 'Gemini-2.5-Flash';
+  const model = process.env.POE_THUMBNAIL_CONCEPT_MODEL || 'Gemini-3.5-Flash';
   const concept = await askPoe({ system: THUMBNAIL_CONCEPT_SYSTEM, prompt, maxTokens: 300, model });
   return concept.trim();
 }
