@@ -59,6 +59,12 @@ const BRAND = { terracotta: '#d97a5f', plum: '#2f2a33', cream: '#f2e9db' };
 const MAX_PUBLISHES_PER_RUN = 4;
 const DELAY_BETWEEN_PUBLISHES_MS = 5000;
 
+// A beat ending in "..." is a deliberate open loop (see
+// SCRIPT_SYSTEM_PROMPT) -- it needs a beat of silence before cutting to
+// the next beat, or the cutoff reads as an edit glitch rather than a
+// held pause. Short enough to keep pace on a vertical Short.
+const OPEN_LOOP_PAUSE_SECONDS = 0.6;
+
 const SCRIPT_SYSTEM_PROMPT = `You write the narration script for a vertical YouTube Short promoting
 a Mindtivate article (evidence-based women's health/wellness --
 specific, myth-busting, and grounded, never hype-y, preachy, or
@@ -81,11 +87,15 @@ the video more curious than informed.
   about Y, and specifically..." stopping right before the specific part
   lands. One point only, not a list, and never a vague tease with no
   real content ("you won't believe what we found") -- it has to be a
-  real, specific claim that's just missing its resolution.
-- Beat 2, the CTA: "For the details, visit mindtivate.com" or a close,
-  natural variation -- always name the site explicitly (there's no
-  clickable link in a Short, so the viewer needs to hear the URL, not
-  "the link below"). Keep this to one short sentence.
+  real, specific claim that's just missing its resolution. Always end
+  this beat's text with a literal "..." -- the pipeline detects that and
+  inserts a brief dramatic pause there before cutting to beat 2 (see
+  OPEN_LOOP_PAUSE_SECONDS below), so the open loop needs a beat to land.
+- Beat 2, the CTA: "Visit mindtivate.com to find the answer." or a close,
+  natural variation on that same phrasing -- always name the site
+  explicitly (there's no clickable link in a Short, so the viewer needs
+  to hear the URL, not "the link below"). Keep this to one short
+  sentence.
 
 Hard constraints:
 - Total spoken script across both beats: 35-55 words. This is short on
@@ -249,6 +259,13 @@ async function buildBeatClip({ beat, workDir, index, category, usedUrls }) {
   // size the clip off the real decoded duration, not word timing.
   const duration = Math.max(await getMediaDuration(audioPath), 1);
 
+  // A beat ending in "..." is a deliberate open loop (see
+  // SCRIPT_SYSTEM_PROMPT) -- hold on it in silence for a beat before
+  // cutting away, via ffmpeg's apad audio filter below, rather than
+  // cutting the instant the voiceover stops.
+  const pauseSeconds = beat.text.trim().endsWith('...') ? OPEN_LOOP_PAUSE_SECONDS : 0;
+  const clipDuration = duration + pauseSeconds;
+
   const captionsPath = join(workDir, `beat-${index}-captions.ass`);
   writeFileSync(captionsPath, buildCaptionTrack(words));
 
@@ -274,7 +291,7 @@ async function buildBeatClip({ beat, workDir, index, category, usedUrls }) {
   } else {
     const framePath = join(workDir, `beat-${index}-frame.png`);
     writeFileSync(framePath, await renderFallbackFrame(category));
-    const frames = Math.max(Math.round(duration * FPS), 1);
+    const frames = Math.max(Math.round(clipDuration * FPS), 1);
     inputArgs.push('-loop', '1', '-i', framePath);
     videoFilter = `scale=${WIDTH * 2}:${HEIGHT * 2},zoompan=z='min(zoom+0.0008,1.15)':d=${frames}:s=${WIDTH}x${HEIGHT}:fps=${FPS},ass=${captionsPath}`;
   }
@@ -282,7 +299,11 @@ async function buildBeatClip({ beat, workDir, index, category, usedUrls }) {
   await runFfmpeg([
     ...inputArgs,
     '-i', audioPath,
-    '-t', String(duration),
+    // apad appends pauseSeconds of silence after the voiceover ends (a
+    // no-op when pauseSeconds is 0) so the open-loop pause is real
+    // silence in the track, not just an extended video with no sound.
+    '-af', `apad=pad_dur=${pauseSeconds}`,
+    '-t', String(clipDuration),
     '-vf', videoFilter,
     '-r', String(FPS),
     '-map', '0:v:0',
