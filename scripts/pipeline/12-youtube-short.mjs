@@ -59,43 +59,39 @@ const BRAND = { terracotta: '#d97a5f', plum: '#2f2a33', cream: '#f2e9db' };
 const MAX_PUBLISHES_PER_RUN = 4;
 const DELAY_BETWEEN_PUBLISHES_MS = 5000;
 
-const SCRIPT_SYSTEM_PROMPT = `You write the narration script for a vertical YouTube Short, 30-44
-seconds total, promoting a Mindtivate article (evidence-based women's
-health/wellness -- specific, myth-busting, and grounded, never hype-y,
-preachy, or diet-culture). The audience is adult women, mostly 28-50,
-often in a specific life stage (postpartum, perimenopause/menopause,
-caregiving, dating after 30) who are tired of vague or shame-laden
-advice and want a direct, research-backed answer to a real question.
+const SCRIPT_SYSTEM_PROMPT = `You write the narration script for a vertical YouTube Short promoting
+a Mindtivate article (evidence-based women's health/wellness --
+specific, myth-busting, and grounded, never hype-y, preachy, or
+diet-culture). The audience is adult women, mostly 28-50, often in a
+specific life stage (postpartum, perimenopause/menopause, caregiving,
+dating after 30) who are tired of vague or shame-laden advice and want
+a direct, research-backed answer to a real question.
 
-Write 3-4 beats forming one continuous spoken script. Be concise and
-punchy, not thorough -- this is a hook into the article, not a summary
-of it. Cut every sentence that isn't doing real work. No listy
-enumeration ("here are three things"), no hedging -- each beat lands
-one sharp idea, fast.
-- Beat 1, the HOOK: a specific, counter-intuitive claim that stops a
-  scroll in the first 2-3 seconds. Often a reversal of common advice
-  ("You've been told X. Here's why that's wrong.").
-- Beat 2 (and, if there's genuinely a second distinct idea worth the
-  extra seconds, beat 3), the PAYOFF: the sharpest, most specific
-  insight(s) from the article that actually answer the hook --
-  specific, not generic, no filler, no "studies show" without saying
-  what they show. Only use a second payoff beat if it's a genuinely
-  different point, not a restatement or a minor supporting detail --
-  padding to fill time reads as boring, which defeats the point.
-- Final beat, the CTA: explicitly tell the viewer to go to mindtivate.com
-  for the full breakdown -- say "mindtivate.com" or "Mindtivate" by
-  name, not just "the link" or "linked below" (there's no visible link
-  for a viewer to click in a Short the way there is on other
-  platforms, so the site name has to be spoken). Keep it to one short
-  sentence, phrasing varied per video.
+Write exactly 2 beats forming one continuous spoken script. This is a
+trailer for the article, not a summary of it -- the viewer should finish
+the video more curious than informed.
+- Beat 1, the HOOK + OPEN LOOP: a specific, counter-intuitive claim that
+  stops a scroll in the first 2-3 seconds (often a reversal of common
+  advice -- "You've been told X. Here's why that's wrong."), then the
+  start of the ONE sharpest point from the article -- but deliberately
+  cut it off before it resolves. End mid-explanation, not mid-sentence
+  grammatically broken, but clearly incomplete: it names what's
+  different/what to pay attention to without yet saying *why* or *how*.
+  Example shape: "Turns out it's not about X at all -- it's actually
+  about Y, and specifically..." stopping right before the specific part
+  lands. One point only, not a list, and never a vague tease with no
+  real content ("you won't believe what we found") -- it has to be a
+  real, specific claim that's just missing its resolution.
+- Beat 2, the CTA: "For the details, visit mindtivate.com" or a close,
+  natural variation -- always name the site explicitly (there's no
+  clickable link in a Short, so the viewer needs to hear the URL, not
+  "the link below"). Keep this to one short sentence.
 
 Hard constraints:
-- Total spoken script across all beats: 80-110 words. Read aloud at a
-  natural pace, that's roughly 30-44 seconds. Don't pad to fill this
-  range -- a tight 3-beat, 80-word script that lands clean beats a
-  4-beat one stretched out to hit 110.
+- Total spoken script across both beats: 35-55 words. This is short on
+  purpose -- resist the urge to explain more than beat 1 allows.
 - Never invent statistics or claims not grounded in the article's own
-  content.
+  content, even in the part you're deliberately leaving unresolved.
 - Never write as if a real named person is sharing their own personal
   story -- this is Mindtivate's own voice, not a testimonial.
 - Each beat also needs a short B-roll search query (2-4 words, like you'd
@@ -139,24 +135,7 @@ async function generateScript(article, articleBody) {
   });
 }
 
-// Walks the full-script word-timing array, consuming each beat's own
-// word count in order, so every beat ends up with a [start, end] range
-// within the single synthesized audio track. Relies on beat texts being
-// sent to TTS in the same order, space-joined, with no added/removed
-// words -- see draftShort's fullText below.
-function assignBeatTimings(beats, words) {
-  let cursor = 0;
-  return beats.map((beat) => {
-    const wordCount = beat.text.trim().split(/\s+/).length;
-    const beatWords = words.slice(cursor, cursor + wordCount);
-    cursor += wordCount;
-    const start = beatWords[0]?.start ?? 0;
-    const end = beatWords[beatWords.length - 1]?.end ?? start;
-    return { ...beat, start, end, words: beatWords };
-  });
-}
-
-// Groups the full-script word-timing array into 2-3-word caption bursts
+// Groups a beat's own word-timing array into 2-3-word caption bursts
 // (the common "bold word-group" Shorts caption style -- more legible
 // than one word flickering at a time, snappier than full-sentence
 // blocks) and renders them as an ASS subtitle track. ASS color fields
@@ -225,21 +204,11 @@ async function runFfmpeg(args) {
   }
 }
 
-// Real, decoded duration of a media file in seconds -- used two ways in
-// assembleVideo: (1) the TTS audio's true length almost always runs a
-// little past the last word's own end timestamp (trailing room in the
-// synthesized clip beyond the last transcribed character), so sizing the
-// last beat's video off word timing alone left the video track shorter
-// than the audio -- the final ffmpeg pass's `-shortest` then silently
-// truncated the *voice*, not just dead air. (2) each beat's video clip
-// is independently encoded, and ffmpeg's `-t` trim only lands on a frame
-// boundary (nearest 1/FPS), not the exact requested duration -- small
-// per-clip rounding that compounds across beats, so captions (timed
-// against the one continuous original audio track) drift visibly out of
-// sync with the concatenated video by the last beat. Probing each beat
-// clip's *actual* rendered duration afterward and correcting caption
-// times against that real cumulative timeline (see assembleVideo) fixes
-// both at the root rather than just padding/guessing.
+// Real, decoded duration of a media file in seconds -- used in
+// buildBeatClip to find each beat's own voiceover's true length, which
+// almost always runs a little past its last word's own end timestamp
+// (ElevenLabs' alignment only covers up to the last transcribed
+// character, not any trailing room in the synthesized clip).
 async function getMediaDuration(filePath) {
   const { stdout } = await execFileAsync('ffprobe', [
     '-v', 'error',
@@ -250,122 +219,101 @@ async function getMediaDuration(filePath) {
   return parseFloat(stdout.trim());
 }
 
-// Builds one beat's visual clip: a real stock video trimmed to
-// `duration` (the caller's responsibility -- see assembleVideo, which
-// extends the last beat's nominal duration to cover the full audio
-// track) and cropped/scaled to fill 1080x1920, or (fallback) a static
-// branded frame panned slowly via zoompan so a run of fallback beats
-// doesn't look like a dead still image. Returns the clip's *actual*
-// rendered duration (probed, not just the requested one) alongside its
-// path, so the caller can correct caption timing against reality -- see
-// getMediaDuration's comment for why requested and actual can differ.
-async function buildBeatClip({ beat, duration: requestedDuration, workDir, index, category, usedUrls }) {
-  const duration = Math.max(requestedDuration, 1);
+// Builds one beat's *complete* clip -- its own voiceover, visual, and
+// burned-in captions, fully self-contained and already in sync. Each
+// beat synthesizes its own audio via a separate ElevenLabs call rather
+// than slicing a shared whole-script audio track by word count: the
+// earlier design asked Poe for a script, joined every beat's text into
+// one string, synthesized that once, then recovered each beat's time
+// range by *counting words* in its original text and matching that
+// count against ElevenLabs' returned word list. That's fragile --
+// anything that makes TTS's actual spoken-word count differ even
+// slightly from a naive whitespace split of the input text (an em dash
+// with no surrounding spaces, "mindtivate.com" possibly voiced as
+// multiple words, any text normalization) silently shifts the cursor,
+// and the error compounds beat over beat -- which is exactly why the
+// reported symptom was "fine for a while, broken near the end": a video
+// track ending early (the last beat's clip sized off an already-wrong
+// start time) and captions drifting out of sync well before that.
+// Synthesizing per beat sidesteps the whole problem: each beat's audio
+// and word timings are guaranteed to describe that exact beat's own
+// clip, nothing to keep in sync across beats at all.
+async function buildBeatClip({ beat, workDir, index, category, usedUrls }) {
   const outPath = join(workDir, `beat-${index}.mp4`);
+  const audioPath = join(workDir, `beat-${index}-audio.mp3`);
+
+  const { buffer: audioBuffer, words } = await synthesizeSpeech({ text: beat.text });
+  writeFileSync(audioPath, audioBuffer);
+  // See this function's header comment on getMediaDuration -- the real
+  // audio can run a little past the last word's own end timestamp, so
+  // size the clip off the real decoded duration, not word timing.
+  const duration = Math.max(await getMediaDuration(audioPath), 1);
+
+  const captionsPath = join(workDir, `beat-${index}-captions.ass`);
+  writeFileSync(captionsPath, buildCaptionTrack(words));
 
   const stock = await findStockVideo(beat.broll, { excludeUrls: usedUrls }).catch(() => null);
+  const attribution = stock?.sourceName && stock?.attribution ? `${stock.sourceName}: ${stock.attribution} (${stock.sourceUrl})` : null;
 
+  let videoFilter;
+  const inputArgs = [];
   if (stock) {
     usedUrls.add(stock.sourceUrl);
     const srcPath = join(workDir, `beat-${index}-src.${stock.ext}`);
     writeFileSync(srcPath, stock.buffer);
-    await runFfmpeg([
-      '-i', srcPath,
-      '-t', String(duration),
-      '-vf', `scale=${WIDTH}:${HEIGHT}:force_original_aspect_ratio=increase,crop=${WIDTH}:${HEIGHT}`,
-      '-r', String(FPS),
-      '-c:v', 'libx264',
-      '-pix_fmt', 'yuv420p',
-      '-an',
-      outPath,
-    ]);
-    return {
-      outPath,
-      actualDuration: await getMediaDuration(outPath),
-      attribution: stock.sourceName && stock.attribution ? `${stock.sourceName}: ${stock.attribution} (${stock.sourceUrl})` : null,
-    };
+    // -stream_loop -1 on the source: a stock clip (often 5-15s) can be
+    // shorter than this beat's voiceover, especially a longer payoff
+    // beat -- loop it rather than letting the video silently run out
+    // and freeze/end before the audio (the same "video shorter than
+    // audio" failure mode as the original truncation bug, just from a
+    // different cause). The -t below still caps the final duration to
+    // exactly the voiceover's length regardless of how many loops that
+    // takes.
+    inputArgs.push('-stream_loop', '-1', '-i', srcPath);
+    videoFilter = `scale=${WIDTH}:${HEIGHT}:force_original_aspect_ratio=increase,crop=${WIDTH}:${HEIGHT},ass=${captionsPath}`;
+  } else {
+    const framePath = join(workDir, `beat-${index}-frame.png`);
+    writeFileSync(framePath, await renderFallbackFrame(category));
+    const frames = Math.max(Math.round(duration * FPS), 1);
+    inputArgs.push('-loop', '1', '-i', framePath);
+    videoFilter = `scale=${WIDTH * 2}:${HEIGHT * 2},zoompan=z='min(zoom+0.0008,1.15)':d=${frames}:s=${WIDTH}x${HEIGHT}:fps=${FPS},ass=${captionsPath}`;
   }
 
-  const framePath = join(workDir, `beat-${index}-frame.png`);
-  writeFileSync(framePath, await renderFallbackFrame(category));
-  const frames = Math.max(Math.round(duration * FPS), 1);
   await runFfmpeg([
-    '-loop', '1',
-    '-i', framePath,
+    ...inputArgs,
+    '-i', audioPath,
     '-t', String(duration),
-    '-vf', `scale=${WIDTH * 2}:${HEIGHT * 2},zoompan=z='min(zoom+0.0008,1.15)':d=${frames}:s=${WIDTH}x${HEIGHT}:fps=${FPS}`,
+    '-vf', videoFilter,
     '-r', String(FPS),
+    '-map', '0:v:0',
+    '-map', '1:a:0',
     '-c:v', 'libx264',
     '-pix_fmt', 'yuv420p',
+    '-c:a', 'aac',
     outPath,
   ]);
-  return { outPath, actualDuration: await getMediaDuration(outPath), attribution: null };
+
+  return { outPath, attribution };
 }
 
-async function assembleVideo({ beats, audioBuffer, category, slug }) {
+// Concatenates each beat's already-complete clip (own audio, visual,
+// and in-sync captions baked in -- see buildBeatClip) into the final
+// video. No cross-beat timing correction needed here: each clip's
+// internal audio/video/caption sync came from sharing one local origin
+// (its own beat's TTS call), so simple concatenation preserves it.
+async function assembleVideo({ beats, category, slug }) {
   const workDir = mkdtempSync(join(tmpdir(), `yt-short-${slug}-`));
   try {
-    const audioPath = join(workDir, 'voiceover.mp3');
-    writeFileSync(audioPath, audioBuffer);
-
-    // The synthesized audio's real length almost always runs a little
-    // past the last word's own end timestamp (ElevenLabs' alignment only
-    // covers up to the last transcribed character, not any trailing room
-    // in the clip) -- size the last beat's video to cover the *whole*
-    // audio, not just up to the last word, so the final assembly's
-    // `-shortest` never truncates real speech. See getMediaDuration's
-    // comment for the fuller picture.
-    const audioDuration = await getMediaDuration(audioPath);
-    const nominalDurations = beats.map((beat, i) =>
-      i === beats.length - 1 ? Math.max(audioDuration - beat.start, beat.end - beat.start) : beat.end - beat.start,
-    );
-
     const usedUrls = new Set();
     const clips = [];
     for (let i = 0; i < beats.length; i++) {
-      clips.push(await buildBeatClip({ beat: beats[i], duration: nominalDurations[i], workDir, index: i, category, usedUrls }));
+      clips.push(await buildBeatClip({ beat: beats[i], workDir, index: i, category, usedUrls }));
     }
 
     const listPath = join(workDir, 'concat-list.txt');
     writeFileSync(listPath, clips.map((c) => `file '${c.outPath}'`).join('\n'));
-    const concatPath = join(workDir, 'concat.mp4');
-    await runFfmpeg(['-f', 'concat', '-safe', '0', '-i', listPath, '-c', 'copy', concatPath]);
-
-    // Each clip's *actual* rendered duration (probed above, in
-    // buildBeatClip) almost never matches its requested one exactly --
-    // ffmpeg's `-t` trim lands on the nearest frame boundary, not the
-    // exact second. That per-clip rounding is imperceptible alone, but
-    // compounds across beats; correct every word's caption time by the
-    // *cumulative* real offset of the beat it falls in (not the nominal
-    // one the original TTS timeline assumed), so captions track the
-    // concatenated video's real timeline instead of drifting from it by
-    // the final beat.
-    let cumulativeActualOffset = 0;
-    const correctedWords = [];
-    for (let i = 0; i < beats.length; i++) {
-      const offsetCorrection = cumulativeActualOffset - beats[i].start;
-      for (const word of beats[i].words) {
-        correctedWords.push({ word: word.word, start: word.start + offsetCorrection, end: word.end + offsetCorrection });
-      }
-      cumulativeActualOffset += clips[i].actualDuration;
-    }
-
-    const captionsPath = join(workDir, 'captions.ass');
-    writeFileSync(captionsPath, buildCaptionTrack(correctedWords));
-
     const outPath = join(workDir, 'final.mp4');
-    await runFfmpeg([
-      '-i', concatPath,
-      '-i', audioPath,
-      '-vf', `ass=${captionsPath}`,
-      '-map', '0:v:0',
-      '-map', '1:a:0',
-      '-c:v', 'libx264',
-      '-pix_fmt', 'yuv420p',
-      '-c:a', 'aac',
-      '-shortest',
-      outPath,
-    ]);
+    await runFfmpeg(['-f', 'concat', '-safe', '0', '-i', listPath, '-c', 'copy', outPath]);
 
     const buffer = readFileSync(outPath);
     return { buffer, attributions: clips.map((c) => c.attribution).filter(Boolean) };
@@ -388,14 +336,9 @@ async function draftShort(slug) {
 
   console.log('Drafting Short script with Poe...');
   const script = await generateScript(article, articleBody);
-  const fullText = script.beats.map((b) => b.text).join(' ');
 
-  console.log('Synthesizing voiceover with ElevenLabs...');
-  const { buffer: audioBuffer, words } = await synthesizeSpeech({ text: fullText });
-  const beats = assignBeatTimings(script.beats, words);
-
-  console.log(`Sourcing B-roll and assembling video (${beats.length} beats)...`);
-  const { buffer: videoBuffer, attributions } = await assembleVideo({ beats, audioBuffer, category: article.category, slug });
+  console.log(`Synthesizing voiceover, sourcing B-roll, and assembling video (${script.beats.length} beats)...`);
+  const { buffer: videoBuffer, attributions } = await assembleVideo({ beats: script.beats, category: article.category, slug });
 
   const link = `${SITE_URL}/articles/${slug}/`;
   console.log('Uploading to YouTube as private...');
