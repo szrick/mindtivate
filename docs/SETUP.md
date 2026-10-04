@@ -489,7 +489,7 @@ upload and approves it (see `docs/COMPLIANCE.md`'s YouTube section).
       was issued with — there's no way to widen one after the fact.
 5. **Custom thumbnails** (optional, non-fatal if skipped): stage 12 also
    has Poe write a thumbnail concept (`POE_THUMBNAIL_CONCEPT_MODEL`,
-   defaults to a fast Gemini variant) and generate the actual image via
+   defaults to `Gemini-3.5-Flash`) and generate the actual image via
    a Poe image-gen bot (`POE_THUMBNAIL_IMAGE_MODEL`, defaults to Poe's
    Nano-Banana-2-Lite, the same bot handle section 3's `POE_INFOGRAPHIC_MODEL`
    already uses — check poe.com/explore if the handle ever changes).
