@@ -35,7 +35,12 @@ if (!CLIENT_ID || !CLIENT_SECRET) {
 // client -- prompt=consent forces the consent screen (and a fresh
 // refresh_token) every time this script runs, so re-running it to
 // rotate credentials always works, not just the first time.
-const SCOPE = 'https://www.googleapis.com/auth/youtube.upload';
+//
+// youtube.force-ssl (not just youtube.upload): a refresh token is locked
+// to the scope it was issued with, and setThumbnail (scripts/lib/youtube.mjs)
+// needs youtube.force-ssl -- youtube.upload alone isn't enough for that
+// endpoint, even though it's enough for uploading the video itself.
+const SCOPE = 'https://www.googleapis.com/auth/youtube.force-ssl';
 
 async function main() {
   const server = createServer();

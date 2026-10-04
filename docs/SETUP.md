@@ -479,15 +479,36 @@ upload and approves it (see `docs/COMPLIANCE.md`'s YouTube section).
       `.env`'s `YOUTUBE_REFRESH_TOKEN` (and the repo secret of the same
       name — see below). This step can't be scripted further than this;
       it needs a real person clicking "Allow" once.
-5. For the scheduled workflows (`weekly-youtube-shorts.yml`,
+   6. The script requests the `youtube.force-ssl` scope (broader than
+      just upload) so the pipeline can also set a custom thumbnail (see
+      below) — if `YOUTUBE_REFRESH_TOKEN` was issued by an older version
+      of this script that only requested `youtube.upload`, custom
+      thumbnails will fail with an insufficient-scope error until you
+      re-run `youtube-oauth-setup.mjs` and replace the secret with a
+      freshly issued token. A refresh token is locked to the scope it
+      was issued with — there's no way to widen one after the fact.
+5. **Custom thumbnails** (optional, non-fatal if skipped): stage 12 also
+   has Poe write a thumbnail concept (`POE_THUMBNAIL_CONCEPT_MODEL`,
+   defaults to a fast Gemini variant) and generate the actual image via
+   a Poe image-gen bot (`POE_THUMBNAIL_IMAGE_MODEL`, defaults to Poe's
+   Nano-Banana Lite — check the exact bot handle at poe.com/explore,
+   since handles can change). Setting it requires your YouTube channel
+   to have **"Additional features"** phone-number verification enabled
+   (**youtube.com/verify**) — an unverified channel gets a clear API
+   error back, not a silent no-op; the draft's `.json` records
+   `thumbnailSet: false` and `thumbnailError` when this happens, and the
+   video keeps YouTube's own auto-generated thumbnail instead.
+6. For the scheduled workflows (`weekly-youtube-shorts.yml`,
    `youtube-auto-publish.yml`): add repo secrets `ELEVENLABS_API_KEY`,
    `ELEVENLABS_VOICE_ID`, `PEXELS_API_KEY`, `PIXABAY_API_KEY`,
-   `YOUTUBE_CLIENT_ID`, `YOUTUBE_CLIENT_SECRET`, `YOUTUBE_REFRESH_TOKEN`
-   (plus `POE_API_KEY`, already needed for section 3). Unlike Pinterest's
-   `autoApprove` default, `weekly-youtube-shorts.yml` defaults
-   `autoApprove` to **false** — watch the first several private uploads
-   on youtube.com yourself before trusting this format unattended.
-6. YouTube Data API's free daily quota (10,000 units) caps real publishes
+   `YOUTUBE_CLIENT_ID`, `YOUTUBE_CLIENT_SECRET`, `YOUTUBE_REFRESH_TOKEN`,
+   and (if using custom thumbnails) `POE_THUMBNAIL_CONCEPT_MODEL` /
+   `POE_THUMBNAIL_IMAGE_MODEL` (plus `POE_API_KEY`, already needed for
+   section 3). Unlike Pinterest's `autoApprove` default,
+   `weekly-youtube-shorts.yml` defaults `autoApprove` to **false** —
+   watch the first several private uploads on youtube.com yourself
+   before trusting this format unattended.
+7. YouTube Data API's free daily quota (10,000 units) caps real publishes
    at roughly 6/day (`MAX_PUBLISHES_PER_RUN` in `12-youtube-short.mjs`
    stays under that) — a hard platform ceiling, not a tunable preference.
    Raise it only by requesting a quota increase from Google, a review

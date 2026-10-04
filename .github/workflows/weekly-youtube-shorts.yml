@@ -119,6 +119,13 @@ jobs:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          # Both optional -- 12-youtube-short.mjs defaults to a fast
+          # Gemini variant and Poe's Nano-Banana Lite if unset. Custom
+          # thumbnail generation is non-fatal regardless (see this
+          # workflow's own header comment on autoApprove for the general
+          # "don't block the draft on a nice-to-have" philosophy here).
+          POE_THUMBNAIL_CONCEPT_MODEL: ${{ secrets.POE_THUMBNAIL_CONCEPT_MODEL }}
+          POE_THUMBNAIL_IMAGE_MODEL: ${{ secrets.POE_THUMBNAIL_IMAGE_MODEL }}
 
       - name: Open PR with new Short draft(s)
         uses: peter-evans/create-pull-request@v6
