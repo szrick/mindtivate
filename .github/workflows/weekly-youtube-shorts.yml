@@ -58,8 +58,12 @@ jobs:
       - name: Install Playwright's Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: Verify ffmpeg is available
-        run: ffmpeg -version
+      - name: Install ffmpeg
+        # Not preinstalled on GitHub-hosted ubuntu-latest runners as of
+        # this writing (confirmed live: "ffmpeg: command not found" when
+        # this step was just `ffmpeg -version`) -- install it explicitly
+        # rather than assuming it's already there.
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg && ffmpeg -version
 
       - name: Draft Short(s)
         # Same per-slug failure isolation as weekly-pinterest-pins.yml's
