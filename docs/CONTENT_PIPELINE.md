@@ -691,19 +691,23 @@ Pinterest's draft (a local PNG/JSON a PR diff shows directly), a Short's
 so nothing is public yet:
 
 ```bash
-# 1. Draft: Poe writes a tight 3-beat, 50-70 word script (hook, one
-#    specific payoff point, a CTA that names mindtivate.com) under 30
-#    seconds total, plus a B-roll search query per beat; ElevenLabs voices
-#    the full script and returns word-level timestamps; each beat sources
-#    a real Pexels/Pixabay stock video clip (falling back to a plain
-#    branded card if neither source has a match) trimmed to that beat's
-#    spoken duration; ffmpeg concatenates the clips, burns in
-#    word-synced captions (2-3 word bursts, brand colors), and mixes in
-#    the voiceover; the result uploads straight to YouTube as a private
-#    video. Writes scripts/pipeline/youtube-short-drafts/<slug>.json
-#    (script text, B-roll attributions, the private video's
-#    youtubeStudioUrl) -- never the video file itself, which isn't
-#    committed to the repo at all.
+# 1. Draft: Poe writes a 2-beat, 35-55 word script -- beat 1 is a hook
+#    plus the start of one specific point, deliberately left unresolved
+#    (an open loop), beat 2 is a one-line CTA naming mindtivate.com --
+#    plus a B-roll search query per beat. Each beat is synthesized by
+#    ElevenLabs SEPARATELY (its own audio + its own word-level
+#    timestamps), so there's no cross-beat word-counting to drift out of
+#    sync. Each beat then sources its own real Pexels/Pixabay stock video
+#    clip (falling back to a plain branded card if neither source has a
+#    match, looped if shorter than the beat's audio) and is assembled by
+#    ffmpeg as one self-contained clip -- its own audio, video, and
+#    burned-in word-synced captions (2-3 word bursts, brand colors) all
+#    muxed in a single pass. The beat clips are then concatenated
+#    (stream-copied, no re-encoding) into the final video, which uploads
+#    straight to YouTube as a private video. Writes
+#    scripts/pipeline/youtube-short-drafts/<slug>.json (script text,
+#    B-roll attributions, the private video's youtubeStudioUrl) -- never
+#    the video file itself, which isn't committed to the repo at all.
 npm run pipeline:short -- --slug your-article-slug
 
 # 2. Watch the private video at the draft's youtubeStudioUrl -- the JSON
