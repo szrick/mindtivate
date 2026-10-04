@@ -706,10 +706,16 @@ so nothing is public yet:
 #    burned-in word-synced captions (2-3 word bursts, brand colors) all
 #    muxed in a single pass. The beat clips are then concatenated
 #    (stream-copied, no re-encoding) into the final video, which uploads
-#    straight to YouTube as a private video. Writes
-#    scripts/pipeline/youtube-short-drafts/<slug>.json (script text,
-#    B-roll attributions, the private video's youtubeStudioUrl) -- never
-#    the video file itself, which isn't committed to the repo at all.
+#    straight to YouTube as a private video. Poe then separately writes
+#    a thumbnail concept and generates the actual image (Nano-Banana
+#    Lite by default), which gets set as the video's custom thumbnail --
+#    non-fatal if it fails (wrong scope on the refresh token, channel not
+#    phone-verified, etc.): the draft records thumbnailSet/thumbnailError
+#    and the video just keeps YouTube's own auto-generated thumbnail.
+#    Writes scripts/pipeline/youtube-short-drafts/<slug>.json (script
+#    text, B-roll attributions, thumbnail concept, the private video's
+#    youtubeStudioUrl) -- never the video file itself, which isn't
+#    committed to the repo at all.
 npm run pipeline:short -- --slug your-article-slug
 
 # 2. Watch the private video at the draft's youtubeStudioUrl -- the JSON

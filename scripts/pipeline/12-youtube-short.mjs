@@ -29,11 +29,12 @@ import { join } from 'node:path';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { chromium } from 'playwright';
+import sharp from 'sharp';
 import { loadEnv } from '../lib/env.mjs';
-import { askPoeForJson } from '../lib/poe.mjs';
+import { askPoe, askPoeForJson, generatePoeImage } from '../lib/poe.mjs';
 import { synthesizeSpeech } from '../lib/elevenlabs.mjs';
 import { findStockVideo } from '../lib/stock-footage.mjs';
-import { uploadVideo, publishVideo } from '../lib/youtube.mjs';
+import { uploadVideo, publishVideo, setThumbnail } from '../lib/youtube.mjs';
 import { readFrontmatter, insertFrontmatterField } from '../lib/frontmatter.mjs';
 
 loadEnv();
@@ -408,6 +409,63 @@ async function assembleVideo({ beats, category, slug }) {
   }
 }
 
+const THUMBNAIL_CONCEPT_SYSTEM = `You write a short visual concept for a YouTube Short's custom thumbnail --
+not the video itself, the single static image that gets someone to click
+on it in a feed of other thumbnails. Describe one concrete, high-contrast
+visual scene for an image generator: a specific subject, setting, and
+mood, in plain descriptive language (not a list of keywords). Bold, bright,
+a little dramatic -- a thumbnail has to win a half-second glance -- but
+never hype-y, clickbait-shocked-face, or misleading about what the video
+actually says. No text/words in the image itself (YouTube renders the
+title separately) and no identifiable real person's face if the topic is
+sensitive (postpartum, grief, mental health, disability). One or two
+sentences, nothing else -- just the visual description itself, no preamble.`;
+
+// Thumbnail concept comes from a separate, lighter Poe call rather than
+// reusing the video script beats directly -- a thumbnail needs its own
+// "best single frame" framing, distinct from an individual beat's B-roll
+// query. POE_THUMBNAIL_CONCEPT_MODEL defaults to a fast Gemini variant;
+// POE_THUMBNAIL_IMAGE_MODEL is the actual image generator (Poe's
+// Nano-Banana Lite, per the user's choice) -- both overridable since Poe
+// bot handles can change out from under this pipeline.
+async function generateThumbnailConcept({ article, script }) {
+  const prompt = `Video title: "${script.videoTitle}"\nArticle category: ${article.category}\nScript: ${script.beats.map((b) => b.text).join(' ')}`;
+  const model = process.env.POE_THUMBNAIL_CONCEPT_MODEL || 'Gemini-2.5-Flash';
+  const concept = await askPoe({ system: THUMBNAIL_CONCEPT_SYSTEM, prompt, maxTokens: 300, model });
+  return concept.trim();
+}
+
+// Generates and sets a custom thumbnail for an already-uploaded video.
+// Non-fatal by design (like B-roll sourcing) -- a thumbnail miss
+// shouldn't block the whole draft, since the video itself still uploads
+// and gets YouTube's own auto-generated thumbnail as a fallback. Returns
+// { concept, set: boolean, error? } so the caller can record what
+// happened in the draft JSON for human review.
+async function generateAndSetThumbnail({ videoId, article, script }) {
+  let concept;
+  try {
+    concept = await generateThumbnailConcept({ article, script });
+  } catch (err) {
+    return { concept: null, set: false, error: `concept generation failed: ${err.message}` };
+  }
+
+  try {
+    const imageModel = process.env.POE_THUMBNAIL_IMAGE_MODEL || 'Nano-Banana-Lite';
+    const { buffer: rawBuffer } = await generatePoeImage({
+      prompt: `${concept}\n\nStyle: vivid, high-contrast, vertical-video-friendly composition, no text or words anywhere in the image.`,
+      model: imageModel,
+    });
+    // YouTube's recommended thumbnail size is 1280x720 (16:9) regardless
+    // of the video's own vertical aspect ratio -- cover-crop rather than
+    // stretch so the generated image's framing survives intact.
+    const thumbnailBuffer = await sharp(rawBuffer).resize(1280, 720, { fit: 'cover' }).png().toBuffer();
+    await setThumbnail(videoId, thumbnailBuffer, { mimeType: 'image/png' });
+    return { concept, set: true };
+  } catch (err) {
+    return { concept, set: false, error: err.message };
+  }
+}
+
 async function draftShort(slug) {
   const articlePath = `${ARTICLES_DIR}/${slug}.md`;
   if (!existsSync(articlePath)) throw new Error(`No article found at ${articlePath}`);
@@ -435,6 +493,12 @@ async function draftShort(slug) {
     tags: Array.isArray(article.tags) ? article.tags : [],
   });
 
+  console.log('Generating and setting a custom thumbnail...');
+  const thumbnail = await generateAndSetThumbnail({ videoId: uploaded.id, article, script });
+  if (!thumbnail.set) {
+    console.warn(`  thumbnail not set (${thumbnail.error}) -- video still has YouTube's own auto-generated thumbnail`);
+  }
+
   const draft = {
     slug,
     videoId: uploaded.id,
@@ -444,6 +508,9 @@ async function draftShort(slug) {
     script: script.beats.map((b) => b.text),
     broll: script.beats.map((b) => b.broll),
     attributions,
+    thumbnailConcept: thumbnail.concept,
+    thumbnailSet: thumbnail.set,
+    thumbnailError: thumbnail.error ?? null,
     approved: false,
     generatedAt: new Date().toISOString(),
   };

@@ -23,6 +23,7 @@
 const TOKEN_URL = 'https://oauth2.googleapis.com/token';
 const UPLOAD_URL = 'https://www.googleapis.com/upload/youtube/v3/videos';
 const API_URL = 'https://www.googleapis.com/youtube/v3/videos';
+const THUMBNAIL_UPLOAD_URL = 'https://www.googleapis.com/upload/youtube/v3/thumbnails/set';
 
 function requireEnv(name) {
   const value = process.env[name];
@@ -135,6 +136,37 @@ export async function publishVideo(videoId, { accessToken } = {}) {
 
   if (!res.ok) {
     throw new Error(`YouTube publish (privacyStatus -> public) failed: ${res.status} ${await res.text()}`);
+  }
+
+  return res.json();
+}
+
+/**
+ * Uploads `buffer` as the custom thumbnail for an already-uploaded video.
+ * Unlike videos.insert/update (youtube.upload scope is enough), this
+ * endpoint requires the broader youtube.force-ssl scope -- a
+ * YOUTUBE_REFRESH_TOKEN issued only for youtube.upload will fail here
+ * with an insufficient-scope error; see docs/SETUP.md for re-running
+ * youtube-oauth-setup.mjs to get a token with both. Also requires the
+ * channel to have "Additional features" phone verification enabled on
+ * youtube.com/verify -- an unverified channel gets a clear API error
+ * back here, not a silent no-op.
+ */
+export async function setThumbnail(videoId, buffer, { mimeType = 'image/png', accessToken } = {}) {
+  const token = accessToken || (await getAccessToken());
+
+  const res = await fetch(`${THUMBNAIL_UPLOAD_URL}?videoId=${encodeURIComponent(videoId)}`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': mimeType,
+      'Content-Length': String(buffer.length),
+    },
+    body: buffer,
+  });
+
+  if (!res.ok) {
+    throw new Error(`YouTube thumbnail upload failed: ${res.status} ${await res.text()}`);
   }
 
   return res.json();
