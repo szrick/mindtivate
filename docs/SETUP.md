@@ -413,7 +413,7 @@ see `docs/CONTENT_PIPELINE.md` if you need that instead.
 ## 7b. YouTube Shorts — automated video drafting (optional)
 
 Stage 12 (`scripts/pipeline/12-youtube-short.mjs`) turns a published
-article into a 30-45s vertical Short: Poe writes the script, ElevenLabs
+article into a vertical Short under 30s: Poe writes the script, ElevenLabs
 voices it, Pexels/Pixabay supply B-roll per beat, ffmpeg assembles the
 video with burned-in captions, and it uploads straight to YouTube as a
 **private** video — nothing is public until a human watches the private

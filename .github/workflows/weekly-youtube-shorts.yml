@@ -35,6 +35,10 @@ on:
         required: false
         type: boolean
         default: false
+      elevenLabsModel:
+        description: 'Override ELEVENLABS_MODEL_ID for just this run (e.g. eleven_v3, eleven_v4) -- lets you A/B test a model without changing the repo secret. Leave blank to use the secret''s value.'
+        required: false
+        type: string
 
 jobs:
   draft:
@@ -104,6 +108,12 @@ jobs:
           POE_MODEL: ${{ vars.POE_MODEL }}
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
           ELEVENLABS_VOICE_ID: ${{ secrets.ELEVENLABS_VOICE_ID }}
+          # inputs.elevenLabsModel (set via a manual workflow_dispatch, for
+          # A/B testing a model without touching secrets) wins when given;
+          # otherwise falls back to the ELEVENLABS_MODEL_ID repo secret,
+          # which itself is optional -- elevenlabs.mjs defaults to
+          # eleven_turbo_v2_5 if this resolves to an empty string.
+          ELEVENLABS_MODEL_ID: ${{ inputs.elevenLabsModel || secrets.ELEVENLABS_MODEL_ID }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
