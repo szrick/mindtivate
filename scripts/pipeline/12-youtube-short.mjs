@@ -444,8 +444,10 @@ no preamble, no restating these instructions, no labeled sections.`;
 // "best single frame" framing, distinct from an individual beat's B-roll
 // query. POE_THUMBNAIL_CONCEPT_MODEL defaults to a fast Gemini variant;
 // POE_THUMBNAIL_IMAGE_MODEL is the actual image generator (Poe's
-// Nano-Banana Lite, per the user's choice) -- both overridable since Poe
-// bot handles can change out from under this pipeline.
+// Nano-Banana-2-Lite, per the user's choice -- same bot handle
+// 5-pinterest-pin.mjs's infographic style already defaults to) -- both
+// overridable since Poe bot handles can change out from under this
+// pipeline.
 async function generateThumbnailConcept({ article, script }) {
   const prompt = `Video title: "${script.videoTitle}"\nArticle category: ${article.category}\nScript: ${script.beats.map((b) => b.text).join(' ')}`;
   const model = process.env.POE_THUMBNAIL_CONCEPT_MODEL || 'Gemini-2.5-Flash';
@@ -468,7 +470,7 @@ async function generateAndSetThumbnail({ videoId, article, script }) {
   }
 
   try {
-    const imageModel = process.env.POE_THUMBNAIL_IMAGE_MODEL || 'Nano-Banana-Lite';
+    const imageModel = process.env.POE_THUMBNAIL_IMAGE_MODEL || 'Nano-Banana-2-Lite';
     const { buffer: rawBuffer } = await generatePoeImage({
       prompt: `${concept}\n\nStyle: vivid, high-contrast, vertical-video-friendly composition, no text or words anywhere in the image.`,
       model: imageModel,
