@@ -65,6 +65,12 @@ const DELAY_BETWEEN_PUBLISHES_MS = 5000;
 // held pause. Short enough to keep pace on a vertical Short.
 const OPEN_LOOP_PAUSE_SECONDS = 0.6;
 
+// Caps how many distinct stock clips one beat's background will stitch
+// together to cover its own duration -- see buildBeatBackground. Kept
+// low: each extra clip is another search + download, and a beat is
+// short enough that 3 real clips is already plenty of visual variety.
+const MAX_SEGMENTS_PER_BEAT = 3;
+
 const SCRIPT_SYSTEM_PROMPT = `You write the narration script for a vertical YouTube Short promoting
 a Mindtivate article (evidence-based women's health/wellness --
 specific, myth-busting, and grounded, never hype-y, preachy, or
@@ -229,6 +235,68 @@ async function getMediaDuration(filePath) {
   return parseFloat(stdout.trim());
 }
 
+// Builds the background video for one beat, covering at least
+// `totalDuration` seconds. Fetches distinct stock clips (never the same
+// clip twice -- excludeUrls is the shared usedUrls set across the whole
+// video) and concatenates them, rather than looping a single short clip
+// to fill the time: a 5s clip looped 4x to cover a 20s beat visibly
+// repeats on screen and reads as low-effort. Only falls back to
+// repeating a clip (the last one fetched) once real sources are
+// genuinely exhausted for this query. Returns null if no stock source
+// has anything at all, so the caller can fall back to a branded frame.
+async function buildBeatBackground({ beat, workDir, index, usedUrls, totalDuration }) {
+  const segments = [];
+  const attributions = [];
+  let accumulated = 0;
+
+  while (accumulated < totalDuration && segments.length < MAX_SEGMENTS_PER_BEAT) {
+    const stock = await findStockVideo(beat.broll, { excludeUrls: usedUrls }).catch(() => null);
+    if (!stock) break;
+    usedUrls.add(stock.sourceUrl);
+
+    const rawPath = join(workDir, `beat-${index}-src-${segments.length}.${stock.ext}`);
+    writeFileSync(rawPath, stock.buffer);
+
+    // Re-encode each segment to a common codec/resolution/fps up front
+    // so the concat demuxer below can just -c copy them together.
+    const segPath = join(workDir, `beat-${index}-seg-${segments.length}.mp4`);
+    await runFfmpeg([
+      '-i', rawPath,
+      '-vf', `scale=${WIDTH}:${HEIGHT}:force_original_aspect_ratio=increase,crop=${WIDTH}:${HEIGHT}`,
+      '-r', String(FPS),
+      '-an',
+      '-c:v', 'libx264',
+      '-pix_fmt', 'yuv420p',
+      segPath,
+    ]);
+
+    const segDuration = Math.max(await getMediaDuration(segPath), 0.5);
+    segments.push({ path: segPath, duration: segDuration });
+    accumulated += segDuration;
+    if (stock.sourceName && stock.attribution) {
+      attributions.push(`${stock.sourceName}: ${stock.attribution} (${stock.sourceUrl})`);
+    }
+  }
+
+  if (segments.length === 0) return null;
+
+  // Ran out of distinct clips before covering the beat -- repeat the
+  // last one rather than leave the background short. Only reached when
+  // this beat's B-roll query truly has nothing else left to offer.
+  while (accumulated < totalDuration) {
+    const last = segments[segments.length - 1];
+    segments.push(last);
+    accumulated += last.duration;
+  }
+
+  const listPath = join(workDir, `beat-${index}-bg-list.txt`);
+  writeFileSync(listPath, segments.map((s) => `file '${s.path}'`).join('\n'));
+  const videoPath = join(workDir, `beat-${index}-bg.mp4`);
+  await runFfmpeg(['-f', 'concat', '-safe', '0', '-i', listPath, '-c', 'copy', videoPath]);
+
+  return { videoPath, attributions };
+}
+
 // Builds one beat's *complete* clip -- its own voiceover, visual, and
 // burned-in captions, fully self-contained and already in sync. Each
 // beat synthesizes its own audio via a separate ElevenLabs call rather
@@ -269,25 +337,17 @@ async function buildBeatClip({ beat, workDir, index, category, usedUrls }) {
   const captionsPath = join(workDir, `beat-${index}-captions.ass`);
   writeFileSync(captionsPath, buildCaptionTrack(words));
 
-  const stock = await findStockVideo(beat.broll, { excludeUrls: usedUrls }).catch(() => null);
-  const attribution = stock?.sourceName && stock?.attribution ? `${stock.sourceName}: ${stock.attribution} (${stock.sourceUrl})` : null;
+  const background = await buildBeatBackground({ beat, workDir, index, usedUrls, totalDuration: clipDuration }).catch(() => null);
 
   let videoFilter;
   const inputArgs = [];
-  if (stock) {
-    usedUrls.add(stock.sourceUrl);
-    const srcPath = join(workDir, `beat-${index}-src.${stock.ext}`);
-    writeFileSync(srcPath, stock.buffer);
-    // -stream_loop -1 on the source: a stock clip (often 5-15s) can be
-    // shorter than this beat's voiceover, especially a longer payoff
-    // beat -- loop it rather than letting the video silently run out
-    // and freeze/end before the audio (the same "video shorter than
-    // audio" failure mode as the original truncation bug, just from a
-    // different cause). The -t below still caps the final duration to
-    // exactly the voiceover's length regardless of how many loops that
-    // takes.
-    inputArgs.push('-stream_loop', '-1', '-i', srcPath);
-    videoFilter = `scale=${WIDTH}:${HEIGHT}:force_original_aspect_ratio=increase,crop=${WIDTH}:${HEIGHT},ass=${captionsPath}`;
+  let attributions = [];
+  if (background) {
+    // Already scaled/cropped to WIDTH x HEIGHT and padded to cover
+    // clipDuration by buildBeatBackground -- just burn in captions.
+    inputArgs.push('-i', background.videoPath);
+    videoFilter = `ass=${captionsPath}`;
+    attributions = background.attributions;
   } else {
     const framePath = join(workDir, `beat-${index}-frame.png`);
     writeFileSync(framePath, await renderFallbackFrame(category));
@@ -314,7 +374,7 @@ async function buildBeatClip({ beat, workDir, index, category, usedUrls }) {
     outPath,
   ]);
 
-  return { outPath, attribution };
+  return { outPath, attributions };
 }
 
 // Concatenates each beat's already-complete clip (own audio, visual,
@@ -337,7 +397,7 @@ async function assembleVideo({ beats, category, slug }) {
     await runFfmpeg(['-f', 'concat', '-safe', '0', '-i', listPath, '-c', 'copy', outPath]);
 
     const buffer = readFileSync(outPath);
-    return { buffer, attributions: clips.map((c) => c.attribution).filter(Boolean) };
+    return { buffer, attributions: clips.flatMap((c) => c.attributions) };
   } finally {
     rmSync(workDir, { recursive: true, force: true });
   }

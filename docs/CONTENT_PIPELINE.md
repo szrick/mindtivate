@@ -698,9 +698,11 @@ so nothing is public yet:
 #    ElevenLabs SEPARATELY (its own audio + its own word-level
 #    timestamps), so there's no cross-beat word-counting to drift out of
 #    sync. Each beat then sources its own real Pexels/Pixabay stock video
-#    clip (falling back to a plain branded card if neither source has a
-#    match, looped if shorter than the beat's audio) and is assembled by
-#    ffmpeg as one self-contained clip -- its own audio, video, and
+#    clips (falling back to a plain branded card if neither source has a
+#    match) -- stitching together up to 3 distinct clips to cover the
+#    beat's full audio length rather than looping one short clip, only
+#    repeating a clip if real sources are genuinely exhausted -- and is
+#    assembled by ffmpeg as one self-contained clip -- its own audio, video, and
 #    burned-in word-synced captions (2-3 word bursts, brand colors) all
 #    muxed in a single pass. The beat clips are then concatenated
 #    (stream-copied, no re-encoding) into the final video, which uploads
