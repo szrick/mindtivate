@@ -411,15 +411,33 @@ async function assembleVideo({ beats, category, slug }) {
 
 const THUMBNAIL_CONCEPT_SYSTEM = `You write a short visual concept for a YouTube Short's custom thumbnail --
 not the video itself, the single static image that gets someone to click
-on it in a feed of other thumbnails. Describe one concrete, high-contrast
-visual scene for an image generator: a specific subject, setting, and
-mood, in plain descriptive language (not a list of keywords). Bold, bright,
-a little dramatic -- a thumbnail has to win a half-second glance -- but
-never hype-y, clickbait-shocked-face, or misleading about what the video
-actually says. No text/words in the image itself (YouTube renders the
-title separately) and no identifiable real person's face if the topic is
-sensitive (postpartum, grief, mental health, disability). One or two
-sentences, nothing else -- just the visual description itself, no preamble.`;
+on it in a feed of other thumbnails.
+
+First, from the script below, identify the one specific real-life moment
+someone with this exact problem is actually living through right now --
+not the topic in the abstract, but a concrete situation: what they're
+doing, where they are, what their face and body are doing in that exact
+moment of frustration, confusion, exhaustion, or worry. The thumbnail's
+whole job is to make someone scrolling who has that exact problem think
+"that's literally me" the instant they see it -- that recognition is what
+makes them click to find the answer, more than any abstract or
+decorative image would.
+
+Then describe that ONE moment as a concrete, high-contrast visual scene
+for an image generator -- the person, their expression and body language,
+the setting, the mood -- in plain descriptive language, not a list of
+keywords. Bold and a little dramatic -- it has to win a half-second
+glance -- but never hype-y, clickbait-shocked-face, or misleading about
+what the video actually says; the emotion shown has to be the real,
+recognizable version of the problem, not an exaggerated parody of it.
+
+No text/words anywhere in the image (YouTube renders the title
+separately). If the topic is sensitive (postpartum, grief, mental health,
+disability), depict the same specific moment through body language,
+hands, or setting instead of a clearly identifiable face.
+
+Return ONLY the final one-to-two sentence visual description itself --
+no preamble, no restating these instructions, no labeled sections.`;
 
 // Thumbnail concept comes from a separate, lighter Poe call rather than
 // reusing the video script beats directly -- a thumbnail needs its own
