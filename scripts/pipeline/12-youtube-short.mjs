@@ -112,12 +112,17 @@ Hard constraints:
   story -- this is Mindtivate's own voice, not a testimonial.
 - Each beat also needs a short B-roll search query (2-4 words, like you'd
   type into a stock-footage search box) describing a *visual*, not the
-  beat's topic in the abstract. Prefer settings, objects, hands, and
-  environments over identifiable faces -- a stock clip of a specific
-  person can misleadingly read as that person's real story, especially
-  for sensitive topics (postpartum, grief, mental health, disability).
-  E.g. for a sleep-insomnia beat: "person awake at night" is worse than
-  "bedroom window moonlight" or "alarm clock early morning".
+  beat's topic in the abstract. Real people in a natural, everyday
+  moment (a couple talking on a couch, someone laughing, hands holding a
+  coffee cup) hold attention better than an empty room or an object
+  alone -- don't default to people-free shots just to play it safe. The
+  one exception is a sensitive topic (postpartum, grief, mental health,
+  disability) where an identifiable person on screen can misleadingly
+  read as that exact person's real story -- for those, bias toward
+  settings/objects/hands instead (see the per-category hint below).
+  E.g. for a sleep-insomnia beat that ISN'T sensitive: "woman stretching
+  in bed" is a fine, normal choice; reserve "bedroom window moonlight"
+  for when the topic specifically calls for keeping people off screen.
 
 Also write a short "videoTitle" (under 80 characters, specific and
 curiosity-driving, not the raw article title) and a 2-3 sentence
