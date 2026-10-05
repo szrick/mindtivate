@@ -142,15 +142,19 @@ export async function publishVideo(videoId, { accessToken } = {}) {
 }
 
 /**
- * Fetches a video's current snippet/status/processingDetails -- used as
- * a diagnostic to check what's actually registered server-side
- * (snippet.thumbnails, in particular) independent of whatever Studio's
- * UI happens to be caching at the moment someone looks.
+ * Fetches a video's current snippet/status -- used as a diagnostic to
+ * check what's actually registered server-side (snippet.thumbnails, in
+ * particular) independent of whatever Studio's UI happens to be caching
+ * at the moment someone looks. Deliberately excludes the
+ * processingDetails/fileDetails/suggestions parts -- those are
+ * restricted to a content-owner/CMS scope even under youtube.force-ssl
+ * and return ACCESS_TOKEN_SCOPE_INSUFFICIENT otherwise, confirmed live
+ * when this function first shipped with processingDetails included.
  */
 export async function getVideo(videoId, { accessToken } = {}) {
   const token = accessToken || (await getAccessToken());
 
-  const res = await fetch(`${API_URL}?part=snippet,status,processingDetails&id=${encodeURIComponent(videoId)}`, {
+  const res = await fetch(`${API_URL}?part=snippet,status&id=${encodeURIComponent(videoId)}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
