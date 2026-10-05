@@ -8,7 +8,7 @@
 // Usage: node scripts/pipeline/debug-check-video.mjs --video-id <id>
 
 import { loadEnv } from '../lib/env.mjs';
-import { getVideo } from '../lib/youtube.mjs';
+import { getAccessToken, getVideo } from '../lib/youtube.mjs';
 
 loadEnv();
 
@@ -20,6 +20,16 @@ function parseArgs(argv) {
   return args;
 }
 
+// Prints what scope(s) the current access token actually carries, via
+// Google's tokeninfo endpoint -- settles "is this really a scope
+// problem?" against ground truth instead of guessing from error
+// messages alone.
+async function logTokenScope(accessToken) {
+  const res = await fetch(`https://oauth2.googleapis.com/tokeninfo?access_token=${encodeURIComponent(accessToken)}`);
+  const info = await res.json();
+  console.log('Access token info (from Google):', JSON.stringify(info, null, 2));
+}
+
 async function main() {
   const { videoId } = parseArgs(process.argv.slice(2));
   if (!videoId) {
@@ -28,7 +38,10 @@ async function main() {
     return;
   }
 
-  const video = await getVideo(videoId);
+  const accessToken = await getAccessToken();
+  await logTokenScope(accessToken);
+
+  const video = await getVideo(videoId, { accessToken });
   console.log(JSON.stringify(video, null, 2));
 }
 
