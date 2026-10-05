@@ -5,7 +5,7 @@ description: You need deep hydration without strong scents. Here's what to look
   for in a body lotion when fragrance is a migraine trigger and dry skin needs
   real help.
 pubDate: 2026-08-28
-updatedDate: 2026-09-04
+updatedDate: 2026-10-05
 category: Beauty
 heroImage: "./_images/how-to-choose-body-lotion-for-dry-skin-when-fragrance-triggers-migraines-hero.webp"
 status: published
@@ -34,7 +34,7 @@ When you're dealing with genuinely dry skin, the [American Academy of Dermatolog
 
 The key to long-lasting hydration isn't fragrance or marketing claims—it's the formula's balance of humectants, emollients, and occlusives. Humectants (like glycerin or hyaluronic acid) pull water into your skin. Emollients (like shea butter or ceramides) smooth and soften. Occlusives (like petrolatum or dimethicone) seal everything in and prevent water loss.
 
-For very dry skin, you'll often get better results from a cream or ointment than a lotion. Lotions have a higher water content, which makes them lighter and faster-absorbing but less protective for skin that's truly parched. Creams and ointments are thicker, greasier, and slower to sink in—but they create a stronger barrier against moisture loss, which is what dry skin actually needs.
+For very dry skin, you'll often get better results from a cream or ointment than a lotion. Lotions have a higher water content, which makes them lighter and faster-absorbing but less protective for skin that's truly parched. Creams and ointments are thicker, greasier, and slower to sink in—but they create a stronger barrier against moisture loss, which is what dry skin actually needs. If heavy occlusives feel uncomfortable, there are [alternatives to traditional slugging](/articles/hydrating-dry-skin-without-occlusives-5-alternatives-to-slugging/) that still provide barrier support.
 
 ## What to look for (and what to skip)
 
@@ -57,7 +57,7 @@ When you're shopping for a body moisturizer that won't trigger migraines, here's
 
 Timing matters as much as the product itself. The most effective moment to moisturize is within a few minutes of showering or bathing, while your skin is still slightly damp. Pat yourself dry (don't rub), then apply your moisturizer generously. That damp skin traps water, and the moisturizer seals it in.
 
-If your skin feels tight or itchy by midday, reapply—especially on hands, elbows, knees, and any other areas that get particularly dry. You're not doing anything wrong if one application doesn't last all day; very dry skin often needs multiple layers of moisture throughout the day, particularly in winter or low-humidity environments.
+If your skin feels tight or itchy by midday, reapply—especially on hands, elbows, knees, and any other areas that get particularly dry. You're not doing anything wrong if one application doesn't last all day; very dry skin often needs multiple layers of moisture throughout the day, particularly in winter or low-humidity environments. If you're going through lotion quickly, [buying body lotion in bulk](/articles/how-to-buy-body-lotion-in-bulk-without-sacrificing-quality/) can make daily use more affordable.
 
 ## The bottom line
 
