@@ -142,6 +142,28 @@ export async function publishVideo(videoId, { accessToken } = {}) {
 }
 
 /**
+ * Fetches a video's current snippet/status/processingDetails -- used as
+ * a diagnostic to check what's actually registered server-side
+ * (snippet.thumbnails, in particular) independent of whatever Studio's
+ * UI happens to be caching at the moment someone looks.
+ */
+export async function getVideo(videoId, { accessToken } = {}) {
+  const token = accessToken || (await getAccessToken());
+
+  const res = await fetch(`${API_URL}?part=snippet,status,processingDetails&id=${encodeURIComponent(videoId)}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!res.ok) {
+    throw new Error(`YouTube video lookup failed: ${res.status} ${await res.text()}`);
+  }
+
+  const data = await res.json();
+  if (!data.items?.length) throw new Error(`No video found for id ${videoId}`);
+  return data.items[0];
+}
+
+/**
  * Uploads `buffer` as the custom thumbnail for an already-uploaded video.
  * Unlike videos.insert/update (youtube.upload scope is enough), this
  * endpoint requires the broader youtube.force-ssl scope -- a
