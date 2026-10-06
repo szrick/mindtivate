@@ -20,7 +20,12 @@ async function introspectType(name) {
     query {
       __type(name: "${name}") {
         name
-        fields { name type { name kind ofType { name kind } } }
+        fields {
+          name
+          args { name type { name kind ofType { name kind ofType { name kind } } } }
+          type { name kind ofType { name kind } }
+        }
+        enumValues { name }
       }
     }
   `);
@@ -31,14 +36,17 @@ async function main() {
   const channel = await findPinterestChannel();
   console.log('Pinterest channel:', JSON.stringify(channel, null, 2));
 
-  console.log('\n--- Query type fields ---');
-  console.log(JSON.stringify(await introspectType('Query'), null, 2));
+  console.log('\n--- Query.posts args + PostsResults/PostStatus shapes ---');
+  console.log(JSON.stringify(await introspectType('PostsResults'), null, 2));
+  console.log(JSON.stringify(await introspectType('PostStatus'), null, 2));
+  console.log(JSON.stringify(await introspectType('PostsInput'), null, 2));
 
-  console.log('\n--- Channel type fields ---');
-  console.log(JSON.stringify(await introspectType('Channel'), null, 2));
-
-  console.log('\n--- Post type fields ---');
-  console.log(JSON.stringify(await introspectType('Post'), null, 2));
+  // Query.posts's own args (filtered out of the full Query dump -- that
+  // type is huge and mostly irrelevant here).
+  const queryType = await introspectType('Query');
+  const postsField = queryType.data?.__type?.fields?.find((f) => f.name === 'posts');
+  console.log('\n--- Query.posts field (args only) ---');
+  console.log(JSON.stringify(postsField, null, 2));
 }
 
 main().catch((err) => {
