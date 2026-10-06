@@ -221,34 +221,45 @@ program, etc.). Once approved:
 
 ## 6. Pinterest
 
-Pins are sent through **Buffer**, not a direct Pinterest API integration
-— Buffer is an official Pinterest Marketing Developer Partner with its
-own already-Standard (not Trial) API access, so pins go out through
-that instead of waiting on this project's own Pinterest app to clear
-Pinterest's Trial→Standard review. See `scripts/lib/buffer.mjs`'s header
-comment for how this was confirmed against Buffer's live GraphQL API.
+Pins are sent through **this project's own Pinterest app** directly
+(`scripts/lib/pinterest.mjs`), now that it has Pinterest's general
+(Standard) API access. A Buffer-based fallback
+(`scripts/lib/buffer.mjs`) also still exists in the repo and is fully
+working, kept for reference — that was the primary path while this
+app was still on Trial access (Buffer is an official Pinterest
+Marketing Developer Partner with its own already-Standard access, so
+it worked around the Trial limitation); switch back to it only if this
+app's own access is ever revoked or downgraded.
 
 1. Create a Pinterest **business** account for Mindtivate. You can pin
    everything to one board, or create one board per category (Body,
-   Food, Mind, Hormones, Love, Beauty, Sleep, Life Stages) — see step 3.
-2. Create a [Buffer](https://buffer.com) account (the free plan works —
-   one API key, ample request quota for this project's volume) and
-   connect the Pinterest account from step 1 as a channel in Buffer's
-   own dashboard (Settings → Channels — this initial OAuth linking has
-   to be done by hand; no API does it). Then generate an API key
-   (Buffer's account/developer settings) and add it as `BUFFER_API_KEY`
-   in `.env`.
-3. **Optional, per-category boards**: if you created a separate board
+   Food, Mind, Hormones, Love, Beauty, Sleep, Life Stages) — see step 4.
+2. Register a Pinterest app at
+   [developers.pinterest.com](https://developers.pinterest.com) and
+   request/confirm its API access is Standard (not Trial) — Trial access
+   can create pins but under tighter rate limits not meant for
+   production use.
+3. Complete the app's OAuth flow once by hand (Pinterest has no
+   unattended way to do this first authorization) to get an initial
+   access token with `pins:write`, `pins:read`, `boards:read`, and
+   `boards:write` scopes — all four are required; `boards:write` and
+   `pins:read` aren't obviously necessary from Pinterest's own docs but
+   a real `createPin` call 401s without them (see `pinterest.mjs`'s
+   header comment). Add `PINTEREST_ACCESS_TOKEN` to `.env`. For
+   unattended use beyond that token's ~30-day lifetime, also capture its
+   `PINTEREST_APP_ID`, `PINTEREST_APP_SECRET`, and the OAuth flow's
+   `PINTEREST_REFRESH_TOKEN` — `refreshAccessToken()` mints a fresh
+   token from those three on every send, which is what
+   `pinterest-auto-send.yml` actually relies on, not a static token
+   someone has to rotate by hand every month.
+4. **Optional, per-category boards**: if you created a separate board
    per category, put each board's ID in
    `scripts/lib/pinterest-boards.json` (not secret — an ID, not a
    credential — so it's a committed file, not an env var). A board's ID
-   isn't in its URL; find it via Buffer's `channel(input:).metadata`
-   GraphQL query (see `scripts/lib/buffer.mjs`) or the Pinterest API's
-   `GET /v5/boards`. Leave a category blank there to fall back to
-   `PINTEREST_BOARD_ID` for it — this is the same board-id value Buffer's
-   `boardServiceId` expects, confirmed live (Pinterest's own native board
-   id, not any Buffer-internal id).
-4. For the scheduled drafting workflow
+   isn't in its URL; find it via the Pinterest API's `GET /v5/boards`.
+   Leave a category blank there to fall back to `PINTEREST_BOARD_ID` for
+   it.
+5. For the scheduled drafting workflow
    (`.github/workflows/weekly-pinterest-pins.yml`) to run, add
    `POE_API_KEY` (see section 3) as a repository secret — that workflow
    only ever drafts, so it's the only credential it needs. By default
@@ -257,22 +268,14 @@ comment for how this was confirmed against Buffer's live GraphQL API.
    `docs/CONTENT_PIPELINE.md`'s Pinterest section); a manual
    `workflow_dispatch` run can set `autoApprove` to `false` to get a
    draft you review before approving by hand instead.
-5. **Required for anything to actually reach Pinterest**: add
-   `BUFFER_API_KEY` as a repo secret so
-   `.github/workflows/pinterest-auto-send.yml` can send whatever's
-   `"approved": true` (daily, capped at 5/run) — since drafts
+6. **Required for anything to actually reach Pinterest**: add
+   `PINTEREST_ACCESS_TOKEN` (or the `PINTEREST_APP_ID`/
+   `PINTEREST_APP_SECRET`/`PINTEREST_REFRESH_TOKEN` triplet) as repo
+   secrets so `.github/workflows/pinterest-auto-send.yml` can send
+   whatever's `"approved": true` (daily, capped at 5/run) — since drafts
    auto-approve by default, this is what actually gets a pin out, not
    an optional extra. Without it, approved drafts just pile up unsent
-   until you run `--send` locally by hand with `BUFFER_API_KEY` set.
-
-A direct Pinterest API integration (`scripts/lib/pinterest.mjs`) still
-exists in the repo and is fully working, kept for reference/fallback —
-registering a Pinterest app at
-[developers.pinterest.com](https://developers.pinterest.com) and
-generating your own `PINTEREST_ACCESS_TOKEN` is only needed if you want
-to switch off Buffer later (e.g. once this project's own app clears
-Pinterest's Trial→Standard review), not for the pipeline as it ships
-today.
+   until you run `--send` locally by hand with the same credentials set.
 
 ## 7. Resend — newsletter signup + new-article emails
 

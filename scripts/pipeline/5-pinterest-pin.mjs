@@ -40,8 +40,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 
 import { loadEnv } from '../lib/env.mjs';
 import { askPoeForJson, generatePoeImage } from '../lib/poe.mjs';
 import { readFrontmatter, insertFrontmatterField } from '../lib/frontmatter.mjs';
-import { resolveBoardId } from '../lib/pinterest.mjs';
-import { createPin } from '../lib/buffer.mjs';
+import { createPin, resolveBoardId, refreshAccessToken } from '../lib/pinterest.mjs';
 import { renderPinImage, renderInfographicPinImage, pickPinTheme, hashString } from '../lib/pinterest-pin-image.mjs';
 
 loadEnv();
@@ -49,16 +48,6 @@ loadEnv();
 const DRAFTS_DIR = 'scripts/pipeline/pinterest-pin-drafts';
 const SITE_URL = 'https://mindtivate.com';
 const ARTICLES_DIR = 'src/content/articles';
-
-// Buffer's ImageAssetInput needs a publicly fetchable image URL, not a
-// base64 upload (unlike the direct Pinterest API this replaces) -- this
-// repo is public, so a draft's already-committed PNG is reachable here
-// as soon as it's on main. sendDraft() only ever runs (via --send or
-// --send-approved) on a draft that's already approved: true, which by
-// this project's own architecture means its PR was already reviewed and
-// merged -- so the image is guaranteed to exist at this URL by the time
-// it's needed.
-const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/szrick/mindtivate/main';
 
 const SYSTEM_PROMPT = `You write the wording for a Pinterest pin promoting a Mindtivate article
 (evidence-based women's health/wellness — specific and grounded, never
@@ -255,39 +244,36 @@ async function sendDraft(slug) {
     );
   }
 
-  console.log(`Creating Pinterest pin on board ${boardId} via Buffer: "${draft.pinTitle}"...`);
-  const imageUrl = `${GITHUB_RAW_BASE}/${imagePath}`;
-  const result = await createPin({
+  console.log(`Creating Pinterest pin on board ${boardId}: "${draft.pinTitle}"...`);
+  // refreshAccessToken() mints a fresh token from PINTEREST_APP_ID/
+  // PINTEREST_APP_SECRET/PINTEREST_REFRESH_TOKEN so unattended runs
+  // don't depend on manually rotating PINTEREST_ACCESS_TOKEN every 30
+  // days; falls back to that static token (createPin's own default) if
+  // the refresh triplet isn't configured.
+  const accessToken = (await refreshAccessToken()) || undefined;
+  const imageBase64 = readFileSync(imagePath).toString('base64');
+  const pin = await createPin({
     title: draft.pinTitle,
     description: draft.pinDescription,
     link,
-    imageUrl,
-    boardServiceId: boardId,
-    saveToDraft: false,
+    imageBase64,
+    imageContentType: 'image/png',
+    boardId,
+    accessToken,
   });
 
-  if (result.__typename !== 'PostActionSuccess') {
-    throw new Error(`Buffer createPost failed: ${result.__typename}${result.message ? ` -- ${result.message}` : ''}`);
-  }
-
-  // Buffer publishes through its own queue, so the real Pinterest URL
-  // (post.externalLink) isn't guaranteed to be populated the instant
-  // createPost returns -- the send itself still succeeded and won't be
-  // retried (sentAt is set either way), but pinterestPinUrl only gets
-  // recorded on the article once a URL is actually available.
-  const pinUrl = result.post?.externalLink || null;
+  // Unlike Buffer's async queue, Pinterest's own createPin call is
+  // synchronous -- the pin is live the instant this returns, and its id
+  // is all that's needed to build the real pin URL.
+  const pinUrl = `https://www.pinterest.com/pin/${pin.id}/`;
   draft.sentAt = new Date().toISOString();
-  if (pinUrl) draft.pinUrl = pinUrl;
+  draft.pinUrl = pinUrl;
   writeFileSync(draftPath, JSON.stringify(draft, null, 2));
 
-  if (pinUrl) {
-    const updatedArticle = insertFrontmatterField(readFileSync(articlePath, 'utf8'), 'pinterestPinUrl', pinUrl);
-    writeFileSync(articlePath, updatedArticle);
-    console.log(`Created pin: ${pinUrl}`);
-    console.log(`Recorded pinterestPinUrl in ${articlePath}.`);
-  } else {
-    console.log('Pin accepted by Buffer, but no externalLink yet (publishes asynchronously) -- pinterestPinUrl not recorded this run.');
-  }
+  const updatedArticle = insertFrontmatterField(readFileSync(articlePath, 'utf8'), 'pinterestPinUrl', pinUrl);
+  writeFileSync(articlePath, updatedArticle);
+  console.log(`Created pin: ${pinUrl}`);
+  console.log(`Recorded pinterestPinUrl in ${articlePath}.`);
   return pinUrl;
 }
 
