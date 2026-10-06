@@ -442,27 +442,23 @@ npm run pipeline:pin -- --slug your-article-slug --send    # send just this one,
 #    ...or let pinterest-auto-send.yml (below) pick it up automatically.
 ```
 
-`--send` sends via **Buffer** (`scripts/lib/buffer.mjs`'s `createPin()`),
-not a direct Pinterest API call — Buffer is an official Pinterest
-Marketing Developer Partner with its own already-Standard API access, so
-pins go out through that instead of waiting on this project's own
-Pinterest app's Trial→Standard review. Unlike the direct-API version this
-replaced, Buffer's `ImageAssetInput` needs a publicly fetchable image
-URL rather than a base64 upload — the draft's already-committed PNG is
-used via its `raw.githubusercontent.com` URL (this repo is public),
-which only works because `sendDraft()` only ever runs on a draft that's
-already `approved: true`, meaning its review PR was already merged to
-`main` by the time a send happens. It resolves which board to pin to via
-`resolveBoardId()` in `scripts/lib/pinterest.mjs` (category → board from
+`--send` sends via **this project's own Pinterest app directly**
+(`scripts/lib/pinterest.mjs`'s `createPin()`), now that the app has
+Pinterest's general (Standard) API access. A Buffer-based fallback
+(`scripts/lib/buffer.mjs`) also still exists, kept for reference — that
+was the primary path while this app was still on Trial access. The
+draft's image goes up as a base64 upload (`imageBase64`), so unlike the
+Buffer path there's no dependency on the image already being publicly
+fetchable (e.g. via `raw.githubusercontent.com`) before a send can
+happen. `createPin()` resolves which board to pin to via
+`resolveBoardId()` (category → board from
 `scripts/lib/pinterest-boards.json`, falling back to `PINTEREST_BOARD_ID`
-for any category without one configured — the same Pinterest-native
-board id Buffer's `boardServiceId` expects), and on success writes the
-resulting pin URL (Buffer's `post.externalLink`) back onto the article's
-`pinterestPinUrl` field automatically — no manual Pages CMS step needed.
-Buffer publishes through its own send queue, so `externalLink` isn't
-guaranteed to be populated the instant `createPost` returns; when it
-isn't yet, the draft is still marked sent (so it's never retried), just
-without `pinterestPinUrl` recorded that run.
+for any category without one configured), and on success writes the
+resulting pin URL (`https://www.pinterest.com/pin/<id>/`, built from the
+response's own `id`) back onto the article's `pinterestPinUrl` field
+immediately — unlike Buffer's async send queue, Pinterest's own
+`createPin` call is synchronous, so there's no "not available yet" case
+to handle.
 
 `.github/workflows/weekly-pinterest-pins.yml` runs the **draft step**
 every Monday for up to 5 published articles missing a `pinterestPinUrl`,
@@ -492,19 +488,20 @@ happens automatically as soon as a weekly-pinterest-pins.yml PR merges
 an approved draft actually gets sent:
 
 - **By hand**: `npm run pipeline:pin -- --slug <slug> --send`, run
-  locally with `BUFFER_API_KEY` set.
+  locally with `PINTEREST_ACCESS_TOKEN` (or the app-id/secret/
+  refresh-token triplet) set.
 - **Automatically**: `.github/workflows/pinterest-auto-send.yml` runs
   daily, calls `npm run pipeline:pin -- --send-approved`, and sends every
   draft that's `approved: true` and not yet `sentAt` — capped at
   `MAX_SENDS_PER_RUN` (5) per run with a delay between each send
   (`docs/COMPLIANCE.md` warns against a "scripted bulk-pin loop"; this
   keeps a pile of same-day approvals from turning into a burst of
-  simultaneous posts). Needs `BUFFER_API_KEY` as a repo secret — see
-  `docs/SETUP.md`.
+  simultaneous posts). Needs the same Pinterest credentials as repo
+  secrets — see `docs/SETUP.md`.
 
 Either path writes `sentAt`/`pinUrl` onto the draft `.json` and
-`pinterestPinUrl` onto the article (when Buffer's `externalLink` is
-available yet — see above), so a draft is never sent twice either way.
+`pinterestPinUrl` onto the article in the same run, so a draft is never
+sent twice.
 
 ## 6. Reddit engagement (`scripts/pipeline/6-reddit-engagement-draft.mjs`)
 

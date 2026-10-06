@@ -10,13 +10,15 @@ name: Pinterest auto-send approved pins
 # delay between each (see MAX_SENDS_PER_RUN in 5-pinterest-pin.mjs) so a
 # pile of approvals merged at once doesn't turn into a burst-post.
 #
-# Sends via Buffer (scripts/lib/buffer.mjs), not this project's own
-# Pinterest app -- Buffer is an already-Standard-access Pinterest
-# Marketing Developer Partner, so this works now instead of waiting on
-# this app's own Trial->Standard review. Only needs BUFFER_API_KEY; the
-# Pinterest board id per category still comes from
-# scripts/lib/pinterest-boards.json (same board ids Buffer's
-# boardServiceId expects).
+# Sends via this project's own Pinterest app directly
+# (scripts/lib/pinterest.mjs), now that it has Pinterest's general
+# (Standard) API access -- the earlier Buffer workaround (while on
+# Trial access) is no longer needed. Needs PINTEREST_ACCESS_TOKEN, or
+# PINTEREST_APP_ID/PINTEREST_APP_SECRET/PINTEREST_REFRESH_TOKEN so
+# refreshAccessToken() can mint a fresh token each run instead of
+# depending on a static token someone has to rotate by hand every 30
+# days. The Pinterest board id per category still comes from
+# scripts/lib/pinterest-boards.json.
 
 on:
   schedule:
@@ -46,7 +48,11 @@ jobs:
       - name: Send approved, unsent drafts
         run: npm run pipeline:pin -- --send-approved
         env:
-          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          PINTEREST_ACCESS_TOKEN: ${{ secrets.PINTEREST_ACCESS_TOKEN }}
+          PINTEREST_APP_ID: ${{ secrets.PINTEREST_APP_ID }}
+          PINTEREST_APP_SECRET: ${{ secrets.PINTEREST_APP_SECRET }}
+          PINTEREST_REFRESH_TOKEN: ${{ secrets.PINTEREST_REFRESH_TOKEN }}
+          PINTEREST_BOARD_ID: ${{ secrets.PINTEREST_BOARD_ID }}
 
       - name: Check for changed draft(s)/article(s)
         id: check

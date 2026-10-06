@@ -143,9 +143,11 @@ jobs:
             Once merged, each approved draft gets sent either:
 
             - automatically, next time `pinterest-auto-send.yml` runs
-              (daily) — needs `BUFFER_API_KEY` configured as a repo
-              secret, or
-            - manually, by running (with `BUFFER_API_KEY` set):
+              (daily) — needs `PINTEREST_ACCESS_TOKEN` (or the
+              `PINTEREST_APP_ID`/`PINTEREST_APP_SECRET`/
+              `PINTEREST_REFRESH_TOKEN` triplet) configured as repo
+              secrets, or
+            - manually, by running (with the same Pinterest credentials set):
               ```bash
               npm run pipeline:pin -- --slug <slug> --send
               ```
