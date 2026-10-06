@@ -248,9 +248,18 @@ async function sendDraft(slug) {
   // refreshAccessToken() mints a fresh token from PINTEREST_APP_ID/
   // PINTEREST_APP_SECRET/PINTEREST_REFRESH_TOKEN so unattended runs
   // don't depend on manually rotating PINTEREST_ACCESS_TOKEN every 30
-  // days; falls back to that static token (createPin's own default) if
-  // the refresh triplet isn't configured.
-  const accessToken = (await refreshAccessToken()) || undefined;
+  // days -- but a *failed* refresh (e.g. a stale/invalid refresh token
+  // left over from an earlier setup) must not block a send when a
+  // perfectly good static PINTEREST_ACCESS_TOKEN is also configured, so
+  // this falls back to that (createPin's own default) rather than
+  // letting the error propagate, same as when the refresh triplet isn't
+  // configured at all.
+  let accessToken;
+  try {
+    accessToken = (await refreshAccessToken()) || undefined;
+  } catch (err) {
+    console.warn(`  Pinterest token refresh failed (${err.message}) -- falling back to PINTEREST_ACCESS_TOKEN.`);
+  }
   const imageBase64 = readFileSync(imagePath).toString('base64');
   const pin = await createPin({
     title: draft.pinTitle,
