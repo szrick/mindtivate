@@ -20,6 +20,7 @@ tags:
   - Wegovy
   - weight loss
   - semaglutide
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979586527/"
 ---
 ## They're the same drug — so why the different names?
 
