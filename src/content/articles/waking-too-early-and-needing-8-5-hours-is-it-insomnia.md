@@ -15,6 +15,7 @@ tags:
   - sleep maintenance
   - waking too early
   - sleep duration
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979640486/"
 ---
 ## When waking too early becomes a real problem
 

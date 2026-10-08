@@ -19,6 +19,7 @@ tags:
   - "under-eye"
   - skincare
   - injectables
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979640475/"
 ---
 ## Why under-eye Botox can backfire
 

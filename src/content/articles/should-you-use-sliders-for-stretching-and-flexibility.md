@@ -15,6 +15,7 @@ tags:
   - stretching
   - mobility
   - equipment
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979640468/"
 ---
 ## Why people reach for sliders in the first place
 
