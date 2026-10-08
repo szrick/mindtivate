@@ -57,17 +57,35 @@ of the SEO description — Pinterest has its own conventions.
 
 Write four things:
 - imageHeadline: the bold text that goes ON the pin image itself. Short —
-  it has to read at a glance in a scrolling feed. Under 60 characters,
-  1-2 short lines' worth. A real hook, not a label.
-- imageSubtext: one short supporting line under the headline, also on the
-  image. Under 90 characters.
+  it has to read at a glance in a scrolling feed, and state a SPECIFIC
+  outcome or benefit for a SPECIFIC reader — never a vague label like
+  "Healthy habits" or "Wellness tips" (those get scrolled past because
+  nobody can tell what they'd actually get). Where the article supports
+  it, anchor the headline to a concrete constraint — a number, a
+  timeframe, an age/life-stage, "no gym" — the same way a real search
+  query reads: "7-Day Hormone Breakfast Plan", "10-Min No-Gym Mobility
+  Routine", "PMS Snacks Under 200 kcal". Under 60 characters, 1-2 short
+  lines' worth.
+- imageSubtext: one short line under the headline that nudges toward the
+  full answer WITHOUT giving it all away — this is what turns a "save"
+  into a click. Point at what's waiting on the site rather than
+  restating the headline: "The full breakdown is on the site", "See all
+  7 days' worth", "Get the step-by-step guide". Under 90 characters.
 - pinTitle: Pinterest's title field (shown in search/related-pins, not
-  necessarily on the image itself) — can restate or sharpen the headline,
-  keyword-forward since Pinterest is a search engine as much as a feed.
-  Under 100 characters.
+  necessarily on the image itself). Pinterest is a search engine as much
+  as a feed, so lead with the same specific-outcome + audience +
+  constraint pattern as imageHeadline, written as a real long-tail
+  search phrase someone would actually type — "hormone friendly
+  breakfast ideas for women", "low impact home workout for beginners",
+  "evening routine for better sleep" — never a single broad keyword like
+  "wellness" or "fitness tips" (those bring impressions from browsers,
+  not clicks from people with a specific problem). Under 100 characters.
 - pinDescription: Pinterest's longer description field. 1-3 sentences,
-  can include relevant keywords naturally, ends with a soft nudge to read
-  more (not "click here" — describe what they'll find).
+  weaving in 2-3 natural long-tail keyword phrases (never keyword-
+  stuffed), ending by naming the concrete thing they'll get by clicking
+  through — "the full 7-day plan", "all 10 stretches with
+  modifications", "the complete checklist" — not a vague "read more" or
+  "click here".
 
 Rules:
 - No hype ("You won't believe...", "This one trick"), no medical claims,
@@ -126,6 +144,14 @@ Also decide the infographic's layout and content:
     characters explaining what it means.
   All item text renders as real on-image text, so it must be accurate to
   the article, never invented.
+- Treat the items as a PREVIEW, not the complete answer. A pin that gives
+  away everything on the image gets saved, not clicked through. When the
+  article covers more than these items can hold anyway (the common
+  case), pick the items that build curiosity for what's NOT shown — e.g.
+  the first few steps of a longer routine rather than a self-contained
+  complete answer — and let imageSubtext point at the rest ("plus 4 more
+  on the site"). Never shorten or omit real content just to manufacture
+  a cliffhanger on an article that only had 3-4 points to begin with.
 - backgroundScene: a short (1 sentence) description of a real-world
   scene, object, or setting relevant to the article's topic, suitable as
   an illustration background — no people's faces close-up (renders
@@ -398,6 +424,7 @@ async function run() {
       backgroundImage,
       category: article.category,
       headline: copy.imageHeadline,
+      subtext: copy.imageSubtext,
       layoutStyle: copy.layoutStyle,
       items: copy.items,
       theme: pinTheme,

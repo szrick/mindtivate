@@ -123,11 +123,22 @@ function buildHtml({ heroImageDataUri, logoDataUri, category, headline, subtext 
     width: 48px;
     height: 48px;
   }
-  .brand span {
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+  .brand-text .brand-name {
     font-family: Georgia, serif;
     font-weight: 700;
     font-size: 30px;
     color: #ffffff;
+  }
+  .brand-text .brand-url {
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    color: ${BRAND.cream};
+    opacity: 0.8;
   }
   .brand .dot {
     color: ${BRAND.terracotta};
@@ -143,7 +154,10 @@ function buildHtml({ heroImageDataUri, logoDataUri, category, headline, subtext 
     <div class="sub">${subtext}</div>
     <div class="brand">
       <img src="${logoDataUri}" />
-      <span>Mindtivate<span class="dot">.</span></span>
+      <div class="brand-text">
+        <span class="brand-name">Mindtivate<span class="dot">.</span></span>
+        <span class="brand-url">mindtivate.com</span>
+      </div>
     </div>
   </div>
 </body></html>`;
@@ -243,7 +257,7 @@ function buildCardContent(layoutStyle, items) {
   return `<ul class="stack">${rows}</ul>`;
 }
 
-function buildInfographicHtml({ backgroundImageDataUri, logoDataUri, category, headline, layoutStyle, items, theme }) {
+function buildInfographicHtml({ backgroundImageDataUri, logoDataUri, category, headline, subtext, layoutStyle, items, theme }) {
   // 'flush' keeps the original edge-to-edge card (sharp corners, full
   // 1000px width, normal document flow right below the art zone).
   // 'floating' instead sits inset with margins, rounded corners, and a
@@ -322,16 +336,25 @@ function buildInfographicHtml({ backgroundImageDataUri, logoDataUri, category, h
     padding: 14px 28px;
     border-radius: 999px;
   }
-  .headline {
+  .content {
     position: absolute;
     left: 64px;
     right: 64px;
     bottom: 48px;
+  }
+  .headline {
     font-family: Georgia, serif;
     font-weight: 700;
     font-size: 60px;
     line-height: 1.16;
     color: #ffffff;
+    margin-bottom: 20px;
+  }
+  .sub {
+    font-family: Arial, sans-serif;
+    font-size: 26px;
+    line-height: 1.4;
+    color: ${BRAND.cream};
   }
   ${cardCss}
   .stack {
@@ -436,11 +459,22 @@ function buildInfographicHtml({ backgroundImageDataUri, logoDataUri, category, h
     width: 48px;
     height: 48px;
   }
-  .brand span {
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+  .brand-text .brand-name {
     font-family: Georgia, serif;
     font-weight: 700;
     font-size: 30px;
     color: ${theme.cardText};
+  }
+  .brand-text .brand-url {
+    font-family: Arial, sans-serif;
+    font-size: 18px;
+    color: ${theme.cardText};
+    opacity: 0.65;
   }
   .brand .dot {
     color: ${theme.accent};
@@ -452,13 +486,19 @@ function buildInfographicHtml({ backgroundImageDataUri, logoDataUri, category, h
     <img class="bg" src="${backgroundImageDataUri}" />
     <div class="scrim"></div>
     <div class="badge">${category}</div>
-    <div class="headline">${headline}</div>
+    <div class="content">
+      <div class="headline">${headline}</div>
+      <div class="sub">${subtext}</div>
+    </div>
   </div>
   <div class="card">
     ${buildCardContent(layoutStyle, items)}
     <div class="brand">
       <img src="${logoDataUri}" />
-      <span>Mindtivate<span class="dot">.</span></span>
+      <div class="brand-text">
+        <span class="brand-name">Mindtivate<span class="dot">.</span></span>
+        <span class="brand-url">mindtivate.com</span>
+      </div>
     </div>
   </div>
 </body></html>`;
@@ -468,12 +508,13 @@ function buildInfographicHtml({ backgroundImageDataUri, logoDataUri, category, h
  * Renders an infographic-style pin image (AI-generated background art in
  * the top ~62%, a real, always-legible content card below whose layout
  * matches `layoutStyle`) and returns a PNG Buffer.
- * @param {{ backgroundImage: { buffer: Buffer, ext: string }, category: string, headline: string, layoutStyle: 'list'|'process'|'comparison'|'stat', items: { label: string, sublabel?: string }[], theme: { id: string, accent: string, cardBg: string, cardText: string, pageBg: string, cardShape: 'flush'|'floating' }, logoPath?: string }} opts
+ * @param {{ backgroundImage: { buffer: Buffer, ext: string }, category: string, headline: string, subtext: string, layoutStyle: 'list'|'process'|'comparison'|'stat', items: { label: string, sublabel?: string }[], theme: { id: string, accent: string, cardBg: string, cardText: string, pageBg: string, cardShape: 'flush'|'floating' }, logoPath?: string }} opts
  */
 export async function renderInfographicPinImage({
   backgroundImage,
   category,
   headline,
+  subtext,
   layoutStyle,
   items,
   theme,
@@ -485,6 +526,7 @@ export async function renderInfographicPinImage({
     logoDataUri: toDataUri(logoPath),
     category,
     headline,
+    subtext,
     layoutStyle,
     items,
     theme,
