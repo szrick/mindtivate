@@ -18,6 +18,7 @@ tags:
   - pelvic floor
   - running
   - strength training
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979721677/"
 ---
 ## The 6-week checkup isn't the finish line it feels like
 

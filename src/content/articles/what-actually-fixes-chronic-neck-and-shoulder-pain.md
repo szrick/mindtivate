@@ -21,6 +21,7 @@ tags:
   - chronic pain
   - strength training
   - posture
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979721662/"
 ---
 ## Why the heating pad keeps letting you down
 
