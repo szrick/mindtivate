@@ -178,7 +178,7 @@ async function scanSubreddit(subreddit, query, targetCategory) {
     } catch (err) {
       if (attempt === 2) {
         console.warn(`    skipping r/${subreddit} -- Arctic Shift request failed twice: ${err.message}`);
-        return [];
+        return { candidates: [], failed: true };
       }
       console.warn(`    Arctic Shift request failed (${err.message}), retrying once...`);
       await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -202,23 +202,53 @@ async function scanSubreddit(subreddit, query, targetCategory) {
     }));
 
   console.log(`    found ${candidates.length} candidate pain points`);
-  return candidates;
+  return { candidates, failed: false };
 }
+
+// How many subreddits in a row can fail (each already having retried once
+// -- so this many x2 failed HTTP requests) before bailing out of the scan
+// entirely rather than grinding through the full list. A handful of
+// consecutive failures crossing even one category boundary is a much
+// stronger "Arctic Shift itself is down" signal than any single
+// subreddit's own flakiness, and during a real outage (confirmed: this
+// happened on two separate runs the same day) every request is a slow
+// Cloudflare timeout, not a fast error -- so the normal 40-subreddit scan
+// burns the better part of 30 minutes before stage 1 even gets to report
+// the problem, let alone before match/draft would have failed anyway.
+const CONSECUTIVE_FAILURE_LIMIT = 6;
 
 async function run() {
   const args = parseArgs(process.argv.slice(2));
   const results = [];
+  let consecutiveFailures = 0;
+  let abortedEarly = false;
+
+  // Shared by both scan branches below -- returns true if the caller
+  // should stop scanning entirely (circuit breaker tripped).
+  async function scanAndTrack(subreddit, category) {
+    const { candidates, failed } = await scanSubreddit(subreddit, args.query, category);
+    results.push(...candidates);
+    consecutiveFailures = failed ? consecutiveFailures + 1 : 0;
+    if (consecutiveFailures >= CONSECUTIVE_FAILURE_LIMIT) {
+      console.warn(
+        `\n${consecutiveFailures} subreddits in a row failed -- stopping the scan early instead of grinding through the rest (see CONSECUTIVE_FAILURE_LIMIT).`,
+      );
+      abortedEarly = true;
+      return true;
+    }
+    return false;
+  }
 
   if (args.subreddits) {
     console.log(`Scanning ${args.subreddits.length} custom subreddit(s)...`);
     for (const subreddit of args.subreddits) {
-      results.push(...(await scanSubreddit(subreddit, args.query)));
+      if (await scanAndTrack(subreddit)) break;
     }
   } else {
-    for (const [category, subreddits] of Object.entries(DEFAULT_SUBREDDITS_BY_CATEGORY)) {
+    outer: for (const [category, subreddits] of Object.entries(DEFAULT_SUBREDDITS_BY_CATEGORY)) {
       console.log(`\n=== ${category} ===`);
       for (const subreddit of subreddits) {
-        results.push(...(await scanSubreddit(subreddit, args.query, category)));
+        if (await scanAndTrack(subreddit, category)) break outer;
       }
     }
   }
@@ -247,9 +277,10 @@ async function run() {
   // doesn't point back to Arctic Shift at all.
   if (balanced.length === 0 && results.length === 0) {
     throw new Error(
-      'Found 0 candidate pain points across every subreddit scanned -- this almost always means Arctic Shift itself is down ' +
-        '(check the warnings above for repeated request failures), not that Reddit genuinely had nothing today. Stopping here ' +
-        'rather than continuing into match/draft with nothing to work with. Re-run once Arctic Shift recovers.',
+      `Found 0 candidate pain points ${abortedEarly ? `(stopped early after ${consecutiveFailures} consecutive subreddit failures)` : 'across every subreddit scanned'} -- ` +
+        'this almost always means Arctic Shift itself is down (check the warnings above for repeated request failures), not that ' +
+        'Reddit genuinely had nothing today. Stopping here rather than continuing into match/draft with nothing to work with. ' +
+        'Re-run once Arctic Shift recovers.',
     );
   }
 }
