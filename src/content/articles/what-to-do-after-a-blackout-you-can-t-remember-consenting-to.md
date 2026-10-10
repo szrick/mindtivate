@@ -16,6 +16,7 @@ tags:
   - sexual assault
   - blackouts
   - safety
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979805902/"
 ---
 ## What happened in your brain during a blackout
 

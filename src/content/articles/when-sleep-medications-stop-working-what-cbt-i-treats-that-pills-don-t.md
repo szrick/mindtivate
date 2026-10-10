@@ -20,6 +20,7 @@ tags:
   - sleep maintenance
   - "CBT-I"
   - medication
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979805914/"
 ---
 ## The medication carousel
 

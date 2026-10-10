@@ -16,6 +16,7 @@ tags:
   - relationship compatibility
   - communication
 updatedDate: 2026-09-04
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979805929/"
 ---
 ## The pattern that signals more than just awkwardness
 

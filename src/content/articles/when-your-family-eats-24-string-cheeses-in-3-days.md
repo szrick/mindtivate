@@ -19,6 +19,7 @@ tags:
   - snacks
   - family meals
   - toddler feeding
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979805924/"
 ---
 ## Why string cheese became the house favorite
 
