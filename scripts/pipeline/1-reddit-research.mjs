@@ -236,6 +236,22 @@ async function run() {
   const outPath = `scripts/pipeline/output/research-${Date.now()}.json`;
   writeFileSync(outPath, JSON.stringify(balanced, null, 2));
   console.log(`\nWrote ${balanced.length} candidate pain points to ${outPath}`);
+
+  // Across every category/subreddit, this is 0 only when Arctic Shift
+  // itself is down (a real outage, not just a quiet news day -- a normal
+  // run finds dozens even after dedup) -- see e.g. a run that hit
+  // Cloudflare 522s on every single request. Failing loudly here, right
+  // where the actual cause is visible in the log, beats silently writing
+  // an empty file and letting stage 2 (0 briefs) then stage 3 fail 20+
+  // minutes later with a confusing "No brief at index 0" error that
+  // doesn't point back to Arctic Shift at all.
+  if (balanced.length === 0 && results.length === 0) {
+    throw new Error(
+      'Found 0 candidate pain points across every subreddit scanned -- this almost always means Arctic Shift itself is down ' +
+        '(check the warnings above for repeated request failures), not that Reddit genuinely had nothing today. Stopping here ' +
+        'rather than continuing into match/draft with nothing to work with. Re-run once Arctic Shift recovers.',
+    );
+  }
 }
 
 run().catch((err) => {

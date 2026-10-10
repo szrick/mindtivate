@@ -10,7 +10,17 @@ export const ARTICLE_TEMPLATES = {
     id: 'standard',
     label: 'Mindtivate standard explainer',
     wordCountTarget: '600-900',
-    maxTokens: 3000,
+    // Was 3000 -- the lowest of any template here despite being the
+    // pipeline's default (used on every scheduled run with no
+    // --template flag) -- and it showed: two separate content-pipeline.yml
+    // runs failed with Poe's JSON response truncated mid-field (cut off
+    // partway through heroImageIdeas, before the body/closing braces),
+    // which askPoeForJson can't recover from since there's no way to
+    // know what was cut. Raised well above the other templates' range
+    // (3200-4200) rather than just barely over the line, since a smaller
+    // word-count target apparently isn't a reliable predictor of how
+    // many tokens a real response actually needs.
+    maxTokens: 4200,
     guidance: `STRUCTURE: Standard explainer article. Open with the specific problem/question
 that prompted this piece, explain the "why" behind it, then walk through
 what the research/reasoning actually supports, and close with a clear,
