@@ -16,6 +16,7 @@ tags:
   - relationships
   - intimacy
 updatedDate: 2026-09-04
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979829585/"
 ---
 You're seven years in, two kids deep, and the desire that used to show up on its own has quietly disappeared. You know it's a problem — your partner knows it's a problem — but knowing doesn't make it easier to fix. Scheduling sex feels mechanical, and spontaneous quickies when he walks in the door sound exhausting when you're touched out, tired, and running on fumes.
 

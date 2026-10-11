@@ -17,6 +17,7 @@ tags:
   - sleep quality
   - CBT-I
 heroImageAlt: "Lifestyle photo related to \"Why Alcohol Doesn't Actually Help You Sleep\""
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979829558/"
 ---
 You're exhausted, you've tried everything, and alcohol is the only thing that seems to work — so you're drinking 7-8 drinks most nights just to get six hours of sleep instead of two. It's a brutal choice: rely on something you know isn't great, or lie awake for hours. But here's the hard truth: alcohol isn't actually giving you the restorative sleep your body needs, even when it's knocking you out.
 

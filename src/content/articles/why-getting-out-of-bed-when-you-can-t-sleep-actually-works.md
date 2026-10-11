@@ -15,6 +15,7 @@ tags:
   - "CBT-I"
   - sleep habits
   - stimulus control
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979829580/"
 ---
 ## Why the advice feels wrong
 

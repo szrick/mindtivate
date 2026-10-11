@@ -19,6 +19,7 @@ tags:
   - chronic pain
   - muscle tension
   - sleep disruption
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979829565/"
 ---
 ## Why the same spot hurts, then fades, then comes right back
 
