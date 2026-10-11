@@ -24,6 +24,11 @@ on:
   schedule:
     - cron: '0 15 * * *' # daily, 15:00 UTC
   workflow_dispatch:
+    inputs:
+      slug:
+        description: 'Send just this one approved draft now, instead of the usual "oldest 5 by directory order" batch -- useful when a specific pin needs to go out ahead of an older queue (e.g. verifying a just-fixed draft actually sends). Must already be approved: true.'
+        required: false
+        type: string
 
 jobs:
   send:
@@ -46,7 +51,12 @@ jobs:
         run: npm ci
 
       - name: Send approved, unsent drafts
-        run: npm run pipeline:pin -- --send-approved
+        run: |
+          if [ -n "${{ inputs.slug }}" ]; then
+            npm run pipeline:pin -- --slug "${{ inputs.slug }}" --send
+          else
+            npm run pipeline:pin -- --send-approved
+          fi
         env:
           PINTEREST_ACCESS_TOKEN: ${{ secrets.PINTEREST_ACCESS_TOKEN }}
           PINTEREST_APP_ID: ${{ secrets.PINTEREST_APP_ID }}
