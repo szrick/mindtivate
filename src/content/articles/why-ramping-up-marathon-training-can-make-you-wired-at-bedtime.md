@@ -17,6 +17,7 @@ tags:
   - running
   - recovery
 updatedDate: 2026-09-04
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979896279/"
 ---
 You've ramped up your mileage, added evening gym sessions, and now you're lying in bed wide awake for 30 to 60 minutes despite being physically exhausted. That wired feeling isn't in your head — it's a well-documented response to a sharp increase in training load, and it points to something specific happening in your nervous system.
 
