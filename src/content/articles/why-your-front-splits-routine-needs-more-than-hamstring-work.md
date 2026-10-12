@@ -15,6 +15,7 @@ tags:
   - stretching
   - front splits
   - hip flexors
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979995491/"
 ---
 ## Why your routine stalls
 

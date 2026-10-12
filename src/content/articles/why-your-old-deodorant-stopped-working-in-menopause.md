@@ -15,6 +15,7 @@ tags:
   - body odor
   - sweating
   - antiperspirant
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979995497/"
 ---
 ## Why menopause changes your sweat
 
