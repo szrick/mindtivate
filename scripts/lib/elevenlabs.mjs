@@ -54,14 +54,13 @@ function charsToWordTimings(characters, startTimes, endTimes) {
  * from ElevenLabs' character-level alignment data. `voiceId`/`modelId`
  * default to the ELEVENLABS_VOICE_ID/ELEVENLABS_MODEL_ID env vars so a
  * caller doesn't have to thread them through from every call site --
- * ELEVENLABS_MODEL_ID defaults to 'eleven_turbo_v2_5' (good quality,
- * lower latency/cost than the non-turbo models, and multilingual-capable
- * should an article ever need it) if unset.
+ * ELEVENLABS_MODEL_ID defaults to 'eleven_v4' (the current latest
+ * generation) if unset.
  */
 export async function synthesizeSpeech({ text, voiceId, modelId, apiKey } = {}) {
   const key = apiKey || requireEnv('ELEVENLABS_API_KEY');
   const voice = voiceId || requireEnv('ELEVENLABS_VOICE_ID');
-  const model = modelId || process.env.ELEVENLABS_MODEL_ID || 'eleven_turbo_v2_5';
+  const model = modelId || process.env.ELEVENLABS_MODEL_ID || 'eleven_v4';
 
   const res = await fetch(`${API_BASE}/text-to-speech/${voice}/with-timestamps`, {
     method: 'POST',
