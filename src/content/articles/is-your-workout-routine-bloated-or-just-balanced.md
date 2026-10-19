@@ -4,7 +4,7 @@ description: Too many rows and presses, not enough of something else? Here's how
   to tell if your routine is actually unbalanced or just more varied than
   before.
 pubDate: 2026-08-25
-updatedDate: 2026-09-04
+updatedDate: 2026-10-19
 category: Body
 heroImage: "./_images/is-your-workout-routine-bloated-or-just-balanced-hero.webp"
 status: published
@@ -62,4 +62,4 @@ A more balanced starting point for your goals might look like 10–12 sets of hi
 
 You're right that variety beats monotony, and a workout you actually like doing will always outperform a "perfect" program you dread. But variety within a structure—different row variations across the week, rotating squat and hinge exercises, trying new pulling grips—gives you novelty without losing balance.
 
-If you love a particular exercise that's technically redundant, keep it. Just make sure it's not crowding out something your goals actually need. A routine can be fun *and* well-designed—those two things aren't in opposition.
+If you love a particular exercise that's technically redundant, keep it. Just make sure it's not crowding out something your goals actually need. A routine can be fun *and* well-designed—those two things aren't in opposition. (If time is your bigger constraint, [here's how to structure training when your schedule is packed](/articles/how-to-fit-strength-training-meal-prep-into-60-hour-weeks/).)

@@ -4,7 +4,7 @@ description: Yes, you can take pre-workout in the morning—but the right
   ingredients matter, especially when you're working late nights. Here's what
   to look for.
 pubDate: 2026-08-25
-updatedDate: 2026-09-04
+updatedDate: 2026-10-19
 category: Body
 heroImage: "./_images/should-you-take-pre-workout-for-early-morning-classes-hero.webp"
 status: published
@@ -54,6 +54,6 @@ If a formula includes creatine, that's a bonus for strength over time, but it wo
 
 ## The bigger picture
 
-Pre-workout can be a useful tool for getting yourself to early morning classes when energy is low. But it's not a substitute for sleep, and it won't fix a schedule that's fundamentally unsustainable. If you're relying on it every single day just to function, that's worth examining—not because pre-workout is inherently bad, but because chronic sleep deprivation has downstream effects on recovery, performance, mood, and health that no supplement can fully offset.
+Pre-workout can be a useful tool for getting yourself to early morning classes when energy is low. But it's not a substitute for sleep, and it won't fix a schedule that's fundamentally unsustainable. If you're struggling with chronic sleep issues beyond just early wake-ups, [OTC sleep aids like melatonin or magnesium](/articles/otc-sleep-aids-what-actually-works-when-you-can-t-fall-asleep/) may be worth exploring. If you're relying on it every single day just to function, that's worth examining—not because pre-workout is inherently bad, but because chronic sleep deprivation has downstream effects on recovery, performance, mood, and health that no supplement can fully offset. (And if you're ramping up training volume and noticing [sleep disruption from increased training load](/articles/why-ramping-up-marathon-training-can-make-you-wired-at-bedtime/), that's a separate issue worth addressing.)
 
 That said, if you're using it strategically—say, two or three mornings a week when you really want to make that class—it can be the difference between showing up and hitting snooze. Just keep the dose moderate, the ingredient list transparent, and your expectations realistic.
