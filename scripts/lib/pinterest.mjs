@@ -44,6 +44,29 @@ export async function createPin({ title, description, link, imageUrl, imageBase6
   return res.json();
 }
 
+// Removes a live pin. Used when a draft is replacing an already-sent pin
+// (a real image swap needs this -- Pinterest's own pin-update endpoint
+// only lets you change title/description/link/board, never the media
+// itself, confirmed against the v5 docs, so "change the image" has no
+// in-place path; delete-then-createPin is the only way). Pinterest
+// returns 204 with no body on success.
+export async function deletePin(pinId, accessToken) {
+  const token = accessToken || process.env.PINTEREST_ACCESS_TOKEN;
+  if (!token) throw new Error('Missing PINTEREST_ACCESS_TOKEN');
+
+  const res = await fetch(`${API_BASE}/pins/${pinId}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!res.ok && res.status !== 404) {
+    // A 404 means it's already gone (e.g. a retry after a previous run's
+    // delete succeeded but the rest of the replace failed) -- not an
+    // error worth stopping a replace over.
+    throw new Error(`Pinterest deletePin failed: ${res.status} ${await res.text()}`);
+  }
+}
+
 // Category -> board ID, read fresh each call rather than cached at import
 // time (this file's data changes independently of any running process —
 // see pinterest-boards.json's own comment). Falls back to

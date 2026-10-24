@@ -39,8 +39,8 @@
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { loadEnv } from '../lib/env.mjs';
 import { askPoeForJson, generatePoeImage } from '../lib/poe.mjs';
-import { readFrontmatter, insertFrontmatterField } from '../lib/frontmatter.mjs';
-import { createPin, resolveBoardId, refreshAccessToken } from '../lib/pinterest.mjs';
+import { readFrontmatter, upsertFrontmatterField } from '../lib/frontmatter.mjs';
+import { createPin, deletePin, resolveBoardId, refreshAccessToken } from '../lib/pinterest.mjs';
 import { renderPinImage, renderInfographicPinImage, pickPinTheme, hashString } from '../lib/pinterest-pin-image.mjs';
 
 loadEnv();
@@ -263,6 +263,11 @@ async function sendDraft(slug) {
   }
 
   const { data: article } = readFrontmatter(readFileSync(articlePath, 'utf8'));
+  // A non-empty pinterestPinUrl here means this article already has a
+  // *live* pin -- this send is a replace (e.g. regenerating an old
+  // infographic-style pin as the current photo style), not a first send.
+  // Capture its id now, before anything below can change what's on disk.
+  const oldPinId = article.pinterestPinUrl ? article.pinterestPinUrl.match(/\/pin\/(\d+)\//)?.[1] : null;
   const boardId = resolveBoardId(article.category);
   if (!boardId) {
     throw new Error(
@@ -305,7 +310,21 @@ async function sendDraft(slug) {
   draft.pinUrl = pinUrl;
   writeFileSync(draftPath, JSON.stringify(draft, null, 2));
 
-  const updatedArticle = insertFrontmatterField(readFileSync(articlePath, 'utf8'), 'pinterestPinUrl', pinUrl);
+  // Only now that the replacement pin genuinely exists do we remove the
+  // old one -- deleting first and having createPin fail afterward would
+  // leave the article with no live pin at all instead of just an
+  // outdated one.
+  if (oldPinId) {
+    console.log(`  Deleting superseded pin ${oldPinId}...`);
+    await deletePin(oldPinId, accessToken);
+  }
+
+  // upsertFrontmatterField (not insertFrontmatterField) because a replace
+  // means pinterestPinUrl is already set to the now-deleted pin's URL --
+  // insertFrontmatterField's "no-op if the key already exists" guard
+  // (right for a genuine first send) would otherwise leave the article
+  // pointing at a dead link forever.
+  const updatedArticle = upsertFrontmatterField(readFileSync(articlePath, 'utf8'), 'pinterestPinUrl', pinUrl);
   writeFileSync(articlePath, updatedArticle);
   console.log(`Created pin: ${pinUrl}`);
   console.log(`Recorded pinterestPinUrl in ${articlePath}.`);
