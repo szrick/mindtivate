@@ -4,30 +4,13 @@
   "category": "Mind",
   "articleLink": "https://mindtivate.com/articles/what-to-do-after-a-blackout-you-can-t-remember-consenting-to/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/what-to-do-after-a-blackout-you-can-t-remember-consenting-to.png",
-  "style": "infographic",
-  "visualTheme": "sage-flush",
-  "imageHeadline": "What a blackout means for consent",
-  "imageSubtext": "When your brain stopped recording, could you really agree?",
-  "pinTitle": "What to Do After a Blackout You Can't Remember Consenting To | Mindtivate",
-  "pinDescription": "A blackout isn't passing out—it's when your brain stops forming memories while you're still awake. If you were vomiting, couldn't stand, and blacked out, you were incapacitated. Here's what that means for consent, what options you have now, and where to get support.",
-  "layoutStyle": "process",
-  "items": [
-    {
-      "label": "Understand what happened in your brain",
-      "sublabel": ""
-    },
-    {
-      "label": "Know your options for medical care and support",
-      "sublabel": ""
-    },
-    {
-      "label": "Decide what feels right for you next",
-      "sublabel": ""
-    }
-  ],
-  "backgroundScene": "A quiet bedroom window at dawn with soft natural light filtering through sheer curtains, a glass of water on a nightstand",
+  "style": "photo",
+  "imageHeadline": "Woke Up After a Blackout? Steps to Take in the First 72 Hours",
+  "imageSubtext": "The full safety and support checklist is on the site",
+  "pinTitle": "what to do after a blackout you can't remember consenting to",
+  "pinDescription": "Waking up with no memory of the night before raises urgent questions about consent and safety. If you're navigating what happens after a blackout and uncertain about consent, this guide walks through immediate steps to take, who to contact for support, and how to prioritize your wellbeing. Get the full checklist and resources.",
+  "imageHeadline_alt": "After a Blackout: Your 72-Hour Safety Checklist",
+  "imageSubtext_alt": "See the step-by-step guide on the site",
   "approved": true,
-  "generatedAt": "2026-10-02T14:09:16.377Z",
-  "sentAt": "2026-10-10T19:04:50.824Z",
-  "pinUrl": "https://www.pinterest.com/pin/1115626138979805902/"
+  "generatedAt": "2026-10-24T03:05:45.975Z"
 }

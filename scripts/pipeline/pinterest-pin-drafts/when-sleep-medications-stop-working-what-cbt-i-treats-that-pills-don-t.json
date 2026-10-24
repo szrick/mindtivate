@@ -4,26 +4,11 @@
   "category": "Sleep",
   "articleLink": "https://mindtivate.com/articles/when-sleep-medications-stop-working-what-cbt-i-treats-that-pills-don-t/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/when-sleep-medications-stop-working-what-cbt-i-treats-that-pills-don-t.png",
-  "style": "infographic",
-  "visualTheme": "sage-floating",
-  "imageHeadline": "When pills stop working after 2 hours",
-  "imageSubtext": "CBT-I retrains the sleep patterns medications can't touch",
-  "pinTitle": "When Sleep Medications Stop Working: What CBT-I Treats That Pills Don't",
-  "pinDescription": "You've cycled through Ambien, Lunesta, gabapentin—but you're still waking every hour or two. Behavioral therapy for insomnia (CBT-I) targets the learned arousal patterns that keep fragmented sleep going, with effects that last long after treatment ends. Learn what stimulus control and sleep restriction actually do.",
-  "layoutStyle": "comparison",
-  "items": [
-    {
-      "label": "Medications",
-      "sublabel": "Stop working when you stop taking them"
-    },
-    {
-      "label": "CBT-I",
-      "sublabel": "Retrains your sleep system—effects persist"
-    }
-  ],
-  "backgroundScene": "A quiet bedroom at night with an unmade bed and a dim lamp on a nightstand, view from the doorway looking in",
+  "style": "photo",
+  "imageHeadline": "Still Waking at 2 AM on Sleep Meds? Try CBT-I Instead",
+  "imageSubtext": "See what this therapy targets that pills miss",
+  "pinTitle": "CBT-I for insomnia when sleep medications stop working",
+  "pinDescription": "If you're waking up hours after taking Ambien or other sleep medications, cognitive behavioral therapy for insomnia (CBT-I) addresses the patterns that keep you awake—without another prescription. Learn what CBT-I treats that sleep meds don't and how it works for chronic insomnia.",
   "approved": true,
-  "generatedAt": "2026-10-02T14:09:43.647Z",
-  "sentAt": "2026-10-10T19:05:03.022Z",
-  "pinUrl": "https://www.pinterest.com/pin/1115626138979805914/"
+  "generatedAt": "2026-10-24T03:06:01.905Z"
 }

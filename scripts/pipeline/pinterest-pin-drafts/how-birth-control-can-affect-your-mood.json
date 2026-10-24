@@ -4,30 +4,11 @@
   "category": "Hormones",
   "articleLink": "https://mindtivate.com/articles/how-birth-control-can-affect-your-mood/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/how-birth-control-can-affect-your-mood.png",
-  "style": "infographic",
-  "visualTheme": "plum-block",
-  "imageHeadline": "Your birth control might be affecting your mood",
-  "imageSubtext": "What the research says about hormonal contraception and mood changes",
-  "pinTitle": "How Birth Control Can Affect Your Mood – What the Research Shows",
-  "pinDescription": "Feeling flatter or more anxious since starting the pill? The research backs a real connection between hormonal contraception and mood changes — and it depends on which type of hormone you're using. Learn what the evidence actually shows and when switching methods makes sense.",
-  "layoutStyle": "list",
-  "items": [
-    {
-      "label": "Not all progestins affect mood the same way",
-      "sublabel": ""
-    },
-    {
-      "label": "Tracking mood alongside your cycle reveals patterns",
-      "sublabel": ""
-    },
-    {
-      "label": "Switching methods is a legitimate reason, not overreacting",
-      "sublabel": ""
-    }
-  ],
-  "backgroundScene": "A flat lay of a monthly pill pack resting on a soft linen surface beside a simple mood journal and pen",
+  "style": "photo",
+  "imageHeadline": "Birth Control & Mood Changes: What Research Shows",
+  "imageSubtext": "See what the science says about hormonal shifts and how you feel",
+  "pinTitle": "how birth control affects mood and emotions in women",
+  "pinDescription": "If you've noticed mood shifts since starting hormonal birth control, the research backs up what you're feeling. Learn what studies show about birth control and mood changes, which types are most likely to affect emotions, and what to watch for. Get the full research breakdown on the site.",
   "approved": true,
-  "generatedAt": "2026-10-02T14:02:22.321Z",
-  "sentAt": "2026-10-02T19:42:44.002Z",
-  "pinUrl": "https://www.pinterest.com/pin/1115626138979145033"
+  "generatedAt": "2026-10-24T03:01:33.331Z"
 }

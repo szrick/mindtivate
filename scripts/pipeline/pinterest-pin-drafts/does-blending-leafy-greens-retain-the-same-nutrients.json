@@ -4,26 +4,11 @@
   "category": "Food",
   "articleLink": "https://mindtivate.com/articles/does-blending-leafy-greens-retain-the-same-nutrients/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/does-blending-leafy-greens-retain-the-same-nutrients.png",
-  "style": "infographic",
-  "visualTheme": "terracotta-block",
-  "imageHeadline": "Blending Greens Keeps the Fiber & Nutrients",
-  "imageSubtext": "What actually changes when you drink spinach instead of chewing it",
-  "pinTitle": "Does Blending Leafy Greens Retain Nutrients? What the Research Shows",
-  "pinDescription": "Blending spinach or kale into a smoothie keeps the fiber, vitamins, and minerals intact—unlike juicing, which strains out what matters. Learn what you gain in volume, what you lose in satiety, and how to make blended greens work without overthinking it.",
-  "layoutStyle": "comparison",
-  "items": [
-    {
-      "label": "Blending",
-      "sublabel": "Keeps fiber, vitamins & minerals intact"
-    },
-    {
-      "label": "Juicing",
-      "sublabel": "Strains out fiber & beneficial compounds"
-    }
-  ],
-  "backgroundScene": "A glass blender jar filled with fresh green leafy vegetables and clear liquid, sitting on a kitchen counter with scattered spinach leaves nearby",
+  "style": "photo",
+  "imageHeadline": "Blending Spinach & Kale: What Happens to Fiber & Nutrients?",
+  "imageSubtext": "See exactly what changes when you blend instead of chew",
+  "pinTitle": "Does blending spinach and kale destroy nutrients? What actually happens to fiber in smoothies",
+  "pinDescription": "If you blend leafy greens like spinach or kale into smoothies, here's what happens to the fiber and nutrients compared to eating them whole. Learn which nutrients stay intact, what changes during blending, and how your body absorbs blended greens differently. Get the full breakdown on the site.",
   "approved": true,
-  "generatedAt": "2026-10-02T14:01:37.661Z",
-  "sentAt": "2026-10-02T19:42:23.105Z",
-  "pinUrl": "https://www.pinterest.com/pin/1115626138979145010"
+  "generatedAt": "2026-10-24T03:01:09.873Z"
 }
