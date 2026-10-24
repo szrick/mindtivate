@@ -17,6 +17,7 @@ tags:
   - career
   - mental health
 updatedDate: 2026-09-14
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006374/"
 ---
 ## Why regret starts to feel like a pattern
 

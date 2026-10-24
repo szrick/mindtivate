@@ -20,6 +20,7 @@ tags:
   - skincare
   - moisturizer
   - hydration
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006388/"
 ---
 ## Why heavy occlusives feel impossible in dry climates
 

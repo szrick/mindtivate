@@ -19,6 +19,7 @@ tags:
   - gift acceptance
   - social dynamics
   - dating etiquette
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006392/"
 ---
 ## The actual question underneath
 

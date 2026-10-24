@@ -19,6 +19,7 @@ tags:
   - calorie deficit
   - EVLO
 updatedDate: 2026-09-04
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006403/"
 ---
 
 ## What the Formula Actually Means

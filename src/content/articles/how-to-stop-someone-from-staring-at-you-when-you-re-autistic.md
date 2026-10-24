@@ -16,6 +16,7 @@ tags:
   - boundaries
   - social anxiety
   - assertiveness
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006381/"
 ---
 ## Why being stared at feels different when you're autistic
 
