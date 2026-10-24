@@ -18,7 +18,7 @@ tags:
   - teens
   - habits
 heroImageAlt: "Lifestyle photo related to \"Why Reminding Your Teen About Grades Doesn't Work\""
-pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979896288/"
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006948/"
 ---
 You've been reminding your teenager about the importance of studying for nearly a year. Exams are coming up, you know he's capable, and yet nothing seems to stick. The more you push, the less motivated he appears. If this sounds familiar, you're not alone—and the frustration you're feeling makes sense. But here's the uncomfortable part: the reminders themselves might be part of the problem.
 

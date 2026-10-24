@@ -17,7 +17,7 @@ tags:
   - new mothers
   - friendships
 updatedDate: 2026-09-04
-pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979896272/"
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006931/"
 ---
 You've explained your evening routine three times already. Your friend texts again, asking if you want to grab dinner Thursday at 7 — right in the middle of bath, bottle, and bedtime. Instead of just feeling tired or mildly annoyed, you feel a surge of hot, disproportionate anger. You're not imagining it, and you're not alone.
 

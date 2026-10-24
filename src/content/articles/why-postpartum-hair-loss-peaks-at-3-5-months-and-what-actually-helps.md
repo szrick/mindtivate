@@ -20,7 +20,7 @@ tags:
   - hair loss
   - telogen effluvium
   - hormones
-pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979896263/"
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006924/"
 ---
 ## Why you're shedding so much hair right now
 
