@@ -21,6 +21,7 @@ tags:
   - "school-age"
   - boundaries
   - behavior
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138980979013/"
 ---
 ## The problem: a friendship that's all friction
 

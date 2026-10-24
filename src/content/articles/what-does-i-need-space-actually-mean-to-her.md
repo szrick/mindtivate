@@ -15,6 +15,7 @@ tags:
   - relationship boundaries
   - communication
   - space in relationships
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138980978998/"
 ---
 ## When "space" feels like the end
 

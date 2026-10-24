@@ -20,6 +20,7 @@ tags:
   - sleep training
   - postpartum
   - infant development
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138980979007/"
 ---
 ## The reality check you need at 6 weeks
 
