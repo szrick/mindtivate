@@ -4,34 +4,11 @@
   "category": "Body",
   "articleLink": "https://mindtivate.com/articles/is-your-workout-routine-bloated-or-just-balanced/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/is-your-workout-routine-bloated-or-just-balanced.png",
-  "style": "infographic",
-  "visualTheme": "terracotta-flush",
-  "imageHeadline": "Too many rows, not enough squats?",
-  "imageSubtext": "How to tell if your workout is unbalanced—or just more varied",
-  "pinTitle": "Is Your Workout Routine Bloated or Just Balanced? Movement Pattern Audit",
-  "pinDescription": "If you're doing three row variations and two chest presses but your glutes aren't growing, your routine might not be bloated—it might be unbalanced. Learn how to audit your program using movement patterns, set volume per muscle group, and goal alignment to build a routine that's both effective and enjoyable.",
-  "layoutStyle": "process",
-  "items": [
-    {
-      "label": "List every exercise by movement pattern",
-      "sublabel": ""
-    },
-    {
-      "label": "Count total sets per week for each category",
-      "sublabel": ""
-    },
-    {
-      "label": "Compare your volume to your actual goals",
-      "sublabel": ""
-    },
-    {
-      "label": "Adjust exercises to match what you need",
-      "sublabel": ""
-    }
-  ],
-  "backgroundScene": "A notebook and pen lying on a gym floor next to a pair of dumbbells and a resistance band, with soft natural light from a window",
+  "style": "photo",
+  "imageHeadline": "Is Your Workout Routine Bloated or Balanced?",
+  "imageSubtext": "The full balance checklist is on the site",
+  "pinTitle": "how to tell if your workout routine is balanced or unbalanced",
+  "pinDescription": "Doing lots of rows and presses but not sure if your workout routine is balanced or bloated? Learn how to tell if your training split is actually unbalanced or just more varied than it used to be. Get the full checklist on the site.",
   "approved": true,
-  "generatedAt": "2026-10-02T14:06:14.964Z",
-  "sentAt": "2026-10-08T04:58:50.996Z",
-  "pinUrl": "https://www.pinterest.com/pin/1115626138979586521/"
+  "generatedAt": "2026-10-24T03:03:46.179Z"
 }

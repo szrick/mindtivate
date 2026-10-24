@@ -4,30 +4,11 @@
   "category": "Food",
   "articleLink": "https://mindtivate.com/articles/when-your-family-eats-24-string-cheeses-in-3-days/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/when-your-family-eats-24-string-cheeses-in-3-days.png",
-  "style": "infographic",
-  "visualTheme": "terracotta-flush",
-  "imageHeadline": "Beyond the string cheese spiral",
-  "imageSubtext": "Simple snack swaps that work for toddlers and the whole family",
-  "pinTitle": "Toddler Snacks Beyond String Cheese: Easy Ideas That Actually Work",
-  "pinDescription": "Your toddler loves string cheese—so does everyone else. Here's why variety matters now, what balanced toddler snacks actually include, and how to prep grab-and-go options that hit more nutrient targets without adding stress to your day.",
-  "layoutStyle": "list",
-  "items": [
-    {
-      "label": "Pair snacks from two food groups for balanced nutrition",
-      "sublabel": ""
-    },
-    {
-      "label": "Batch-prep options on weekends to save daily time",
-      "sublabel": ""
-    },
-    {
-      "label": "Variety now builds toddler food preferences that stick",
-      "sublabel": ""
-    }
-  ],
-  "backgroundScene": "A wooden cutting board with fresh fruit slices, small crackers, and cubed cheese arranged casually in a bright, sunlit kitchen",
+  "style": "photo",
+  "imageHeadline": "24 String Cheeses in 3 Days? Toddler Snack Swaps That Work",
+  "imageSubtext": "See the full list of toddler-safe alternatives inside",
+  "pinTitle": "toddler snack ideas beyond string cheese for busy families",
+  "pinDescription": "When your toddler loves string cheese and the whole family follows suit, variety can disappear fast. Discover why rotating toddler snacks matters and which safe, family-friendly options actually work for 19-month-olds and up. See the full swap list inside.",
   "approved": true,
-  "generatedAt": "2026-10-02T14:09:53.641Z",
-  "sentAt": "2026-10-10T19:05:08.884Z",
-  "pinUrl": "https://www.pinterest.com/pin/1115626138979805924/"
+  "generatedAt": "2026-10-24T03:06:11.071Z"
 }

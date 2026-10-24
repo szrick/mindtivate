@@ -4,34 +4,11 @@
   "category": "Sleep",
   "articleLink": "https://mindtivate.com/articles/why-getting-out-of-bed-when-you-can-t-sleep-actually-works/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/why-getting-out-of-bed-when-you-can-t-sleep-actually-works.png",
-  "style": "infographic",
-  "visualTheme": "sage-flush",
-  "imageHeadline": "Can't sleep? Getting out of bed retrains your brain",
-  "imageSubtext": "Why stimulus control—a proven CBT-I technique—actually works",
-  "pinTitle": "Why Getting Out of Bed When You Can't Sleep Works (Stimulus Control Explained)",
-  "pinDescription": "Lying awake in bed trains your brain to associate it with frustration, not sleep. Stimulus control—a core part of cognitive behavioral therapy for insomnia—breaks that pattern by having you leave the bedroom when sleep doesn't come. Learn how this evidence-based technique rebuilds the mental link between bed and rest.",
-  "layoutStyle": "process",
-  "items": [
-    {
-      "label": "Notice you've been awake 15–20 minutes",
-      "sublabel": ""
-    },
-    {
-      "label": "Get up and leave the bedroom",
-      "sublabel": ""
-    },
-    {
-      "label": "Do something quiet and boring in low light",
-      "sublabel": ""
-    },
-    {
-      "label": "Return to bed only when genuinely sleepy",
-      "sublabel": ""
-    }
-  ],
-  "backgroundScene": "A softly lit living room at night with a couch, folded blanket, and an open book on a side table, viewed from a calm, quiet angle",
+  "style": "photo",
+  "imageHeadline": "Can't Sleep? Get Out of Bed—Here's Why It Works",
+  "imageSubtext": "The full science behind the technique is on the site",
+  "pinTitle": "why you should get out of bed when you can't sleep at night",
+  "pinDescription": "Lying awake and can't fall asleep? Getting out of bed is a core CBT-I technique called stimulus control that helps retrain your brain to link bed with sleep, not frustration or wakefulness. Learn exactly how to use this evidence-based sleep strategy and when to get back into bed.",
   "approved": true,
-  "generatedAt": "2026-10-02T14:11:04.406Z",
-  "sentAt": "2026-10-11T01:50:56.086Z",
-  "pinUrl": "https://www.pinterest.com/pin/1115626138979829580/"
+  "generatedAt": "2026-10-24T03:06:53.959Z"
 }

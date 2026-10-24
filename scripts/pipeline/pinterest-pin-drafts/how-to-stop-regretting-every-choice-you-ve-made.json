@@ -4,33 +4,11 @@
   "category": "Mind",
   "articleLink": "https://mindtivate.com/articles/how-to-stop-regretting-every-choice-you-ve-made/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/how-to-stop-regretting-every-choice-you-ve-made.png",
-  "style": "infographic",
-  "visualTheme": "sage-floating",
-  "imageHeadline": "Stop treating every choice like proof you can't decide",
-  "imageSubtext": "Break the regret loop and rebuild confidence in your judgment",
-  "pinTitle": "How to Stop Regretting Every Choice You've Made | Breaking the Chronic Regret Loop",
-  "pinDescription": "When regret becomes your default response to past decisions—school, jobs, relationships—it stops being about any single choice and starts eroding your confidence as a decision-maker. Learn the difference between productive regret and rumination, why fear of future regret keeps you stuck, and how to shift from second-guessing to learning.",
-  "layoutStyle": "process",
-  "items": [
-    {
-      "label": "Ask what you learned, not what you should have known",
-      "sublabel": ""
-    },
-    {
-      "label": "Separate the decision from the outcome",
-      "sublabel": ""
-    },
-    {
-      "label": "Notice when fear of regret is driving choices",
-      "sublabel": ""
-    },
-    {
-      "label": "Write down what matters to you now",
-      "sublabel": ""
-    }
-  ],
-  "backgroundScene": "A quiet crossroads in a forest with multiple paths branching out, dappled sunlight filtering through the trees, leaves scattered on the ground",
+  "style": "photo",
+  "imageHeadline": "Stop Second-Guessing Every Decision You've Ever Made",
+  "imageSubtext": "The full framework for moving forward is on the site",
+  "pinTitle": "how to stop regretting past decisions and build confidence in your choices",
+  "pinDescription": "If you replay old decisions about work, relationships, or life paths on a loop, you're not alone. Learn why chronic regret happens and how to stop second-guessing yourself going forward. Get the full framework on the site.",
   "approved": true,
-  "generatedAt": "2026-10-02T14:04:56.122Z",
-  "sentAt": "2026-10-05T21:45:13.868Z"
+  "generatedAt": "2026-10-24T03:03:00.421Z"
 }

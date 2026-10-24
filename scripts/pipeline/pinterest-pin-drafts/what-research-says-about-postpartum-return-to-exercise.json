@@ -4,34 +4,11 @@
   "category": "Life Stages",
   "articleLink": "https://mindtivate.com/articles/what-research-says-about-postpartum-return-to-exercise/",
   "imagePath": "scripts/pipeline/pinterest-pin-drafts/what-research-says-about-postpartum-return-to-exercise.png",
-  "style": "infographic",
-  "visualTheme": "sage-floating",
-  "imageHeadline": "Cleared at 6 weeks doesn't mean ready to run",
-  "imageSubtext": "What the research actually says about postpartum return to exercise",
-  "pinTitle": "Postpartum Return to Exercise: What Research Says About the 6-Week Clearance",
-  "pinDescription": "The 6-week checkup clears you medically, but that's not the same as your pelvic floor and core being ready for your old training load. The evidence supports a gradual, symptom-guided return: walking and core work first, then low-impact strength, and high-impact exercise only when your body can handle it without leaking, pressure, or pain. Learn what a realistic progression looks like.",
-  "layoutStyle": "process",
-  "items": [
-    {
-      "label": "Start with walking and pelvic floor activation",
-      "sublabel": ""
-    },
-    {
-      "label": "Add low-impact strength as core rebuilds",
-      "sublabel": ""
-    },
-    {
-      "label": "Progress to running only when symptom-free",
-      "sublabel": ""
-    },
-    {
-      "label": "Scale back if leaking, pressure, or pain appear",
-      "sublabel": ""
-    }
-  ],
-  "backgroundScene": "A pair of walking shoes on a park trail with soft morning light filtering through trees",
+  "style": "photo",
+  "imageHeadline": "Postpartum Return to Exercise: What Research Actually Says",
+  "imageSubtext": "The full timeline and guidelines are on the site",
+  "pinTitle": "postpartum exercise timeline based on research for new moms",
+  "pinDescription": "The 6-week clearance isn't a green light to jump back into your old routine. Learn what research says about postpartum return to exercise, including safe timelines for different types of movement and what to watch for as you rebuild strength. Get the evidence-based guidelines on the site.",
   "approved": true,
-  "generatedAt": "2026-10-02T14:08:43.449Z",
-  "sentAt": "2026-10-09T19:57:40.817Z",
-  "pinUrl": "https://www.pinterest.com/pin/1115626138979721677/"
+  "generatedAt": "2026-10-24T03:05:29.985Z"
 }
