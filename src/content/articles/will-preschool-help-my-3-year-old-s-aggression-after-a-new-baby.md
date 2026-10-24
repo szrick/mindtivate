@@ -18,7 +18,7 @@ tags:
   - sibling adjustment
   - toddler behavior
 heroImageAlt: "Lifestyle photo related to \"Will Preschool Help My 3-Year-Old's Aggression After a New Baby?\""
-pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979995504/"
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981007053/"
 ---
 Your daughter is about to start preschool, and you're hoping it'll ease the aggressive, attention-seeking behaviors that showed up after her brother was born. That hope makes sense—more structure, more stimulation, time with other kids. But whether preschool helps depends less on what it takes off your plate and more on what's actually driving the behavior in the first place.
 
