@@ -16,7 +16,7 @@ tags:
   - communication
   - loss
 updatedDate: 2026-09-04
-pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979805908/"
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006731/"
 ---
 ## The problem: discovering a loss long after it happened
 

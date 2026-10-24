@@ -15,7 +15,7 @@ tags:
   - family
   - caregiving
   - grief
-pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979721689/"
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006714/"
 ---
 ## The urgency is real—and so is the overwhelm
 
