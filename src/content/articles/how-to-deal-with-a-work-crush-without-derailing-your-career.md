@@ -16,6 +16,7 @@ tags:
   - emotional health
   - career
   - crushes
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006206/"
 ---
 ## When someone else names what you've been noticing
 

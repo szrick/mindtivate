@@ -19,6 +19,7 @@ tags:
   - migraines
   - body lotion
 heroImageAlt: "Lifestyle photo related to \"How to Choose Body Lotion for Dry Skin When Fragrance Triggers Migraines\""
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006200/"
 ---
 ## The fragrance-hydration dilemma
 

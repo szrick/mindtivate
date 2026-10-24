@@ -19,6 +19,7 @@ tags:
   - chronic illness
   - body recomposition
 heroImageAlt: "Lifestyle photo related to \"How to Fit Strength Training & Meal Prep Into 60+ Hour Weeks\""
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006213/"
 ---
 ## The real problem isn't motivation—it's capacity
 

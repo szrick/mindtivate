@@ -15,6 +15,7 @@ tags:
   - macros
   - grocery shopping
   - nutrition planning
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006192/"
 ---
 ## The backward-math problem no one talks about
 

@@ -16,6 +16,7 @@ tags:
   - skincare budget
   - ichthyosis
 updatedDate: 2026-09-04
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006187/"
 ---
 When you have severely dry skin or ichthyosis, lotion isn't optional—it's a daily necessity. Going through multiple bottles a week adds up fast, and the math gets frustrating when you're comparing per-ounce pricing across drugstore aisles. The question isn't whether you need thick, effective moisturizer. It's how to get enough of it without the cost spiraling.
 
