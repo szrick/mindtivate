@@ -20,6 +20,7 @@ tags:
   - neurodivergence
   - "self-care"
   - beginner skincare
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006304/"
 ---
 ## When self-care falls off completely
 

@@ -16,6 +16,7 @@ tags:
   - hyperhidrosis
   - stress response
 updatedDate: 2026-09-04
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006294/"
 ---
 ## When anxiety turns you into a sprinkler
 

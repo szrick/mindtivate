@@ -15,6 +15,7 @@ tags:
   - dry skin
   - exfoliation
   - event prep
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006288/"
 ---
 ## The reality of a two-week timeline
 

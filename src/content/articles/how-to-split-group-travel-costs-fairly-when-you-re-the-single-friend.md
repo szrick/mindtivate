@@ -17,6 +17,7 @@ tags:
   - travel
   - money
   - single
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006312/"
 ---
 ## Why this keeps happening
 
