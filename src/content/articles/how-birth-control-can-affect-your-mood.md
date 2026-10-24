@@ -17,7 +17,7 @@ tags:
   - hormones
   - mental health
   - contraception
-pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979145033"
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981004366/"
 ---
 ## "I feel like a different person" is a common complaint, not a coincidence
 
