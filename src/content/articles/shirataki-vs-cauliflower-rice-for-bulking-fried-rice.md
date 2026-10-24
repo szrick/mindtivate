@@ -16,7 +16,7 @@ tags:
   - low calorie
   - shirataki
   - cauliflower rice
-pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979640452/"
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006526/"
 ---
 ## The question: which filler wins?
 

@@ -18,7 +18,7 @@ tags:
   - supplements
   - morning workouts
 heroImageAlt: "Lifestyle photo related to \"Should You Take Pre-Workout for Early Morning Classes?\""
-pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979640460/"
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006552/"
 ---
 ## The early-morning-class problem
 
