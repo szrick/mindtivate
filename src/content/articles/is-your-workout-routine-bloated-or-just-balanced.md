@@ -18,7 +18,7 @@ tags:
   - exercise selection
   - volume
 heroImageAlt: "Lifestyle photo related to \"Is Your Workout Routine Bloated or Just Balanced?\""
-pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979586521/"
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006454/"
 ---
 ## When variety starts to feel like clutter
 

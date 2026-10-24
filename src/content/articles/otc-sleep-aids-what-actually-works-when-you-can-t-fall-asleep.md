@@ -21,7 +21,7 @@ tags:
   - magnesium
   - sleep aids
   - headaches
-pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979586524/"
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006460/"
 ---
 ## When sleepless nights start causing headaches
 

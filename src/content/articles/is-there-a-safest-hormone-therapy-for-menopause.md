@@ -19,7 +19,7 @@ tags:
   - hormone therapy
   - HRT
   - hormones
-pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979586516/"
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006449/"
 ---
 ## Why "is HRT safe" doesn't have one answer
 

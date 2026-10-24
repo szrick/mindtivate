@@ -21,7 +21,7 @@ tags:
   - postpartum anxiety
   - new mothers
   - mental health
-pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979586530/"
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006482/"
 ---
 ## The symptom nobody warned you about
 
