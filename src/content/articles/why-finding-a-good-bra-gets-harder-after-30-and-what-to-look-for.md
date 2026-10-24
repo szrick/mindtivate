@@ -16,7 +16,7 @@ tags:
   - wardrobe basics
   - body changes
   - comfort
-pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979829575/"
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006834/"
 ---
 ## Why bra shopping suddenly feels impossible
 
