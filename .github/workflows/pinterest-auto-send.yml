@@ -29,6 +29,20 @@ on:
         description: 'Send just this one approved draft now, instead of the usual "oldest 5 by directory order" batch -- useful when a specific pin needs to go out ahead of an older queue (e.g. verifying a just-fixed draft actually sends). Must already be approved: true.'
         required: false
         type: string
+      deletePinIds:
+        description: 'Ops only: comma-separated Pinterest pin IDs to delete directly, bypassing drafts entirely (e.g. cleaning up a duplicate left by a bug). Takes priority over slug/send-approved when set.'
+        required: false
+        type: string
+      deleteKnownDuplicates:
+        description: 'Ops only: delete the 5 old infographic pins left duplicated by the 2026-10-24 re-style migration regex bug (see 5-pinterest-pin.mjs KNOWN_DUPLICATE_OLD_PIN_IDS). Takes priority over slug/send-approved when true.'
+        required: false
+        type: boolean
+        default: false
+      reconcileOrphans:
+        description: 'Ops only: for the 15 re-style-migration slugs whose old pin id was never recorded anywhere, list each one''s board and delete the old pin by matching its old title (see 5-pinterest-pin.mjs ORPHANED_OLD_PIN_TITLES). Takes priority over slug/send-approved when true.'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   send:
@@ -52,7 +66,13 @@ jobs:
 
       - name: Send approved, unsent drafts
         run: |
-          if [ -n "${{ inputs.slug }}" ]; then
+          if [ -n "${{ inputs.deletePinIds }}" ]; then
+            npm run pipeline:pin -- --delete-pins "${{ inputs.deletePinIds }}"
+          elif [ "${{ inputs.deleteKnownDuplicates }}" = "true" ]; then
+            npm run pipeline:pin -- --delete-known-duplicates
+          elif [ "${{ inputs.reconcileOrphans }}" = "true" ]; then
+            npm run pipeline:pin -- --reconcile-orphans
+          elif [ -n "${{ inputs.slug }}" ]; then
             npm run pipeline:pin -- --slug "${{ inputs.slug }}" --send
           else
             npm run pipeline:pin -- --send-approved

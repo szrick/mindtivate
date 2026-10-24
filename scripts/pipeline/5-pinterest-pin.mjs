@@ -24,6 +24,8 @@
 //   npm run pipeline:pin -- --slug some-article-slug --style infographic    # draft only, infographic style
 //   npm run pipeline:pin -- --slug some-article-slug --send                 # send one, only if approved
 //   npm run pipeline:pin -- --send-approved                                 # send every approved-but-unsent draft
+//   npm run pipeline:pin -- --delete-pins <id1,id2,...>                     # ops: delete pins by id directly
+//   npm run pipeline:pin -- --reconcile-orphans                            # ops: see ORPHANED_OLD_PIN_TITLES below
 //
 // --style infographic: a Nano-Banana-2-Lite-generated illustrated
 // background (POE_INFOGRAPHIC_MODEL) with 3-4 real, always-legible
@@ -40,7 +42,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 
 import { loadEnv } from '../lib/env.mjs';
 import { askPoeForJson, generatePoeImage } from '../lib/poe.mjs';
 import { readFrontmatter, upsertFrontmatterField } from '../lib/frontmatter.mjs';
-import { createPin, deletePin, resolveBoardId, refreshAccessToken } from '../lib/pinterest.mjs';
+import { createPin, deletePin, listBoardPins, resolveBoardId, refreshAccessToken } from '../lib/pinterest.mjs';
 import { renderPinImage, renderInfographicPinImage, pickPinTheme, hashString } from '../lib/pinterest-pin-image.mjs';
 
 loadEnv();
@@ -222,8 +224,129 @@ function parseArgs(argv) {
     else if (argv[i] === '--send') args.send = true;
     else if (argv[i] === '--send-approved') args.sendApproved = true;
     else if (argv[i] === '--style') args.style = argv[++i];
+    else if (argv[i] === '--delete-pins') args.deletePins = argv[++i];
+    else if (argv[i] === '--delete-known-duplicates') args.deleteKnownDuplicates = true;
+    else if (argv[i] === '--reconcile-orphans') args.reconcileOrphans = true;
   }
   return args;
+}
+
+// One-off cleanup for the 2026-10-24 infographic -> photo re-style migration:
+// a regex bug in sendDraft (fixed in the same commit as this) meant the
+// first batch of "replace" sends created a new pin but silently failed to
+// delete the old one whenever pinterestPinUrl had no trailing slash. These
+// are that batch's known-good old ids, recovered from the article
+// frontmatter as it stood right before the buggy sends overwrote it --
+// delete them directly rather than re-deriving anything.
+const KNOWN_DUPLICATE_OLD_PIN_IDS = [
+  '1115626138979145003', // do-glp-1s-affect-weight-loss-beyond-appetite-suppression
+  '1115626138979145010', // does-blending-leafy-greens-retain-the-same-nutrients
+  '1115626138979145018', // drop-off-or-ease-in-what-actually-works-for-daycare-transitions-at-12-months
+  '1115626138979145026', // exercise-physio-recommendations-for-l5-s1-injury
+  '1115626138979145033', // how-birth-control-can-affect-your-mood
+];
+
+// Same migration: these 15 slugs' old (infographic) pins were sent months
+// ago but never got their pin id recorded anywhere in the repo (neither the
+// draft json nor the article frontmatter) -- a separate, older bug than the
+// regex one above. The id can't be read back from anything we stored, so
+// this instead lists every pin on the article's board and matches by the
+// *old* draft's exact pin title (captured here from git history before this
+// migration's redraft overwrote it with new copy) -- the only surviving
+// fingerprint of which pin is the superseded one.
+const ORPHANED_OLD_PIN_TITLES = {
+  'how-to-buy-body-lotion-in-bulk-without-sacrificing-quality':
+    'How to Buy Body Lotion in Bulk Without Sacrificing Quality | Dry Skin & Ichthyosis',
+  'how-to-calculate-raw-ingredient-amounts-from-weekly-macros':
+    'How to Calculate Raw Ingredient Amounts From Weekly Macros | Meal Prep Math',
+  'how-to-choose-body-lotion-for-dry-skin-when-fragrance-triggers-migraines':
+    'How to Choose Fragrance-Free Body Lotion for Dry Skin & Migraines',
+  'how-to-deal-with-a-work-crush-without-derailing-your-career':
+    'How to Handle a Work Crush Without Derailing Your Career | Evidence-Based Advice',
+  'how-to-fit-strength-training-meal-prep-into-60-hour-weeks':
+    'How to Fit Strength Training & Meal Prep Into 60+ Hour Weeks Without Burning Out',
+  'how-to-get-smooth-glowy-legs-in-2-weeks-for-an-event':
+    'How to Get Smooth Glowy Legs in 2 Weeks | Realistic Skin Prep for Events',
+  'how-to-manage-stress-sweating-for-a-high-anxiety-event':
+    'How to Manage Stress Sweating Before a High-Anxiety Event (Speech, Wedding, Presentation)',
+  'how-to-plan-for-aging-without-kids-and-with-a-disabled-dependent':
+    'How to Plan for Aging Without Kids (and With a Disabled Dependent) | Solo Aging Guide',
+  'how-to-restart-a-skincare-routine-after-years-of-nothing':
+    'How to Restart a Skincare Routine After Years of Nothing | Depression & Neurodivergence',
+  'how-to-split-group-travel-costs-fairly-when-you-re-the-single-friend':
+    'How to Split Group Travel Costs Fairly as the Single Friend | Mindtivate',
+  "how-to-stop-regretting-every-choice-you-ve-made":
+    "How to Stop Regretting Every Choice You've Made | Breaking the Chronic Regret Loop",
+  "how-to-stop-someone-from-staring-at-you-when-you-re-autistic":
+    "How to Stop Someone From Staring at You When You're Autistic",
+  'hydrating-dry-skin-without-occlusives-5-alternatives-to-slugging':
+    'How to Hydrate Dry Skin Without Heavy Occlusives (Alternatives to Slugging)',
+  'is-declining-a-300-bar-tab-from-a-stranger-a-rejection':
+    'Is Declining a $300 Bar Tab From a Stranger a Rejection? What Gift Acceptance Really Signals',
+  'is-evlo-s-bmr-1-3-200-formula-right-for-postpartum-body-recomposition':
+    'EVLO Fitness Calorie Formula for Postpartum Body Recomposition: What to Know',
+};
+
+async function deletePins(idsCsv) {
+  const ids = idsCsv.split(',').map((s) => s.trim()).filter(Boolean);
+  let accessToken;
+  try {
+    accessToken = (await refreshAccessToken()) || undefined;
+  } catch (err) {
+    console.warn(`  Pinterest token refresh failed (${err.message}) -- falling back to PINTEREST_ACCESS_TOKEN.`);
+  }
+  for (const id of ids) {
+    console.log(`Deleting pin ${id}...`);
+    await deletePin(id, accessToken);
+  }
+  console.log(`Deleted ${ids.length} pin(s).`);
+}
+
+async function deleteKnownDuplicates() {
+  await deletePins(KNOWN_DUPLICATE_OLD_PIN_IDS.join(','));
+}
+
+async function reconcileOrphans() {
+  let accessToken;
+  try {
+    accessToken = (await refreshAccessToken()) || undefined;
+  } catch (err) {
+    console.warn(`  Pinterest token refresh failed (${err.message}) -- falling back to PINTEREST_ACCESS_TOKEN.`);
+  }
+
+  const boardPinsCache = new Map();
+  for (const [slug, oldTitle] of Object.entries(ORPHANED_OLD_PIN_TITLES)) {
+    const articlePath = `${ARTICLES_DIR}/${slug}.md`;
+    if (!existsSync(articlePath)) {
+      console.log(`SKIP ${slug}: no article file found.`);
+      continue;
+    }
+    const { data: article } = readFrontmatter(readFileSync(articlePath, 'utf8'));
+    const boardId = resolveBoardId(article.category);
+    if (!boardId) {
+      console.log(`SKIP ${slug}: no board configured for category "${article.category}".`);
+      continue;
+    }
+
+    if (!boardPinsCache.has(boardId)) {
+      console.log(`Listing pins on board ${boardId}...`);
+      boardPinsCache.set(boardId, await listBoardPins(boardId, accessToken));
+    }
+    const pins = boardPinsCache.get(boardId);
+    const matches = pins.filter((p) => p.title === oldTitle);
+
+    if (matches.length === 1) {
+      const pinId = matches[0].id;
+      console.log(`FOUND ${slug}: old pin ${pinId} ("${oldTitle}") -- deleting.`);
+      await deletePin(pinId, accessToken);
+    } else if (matches.length === 0) {
+      console.log(`NOT FOUND ${slug}: no pin on board ${boardId} titled "${oldTitle}" -- may already be gone, or title changed.`);
+    } else {
+      console.log(
+        `AMBIGUOUS ${slug}: ${matches.length} pins on board ${boardId} titled "${oldTitle}" (${matches.map((m) => m.id).join(', ')}) -- skipping, resolve by hand.`,
+      );
+    }
+  }
 }
 
 // heroImage in an article's frontmatter is a path relative to
@@ -267,7 +390,7 @@ async function sendDraft(slug) {
   // *live* pin -- this send is a replace (e.g. regenerating an old
   // infographic-style pin as the current photo style), not a first send.
   // Capture its id now, before anything below can change what's on disk.
-  const oldPinId = article.pinterestPinUrl ? article.pinterestPinUrl.match(/\/pin\/(\d+)\//)?.[1] : null;
+  const oldPinId = article.pinterestPinUrl ? article.pinterestPinUrl.match(/\/pin\/(\d+)\/?/)?.[1] : null;
   const boardId = resolveBoardId(article.category);
   if (!boardId) {
     throw new Error(
@@ -371,6 +494,19 @@ async function sendApprovedDrafts() {
 
 async function run() {
   const args = parseArgs(process.argv.slice(2));
+
+  if (args.deletePins) {
+    await deletePins(args.deletePins);
+    return;
+  }
+  if (args.deleteKnownDuplicates) {
+    await deleteKnownDuplicates();
+    return;
+  }
+  if (args.reconcileOrphans) {
+    await reconcileOrphans();
+    return;
+  }
 
   if (args.sendApproved) {
     await sendApprovedDrafts();

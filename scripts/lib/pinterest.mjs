@@ -67,6 +67,34 @@ export async function deletePin(pinId, accessToken) {
   }
 }
 
+// Lists every pin currently on a board. Used only for one-off reconciliation
+// (recovering a pin id that was never recorded anywhere in the repo, e.g. an
+// old send whose pinUrl write silently failed) -- not part of the normal
+// create/send flow, which always already has the id it needs. Paginates via
+// Pinterest's bookmark cursor until exhausted.
+export async function listBoardPins(boardId, accessToken) {
+  const token = accessToken || process.env.PINTEREST_ACCESS_TOKEN;
+  if (!token) throw new Error('Missing PINTEREST_ACCESS_TOKEN');
+
+  const pins = [];
+  let bookmark;
+  do {
+    const url = new URL(`${API_BASE}/boards/${boardId}/pins`);
+    url.searchParams.set('page_size', '100');
+    if (bookmark) url.searchParams.set('bookmark', bookmark);
+
+    const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+    if (!res.ok) {
+      throw new Error(`Pinterest listBoardPins failed: ${res.status} ${await res.text()}`);
+    }
+    const data = await res.json();
+    pins.push(...(data.items || []));
+    bookmark = data.bookmark || null;
+  } while (bookmark);
+
+  return pins;
+}
+
 // Category -> board ID, read fresh each call rather than cached at import
 // time (this file's data changes independently of any running process —
 // see pinterest-boards.json's own comment). Falls back to
