@@ -15,7 +15,7 @@ tags:
   - retinol
   - "anti-aging"
   - skincare
-pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979721670/"
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006664/"
 ---
 ## Why deep forehead lines show up earlier than you'd expect
 

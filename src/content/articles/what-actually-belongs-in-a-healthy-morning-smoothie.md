@@ -19,7 +19,7 @@ tags:
   - breakfast
   - nutrition basics
   - whole foods
-pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979721655/"
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006646/"
 ---
 ## The problem with smoothie advice online
 
