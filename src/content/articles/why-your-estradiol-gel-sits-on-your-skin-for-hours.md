@@ -16,7 +16,7 @@ tags:
   - estradiol
   - HRT
 updatedDate: 2026-09-04
-pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979995477/"
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981007004/"
 ---
 You apply your estradiol gel in the morning, and an hour later you can still see it sitting on top of your skin. The next day in the shower, you notice residue before you even apply the new dose. It's frustrating, and it raises a reasonable question: if the gel isn't absorbing, is it actually working?
 

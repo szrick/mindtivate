@@ -18,7 +18,7 @@ tags:
   - burnout
   - boundaries
   - stress
-pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979896293/"
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006990/"
 ---
 ## The advice that keeps missing the point
 

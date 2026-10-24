@@ -16,7 +16,7 @@ tags:
   - social anxiety
   - eating
 updatedDate: 2026-09-04
-pinterestPinUrl: "https://www.pinterest.com/pin/1115626138979995471/"
+pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006995/"
 ---
 You're three months into a relationship that's going well—you talk easily, you've resolved conflict like adults, you genuinely like this person. But every time you sit down to eat together, you feel sick. You have to excuse yourself. It's not "the ick," you're not disgusted by how he eats, and neither of you can figure out what's going on.
 
