@@ -4,7 +4,7 @@ description: Too many rows and presses, not enough of something else? Here's how
   to tell if your routine is actually unbalanced or just more varied than
   before.
 pubDate: 2026-08-25
-updatedDate: 2026-09-04
+updatedDate: 2026-11-10
 category: Body
 heroImage: "./_images/is-your-workout-routine-bloated-or-just-balanced-hero.webp"
 status: published
@@ -56,7 +56,7 @@ Write out every exercise in your current plan and categorize each one by movemen
 
 If you're doing 18 sets of horizontal pulling and 4 sets of vertical pulling, that's a clear imbalance. If you're doing 12 sets of pressing and 6 sets of hinge work despite wanting to build your glutes, that's another.
 
-A more balanced starting point for your goals might look like 10–12 sets of hinge, 8–10 sets of squat, 10–12 sets of total pulling (split between horizontal and vertical), and 6–8 sets of pressing per week. You can adjust from there based on how you recover and progress, but that gives you a more intentional distribution than "exercises I enjoy, in whatever quantity."
+A more balanced starting point for your goals might look like 10–12 sets of hinge, 8–10 sets of squat, 10–12 sets of total pulling (split between horizontal and vertical), and 6–8 sets of pressing per week. (For help [fitting strength training into a packed schedule](/articles/how-to-fit-strength-training-meal-prep-into-60-hour-weeks/), see our guide on structuring workouts when time is tight.) You can adjust from there based on how you recover and progress, but that gives you a more intentional distribution than "exercises I enjoy, in whatever quantity."
 
 ## Enjoyment still matters—just not as the only filter
 
