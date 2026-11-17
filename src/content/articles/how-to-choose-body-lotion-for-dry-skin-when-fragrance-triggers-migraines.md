@@ -5,7 +5,7 @@ description: You need deep hydration without strong scents. Here's what to look
   for in a body lotion when fragrance is a migraine trigger and dry skin needs
   real help.
 pubDate: 2026-08-28
-updatedDate: 2026-09-04
+updatedDate: 2026-11-17
 category: Beauty
 heroImage: "./_images/how-to-choose-body-lotion-for-dry-skin-when-fragrance-triggers-migraines-hero.webp"
 status: published
@@ -33,9 +33,9 @@ When you're dealing with genuinely dry skin, the [American Academy of Dermatolog
 
 ## What actually makes a body lotion hydrating
 
-The key to long-lasting hydration isn't fragrance or marketing claims—it's the formula's balance of humectants, emollients, and occlusives. Humectants (like glycerin or hyaluronic acid) pull water into your skin. Emollients (like shea butter or ceramides) smooth and soften. Occlusives (like petrolatum or dimethicone) seal everything in and prevent water loss.
+The key to long-lasting hydration isn't fragrance or marketing claims—it's the formula's balance of humectants, emollients, and occlusives. Humectants (like glycerin or hyaluronic acid) pull water into your skin. Emollients (like shea butter or ceramides) smooth and soften. Occlusives (like petrolatum or dimethicone) seal everything in and prevent water loss. (If heavy occlusives feel too greasy for you, there are [lighter alternatives that still provide barrier protection](/articles/hydrating-dry-skin-without-occlusives-5-alternatives-to-slugging/).)
 
-For very dry skin, you'll often get better results from a cream or ointment than a lotion. Lotions have a higher water content, which makes them lighter and faster-absorbing but less protective for skin that's truly parched. Creams and ointments are thicker, greasier, and slower to sink in—but they create a stronger barrier against moisture loss, which is what dry skin actually needs.
+For very dry skin, you'll often get better results from a cream or ointment than a lotion. (If you go through moisturizer quickly, [buying body lotion in bulk](/articles/how-to-buy-body-lotion-in-bulk-without-sacrificing-quality/) can make fragrance-free options more affordable.) Lotions have a higher water content, which makes them lighter and faster-absorbing but less protective for skin that's truly parched. Creams and ointments are thicker, greasier, and slower to sink in—but they create a stronger barrier against moisture loss, which is what dry skin actually needs.
 
 ## What to look for (and what to skip)
 
