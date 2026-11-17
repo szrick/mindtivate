@@ -18,10 +18,9 @@ tags:
   - postpartum fitness
   - calorie deficit
   - EVLO
-updatedDate: 2026-09-04
+updatedDate: 2026-11-17
 pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006403/"
 ---
-
 ## What the Formula Actually Means
 
 Let's unpack EVLO's recommendation: **BMR × 1.3 − 200**. Your basal metabolic rate (BMR) is the energy your body burns at complete rest—just keeping your heart beating, lungs breathing, and cells functioning. Multiplying by 1.3 gives you a rough estimate of your *total daily energy expenditure* (TDEE) if you're lightly active. Subtracting 200 calories creates a modest deficit designed to nudge fat loss while preserving muscle—the hallmark of body recomposition.
@@ -46,7 +45,7 @@ This formula is a starting point, not gospel. A few things to keep in mind:
 
 **Progress is slow—and that's okay.** You mentioned you're a month in and already seeing differences. That's a win. In your late thirties and postpartum, hormonal changes (lower estrogen, possible thyroid shifts, cortisol from sleep deprivation) can slow the pace. But slow doesn't mean it's not working. Recomposition often shows up in how your clothes fit, your strength gains, and your energy before the scale budges.
 
-**Listen to your body.** [ACOG advises](https://www.acog.org/womens-health/faqs/exercise-after-pregnancy) that postpartum women can generally resume exercise when they feel ready, but recovery timelines vary. If you're feeling run-down, consider whether you need a diet break or a lighter training week. Sustainability beats perfection every time.
+**Listen to your body.** [ACOG advises](https://www.acog.org/womens-health/faqs/exercise-after-pregnancy) that postpartum women can generally resume exercise when they feel ready, but recovery timelines vary. For more on [what research says about postpartum return to exercise](/articles/what-research-says-about-postpartum-return-to-exercise/), including pelvic floor considerations and realistic timelines, see our full guide. If you're feeling run-down, consider whether you need a diet break or a lighter training week. Sustainability beats perfection every time.
 
 ## The Bottom Line
 
