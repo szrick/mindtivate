@@ -18,10 +18,9 @@ tags:
   - postpartum fitness
   - calorie deficit
   - EVLO
-updatedDate: 2026-09-04
+updatedDate: 2026-11-24
 pinterestPinUrl: "https://www.pinterest.com/pin/1115626138981006403/"
 ---
-
 ## What the Formula Actually Means
 
 Let's unpack EVLO's recommendation: **BMR × 1.3 − 200**. Your basal metabolic rate (BMR) is the energy your body burns at complete rest—just keeping your heart beating, lungs breathing, and cells functioning. Multiplying by 1.3 gives you a rough estimate of your *total daily energy expenditure* (TDEE) if you're lightly active. Subtracting 200 calories creates a modest deficit designed to nudge fat loss while preserving muscle—the hallmark of body recomposition.
@@ -30,7 +29,7 @@ For context, if your BMR is 1,400 calories, this formula lands you at 1,620 calo
 
 ## Why This Approach Can Work Postpartum
 
-In your late thirties and postpartum, your body is navigating a lot: hormonal shifts, possible sleep disruption, and the physical recovery from pregnancy and birth. [The CDC notes](https://www.cdc.gov/physical-activity-basics/guidelines/healthy-pregnant-or-postpartum-women.html) that moderate-intensity activity is generally safe for healthy postpartum women and that exercise combined with healthy eating can support postpartum weight management.
+In your late thirties and postpartum, your body is navigating a lot: hormonal shifts, possible sleep disruption, and [the physical recovery from pregnancy and birth](/articles/what-research-says-about-postpartum-return-to-exercise/). [The CDC notes](https://www.cdc.gov/physical-activity-basics/guidelines/healthy-pregnant-or-postpartum-women.html) that moderate-intensity activity is generally safe for healthy postpartum women and that exercise combined with healthy eating can support postpartum weight management.
 
 A 200-calorie deficit is conservative—small enough that it shouldn't tank your energy or milk supply (if you're nursing), but large enough to create slow, sustainable change. Pairing it with 150 minutes of aerobic exercise per week aligns with general activity guidelines and adds cardiovascular health benefits without overdoing it.
 
@@ -52,7 +51,7 @@ This formula is a starting point, not gospel. A few things to keep in mind:
 
 EVLO's formula is a reasonable, evidence-informed starting point for body recomposition, especially if you're drawn to low-impact strength work and want clear guidance. The 200-calorie deficit is modest, the activity recommendation is realistic, and the program's focus on resistance training sets you up for the muscle-preserving, fat-losing outcome you're after.
 
-That said, no single formula works for everyone. Track how you *feel*—your energy, recovery, mood, and strength progression—as much as how you look. If something feels off, adjust. And if you're nursing, managing a health condition, or unsure where to start, a chat with a registered dietitian or your healthcare provider can help you personalize the approach.
+That said, no single formula works for everyone. Track how you *feel*—your energy, recovery, [mood](/articles/postpartum-rage-the-symptoms-no-one-prepares-you-for/), and strength progression—as much as how you look. If something feels off, adjust. And if you're nursing, managing a health condition, or unsure where to start, a chat with a registered dietitian or your healthcare provider can help you personalize the approach.
 
 One practical note: if you're doing a lot of upper-body and overhead work in your EVLO sessions, a supportive bra that doesn't shift or dig in makes a real difference. The **High-Support Racerback Lifting Sports Bra** is designed to stay put through squats, pull-ups, and dynamic moves without the discomfort of wires or a tight band—helpful when you're focused on form and don't want to fuss with your gear.
 
